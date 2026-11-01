@@ -1708,6 +1708,10 @@ body.pub.buio .storia::before { opacity: .85; }
 }
 .compagno.gesto.in-volo .c-corpo { animation: none; }
 .compagno.gesto.in-volo :is(.r-braccio-s, .r-braccio-d) { animation: none; }
+/* scritta "Anteprima tema" quando l'indirizzo contiene un tema di prova (app_extra.js) */
+.anteprima-tema { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 60; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 12px;
+  max-width: calc(100% - 24px); padding: 9px 16px; border-radius: 999px; background: #12241a; color: #f2f5ff; font-size: 14px; line-height: 1.3; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, .3); }
+.anteprima-tema a { color: #f4d27a; font-weight: 700; }
 </style>
 </head>
 <body class="pub">
@@ -4278,6 +4282,18 @@ dash.onData(() => {
   if (e._conta) { e._conta.v = n; if (e._conta.stato === 'fatto') e.textContent = e._conta.fmt(n); }
   else e.textContent = n.toLocaleString('it-IT');
 });
+// 01/11/2026 — se l'indirizzo contiene un tema di prova (?meteo=, ?ora=, ?festa=, ?tema=, ?stagione=, aperto da "Guarda" nell'area riservata)
+// compare una scritta in basso con il link per tornare al sito normale: così non si confonde l'anteprima con il sito vero
+(() => {
+  const q = new URLSearchParams(location.search);
+  const NOMI = { meteo: 'meteo', ora: 'giorno/notte', festa: 'festa', tema: 'tema', stagione: 'stagione' };
+  const k = Object.keys(NOMI).filter((x) => q.get(x));
+  if (!k.length) return;
+  const d = document.createElement('div'); d.className = 'anteprima-tema'; d.setAttribute('role', 'status');
+  const t = document.createElement('span'); t.textContent = 'Anteprima tema: ' + k.map((x) => NOMI[x] + ' «' + q.get(x) + '»').join(', ');
+  const a = document.createElement('a'); a.href = location.pathname; a.textContent = 'Torna al sito normale';
+  d.append(t, a); document.body.append(d);
+})();
 </script>
 </body>
 </html>
