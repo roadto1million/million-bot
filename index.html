@@ -2642,7 +2642,7 @@ dash.calc('strategie', {
         const [px, py] = d3.pointer(e, box);
         const pm = podio.indexOf(d.m);
         // "25 trade" sottolineato: porta ai trade di quel mese, nella sezione sotto
-        const pezzi = [pctS(Number(d.r.rendimento)) + ' · ', ...(e.type === 'click' ? [{ link: d.r.trade + ' trade', fn: () => vaiAlMese(anno, d.m) }] : [d.r.trade + ' trade']), ' · ' + eurS(Number(d.r.euro))];
+        const pezzi = [pctS(Number(d.r.rendimento)) + ' · ', ...(e.type === 'click' ? [{ link: d.r.trade + ' trade', fn: () => vaiAlMese(anno, d.m) }] : [d.r.trade + ' trade'])];   // niente euro nel riquadro del mese (come negli anni)
         tt.show(px, py, MESI[d.m - 1] + ' ' + anno + (pm >= 0 ? ' · ' + (pm + 1) + '° mese migliore' : ''), pezzi);
       })
       .on('mouseleave', () => tt.hide());
