@@ -2115,7 +2115,7 @@ body.pub.buio .storia::before { opacity: .85; }
   <section class="bt-card" id="anni">
     <h2>Anno per anno</h2>
     <p class="bt-sub solo-pub">Ogni riga è un anno, partendo da 1.000 € nel 2020: quanti trade ha fatto il bot, quanti hanno chiuso in guadagno (TP, take profit) o in perdita (SL, stop loss) e come è cambiato il saldo. R è il risultato in unità di rischio: un TP vale circa +3, uno SL −1. Il calo massimo è la discesa più grande del saldo dal suo punto più alto. Tocca un anno per vederne il dettaglio più sotto.</p>
-    <p class="bt-sub solo-priv">Tocca un anno per vedere i suoi mesi e tutti i trade, poi tocca un trade per vedere il suo grafico. Trade contati nel mese in cui sono entrati.</p>
+    <p class="bt-sub solo-priv">Tocca un anno per vedere i suoi mesi e tutti i trade, poi tocca un trade per vedere il suo grafico. Trade contati nel mese in cui si sono chiusi.</p>
     <div class="bt-scroll">
       <table class="bt-t bt-anni" data-source="anni" data-row-key="anno">
         <thead><tr>
@@ -2152,7 +2152,7 @@ body.pub.buio .storia::before { opacity: .85; }
     </section>
     <section class="bt-card solo-priv" id="per-strategia">
       <h3>Per strategia</h3>
-      <p class="bt-sub">Trade entrati nell'anno scelto.</p>
+      <p class="bt-sub">Trade chiusi nell'anno scelto.</p>
       <div class="bt-scroll">
         <table class="bt-t bt-strat" data-source="strategie" data-row-key="anno,strategia">
           <thead><tr>
@@ -2208,8 +2208,8 @@ body.pub.buio .storia::before { opacity: .85; }
     <summary>Come è calcolato</summary>
     <p class="solo-pub">È un backtest: le stesse regole del bot applicate ai prezzi passati di Bitcoin, con gli spread e gli swap reali di XM e i guadagni reinvestiti, su un conto in euro con i limiti veri di XM: al massimo 80 lotti per ordine su Bitcoin, quindi quando il conto cresce il rischio di ogni trade scende. Parte da 1.000 € il 1° gennaio 2020 (da gennaio a fine marzo 2020 i prezzi di Bitcoin sono quelli del contratto BTCUSD di Bybit, perché BTCUSDT è nato a fine marzo 2020). Si aggiorna ogni giorno fino a oggi con le stesse regole: dal 26 ottobre 2026 entrano anche i trade chiusi dal bot sul conto demo, calcolati allo stesso modo.</p>
     <p class="solo-pub modo-j">Con il Giappone 225 si aggiungono i suoi trade sui prezzi XM, con spread di 7 punti e swap reale, sullo stesso saldo.</p>
-    <p class="solo-priv">Rischi sul saldo del momento: doppia rottura 5,07%, seconda correzione 2,03%, continuazione dopo SL 2,03%, prima candela 2,03%, ritest della trend line 1,52%<span class="modo-j">, Giappone 225 prima candela 2,03%</span>. Lotti come il bot: rischio diviso per stop più spread, arrotondati per eccesso se il rischio resta entro il 20% in più, altrimenti per difetto, minimo 0,01, massimo 80 per ordine (Giappone 225: da 0,1 a 11.940), un solo ordine per trade, esposizione massima 50 volte il saldo, al massimo 6 posizioni insieme. Conto in euro con i cambi EUR/USD e EUR/JPY del giorno. Spread 15 $, swap reale di XM (long 0,043% e short 0,029% a notte). Dati Bybit BTCUSDT, orari italiani.<span class="modo-j"> Giappone 225: prezzi XM, spread 7 punti, swap long −4,74 e short −1 punti a notte.</span> Dal 1° gennaio 2020 a oggi, aggiornato ogni giorno: dal 26 ottobre 2026 con i trade chiusi dal bot sul conto demo (e, quando il bot non ha operato, con quelli delle stesse regole), esiti sui prezzi di riferimento. Da gennaio a fine marzo 2020 Bitcoin è il contratto BTCUSD di Bybit (BTCUSDT è nato a fine marzo 2020).</p>
-    <p class="solo-priv">Il massimo per ordine si raggiunge dal 2025 (doppia rottura da circa 600.000 € di saldo): da lì il rischio reale della doppia rottura scende in media al 2,3–2,9%.</p>
+    <p class="solo-priv" data-riservato="calcolo"></p>
+    <p class="solo-priv" data-riservato="massimo"></p>
     <p>I risultati passati, e ancora di più quelli di un backtest, non garantiscono risultati futuri. Il trading con leva può far perdere tutto il capitale. Questa pagina non è un consiglio di investimento.</p>
   </details>
 </div>
@@ -2373,7 +2373,7 @@ dash.calc('strategie', {
     if (b) b.click();
     requestAnimationFrame(() => { const v = box.querySelector('.bt-mese-vista') || box; v.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
   }
-  const ORDINE = ['Doppia rottura', 'Seconda correzione', 'Continuazione dopo SL', 'Prima candela', 'Ritest trend line', 'Giappone 225 prima candela'];
+  const ORDINE = { indexOf: (n) => ((window.RISERVATO || {}).ordine || []).indexOf(n) };   // nomi delle strategie solo nei dati cifrati (riservato.enc)
   const nf = (d) => new Intl.NumberFormat('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: 'always' });
   const num = (v, d = 0) => nf(d).format(v);
   const eur = (v) => num(v, Math.abs(v) < 10000 ? 2 : 0) + ' €';
@@ -4249,6 +4249,22 @@ dash.calc('strategie', {
     if (!G[g]) { el.innerHTML = ''; return; }
     c.classList.add('g-' + g); el.innerHTML = G[g];
   };
+})();
+// 01/11/2026 — area riservata: i dettagli della strategia (rischi, lotti, nomi delle strategie) non sono più scritti nella pagina,
+// che chiunque può leggere: arrivano cifrati in riservato.enc (dal file sito/riservato.json del portatile) e si vedono solo con la password
+(() => {
+  let fatto = false, inCorso = false;
+  const carica = async () => {
+    if (window.PUB || fatto || inCorso || typeof CHIAVE === 'undefined' || !CHIAVE) return;
+    inCorso = true;
+    try {
+      const R = await decifra('riservato.enc');
+      window.RISERVATO = R; fatto = true;
+      document.querySelectorAll('[data-riservato]').forEach((e) => { const t = (R.testi || {})[e.dataset.riservato]; if (t != null) e.innerHTML = t; });
+      if (dash.giro) dash.giro();
+    } catch (e) { /* file non ancora caricato dal bot: si riprova al prossimo aggiornamento */ } finally { inCorso = false; }
+  };
+  dash.onData(carica);
 })();
 </script>
 </body>
