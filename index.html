@@ -4033,6 +4033,16 @@ dash.calc('strategie', {
   aggiorna();
 })();
 
+// ================================================================== correzioni aggiunte dopo app.js (costruisci.py lo attacca in fondo ad app.js)
+// 01/11/2026 — anno e mese di un trade = quando si chiude, come il saldo. Prima contavano il mese di entrata, mentre la % del mese
+// veniva dal saldo (chiusure): un trade aperto a fine mese e chiuso il mese dopo faceva tornare % ed euro di segno diverso
+// (es. luglio 2025: −2,5% ma +2.477 € dai trade entrati a luglio). Così %, numero di trade ed euro del mese tornano sempre.
+(() => {
+  const metti = dash.metti;
+  const perChiusura = (r) => Object.assign({}, r, { anno: Number(String(r.chiusura).slice(0, 4)), mese: Number(String(r.chiusura).slice(5, 7)) });
+  dash.metti = function (id, righe) { return metti.call(this, id, id === 'trade' && Array.isArray(righe) ? righe.map(perChiusura) : righe); };
+})();
+
 </script>
 </body>
 </html>
