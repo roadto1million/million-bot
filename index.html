@@ -1673,9 +1673,13 @@ body.pub.buio .storia::before { opacity: .85; }
 .compagno.g-altalena .r-braccio-d { animation: spalla-d 1.6s ease-in-out infinite; }
 .compagno.g-idea .c-corpo { animation: annuisce 1.4s ease-in-out infinite; }
 .compagno.g-idea .r-braccio-d { animation: muscolo 1.4s ease-in-out infinite; }
-.compagno.g-ingranaggi .c-corpo { animation: robotico 1.6s steps(1) infinite; }
-.compagno.g-ingranaggi .r-braccio-d { animation: braccio-robot 1.6s steps(1) infinite; }
-.compagno.g-ingranaggi .r-braccio-s { animation: braccio-robot-s 1.6s steps(1) infinite; }
+.compagno.g-ingranaggi .c-corpo { animation: gs-lavora 2.4s ease-in-out infinite; }
+.compagno.g-ingranaggi .r-braccio-d { animation: gs-manovella-d 1.6s ease-in-out infinite; }
+.compagno.g-ingranaggi .r-braccio-s { animation: gs-manovella-s 1.6s ease-in-out .8s infinite; }
+/* Million Bot: dondola piano e muove le braccia come se girasse gli ingranaggi (movimenti fluidi, non a scatti) */
+@keyframes gs-lavora { 0%, 100% { transform: rotate(-3deg) translateY(0); } 50% { transform: rotate(3deg) translateY(-3px); } }
+@keyframes gs-manovella-d { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-38deg); } }
+@keyframes gs-manovella-s { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(30deg); } }
 .compagno.g-notte .c-corpo { animation: sporge 2.4s ease-in-out infinite; }
 .compagno.g-notte .r-luce { animation: luce-viva .5s ease-in-out infinite alternate; }
 /* oggetti */
