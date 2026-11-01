@@ -1713,6 +1713,62 @@ body.pub.buio .storia::before { opacity: .85; }
   max-width: calc(100% - 24px); padding: 9px 16px; border-radius: 999px; background: #12241a; color: #f2f5ff; font-size: 14px; line-height: 1.3; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, .3); }
 .anteprima-tema a { color: #f4d27a; font-weight: 700; }
 </style>
+<script>
+(function () {
+  // Instagram/Facebook/TikTok su Android aprono il sito in una WebView che ingrandisce i testi
+  // secondo la dimensione dei caratteri del telefono (e ignora text-size-adjust).
+  // Qui misuro l'ingrandimento e riporto i testi alla grandezza normale.
+  try {
+    var d = document.documentElement;
+    var p = document.createElement('div');
+    p.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;font-size:100px';
+    p.textContent = 'x';
+    d.appendChild(p);
+    var s = parseFloat(getComputedStyle(p).fontSize) / 100;
+    d.removeChild(p);
+    var q = parseFloat(new URLSearchParams(location.search).get('tz'));
+    if (q > 0) s = q;   // solo per le prove
+    if (!(s > 0) || Math.abs(s - 1) < 0.03) return;
+    var k = (1 / s).toFixed(4);
+    var assoluto = /(px|vw|vh|vmin|vmax|pt|var\(|clamp\(|calc\(|min\(|max\()/;
+    var correggi = function (st, prop) {
+      var v = st.getPropertyValue(prop);
+      if (!v || !assoluto.test(v)) return;
+      if (prop === 'line-height' && !/px/.test(v)) return;
+      st.setProperty(prop, 'calc(' + v + ' * ' + k + ')', st.getPropertyPriority(prop));
+    };
+    var giro = function (regole) {
+      for (var i = 0; i < regole.length; i++) {
+        var r = regole[i];
+        if (r.style) {
+          var f = r.style.getPropertyValue('font');
+          if (f && !r.style.getPropertyValue('font-size')) {
+            // scorciatoia "font: 600 13px/1.2 var(--sans)": con var() il browser non separa le parti
+            var nf = f.replace(/(^|\s)(\d*\.?\d+px)(\/(\S+))?(?=\s|$)/, function (m, a, sz, sl, lh) {
+              return a + 'calc(' + sz + ' * ' + k + ')' + (sl ? '/' + (/px$/.test(lh) ? 'calc(' + lh + ' * ' + k + ')' : lh) : '');
+            });
+            if (nf !== f) r.style.setProperty('font', nf, r.style.getPropertyPriority('font'));
+          } else { correggi(r.style, 'font-size'); correggi(r.style, 'line-height'); }
+        }
+        if (r.cssRules) giro(r.cssRules);
+      }
+    };
+    for (var j = 0; j < document.styleSheets.length; j++) {
+      try { giro(document.styleSheets[j].cssRules); } catch (e) {}
+    }
+    // testi dei grafici (attributo font-size) e pulsanti con la grandezza predefinita
+    var st = document.createElement('style');
+    st.textContent = 'svg text[font-size],svg g[font-size]{font-size:calc(attr(font-size type(<number>), 12) * 1px * ' + k + ')}' +
+      'button,input,select,textarea{font-size:calc(13.3333px * ' + k + ')}';
+    document.head.insertBefore(st, document.head.firstChild);
+    // la radice senza font-size dichiarato parte da 16px gia' ingranditi
+    var r0 = parseFloat(getComputedStyle(d).fontSize);
+    if (Math.abs(r0 - 16) > 0.5) d.style.fontSize = (16 / s).toFixed(3) + 'px';
+    d.classList.add('tz-fix');
+    window.TZ_FIX = s;
+  } catch (e) {}
+})();
+</script>
 </head>
 <body class="pub">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
