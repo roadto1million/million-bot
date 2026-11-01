@@ -1888,7 +1888,7 @@ body.pub.buio .storia::before { opacity: .85; }
               <g class="riga r3"><path class="tr" d="M19 42h18"/><path class="si" d="M41 42l2.5 2.5 4.5-5"/></g>
               <g class="riga r4"><path class="tr" d="M19 50h12"/><path class="no" d="M41.5 47.5l4 4M45.5 47.5l-4 4"/></g>
             </svg>
-            <b id="lav-trade">1.396</b><p>trade del backtest dal 2020, tutti sul sito, anche quelli in perdita</p>
+            <b id="lav-trade">1.396</b><p>trade dal 2020, tutti sul sito, anche quelli in perdita</p>
           </div>
           <div class="lav">
             <svg class="dis d-spunta" viewBox="0 0 64 64" aria-hidden="true">
@@ -4270,6 +4270,14 @@ dash.calc('strategie', {
   };
   dash.onData(carica);
 })();
+// 01/11/2026 — "Il lavoro dietro Million Bot": il numero dei trade segue i dati (backtest + trade nuovi del bot), come il Complessivo
+dash.onData(() => {
+  const T = dash.data('trade'), e = document.getElementById('lav-trade');
+  if (!e || T.status !== 'ok' || !T.data.length) return;
+  const n = T.data.length;
+  if (e._conta) { e._conta.v = n; if (e._conta.stato === 'fatto') e.textContent = e._conta.fmt(n); }
+  else e.textContent = n.toLocaleString('it-IT');
+});
 </script>
 </body>
 </html>
