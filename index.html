@@ -1769,6 +1769,16 @@ body.pub.buio .storia::before { opacity: .85; }
   } catch (e) {}
 })();
 </script>
+<style>
+/* area riservata di notte: le scritte che stanno direttamente sullo sfondo diventano chiare (come nel sito pubblico) */
+body.buio:not(.pub) { --alone: rgba(9, 16, 40, .92); --alone-2: rgba(9, 16, 40, .62); }
+body.buio:not(.pub) :is(#vista-titolo, h2.bt-sez, .come summary, .come h2) { color: #f2f5ff; text-shadow: 0 0 2px var(--alone), 0 0 7px var(--alone), 0 0 16px var(--alone-2); }
+body.buio:not(.pub) :is(.come p, .bt-vuoto, .vista-testa .agg) { color: #d3dbef; text-shadow: 0 0 2px var(--alone), 0 0 7px var(--alone), 0 0 16px var(--alone-2); }
+body.buio:not(.pub) .nota-cifre { color: #b4c0da; }
+body.buio:not(.pub) button.bt-tab:not([aria-pressed="true"]) { color: #e6ecfa; border-color: rgba(230, 236, 250, .35); background: rgba(255, 255, 255, .06); }
+body.buio:not(.pub) .sez-mesi .btn-vuoto { color: #f2f5ff; border-color: rgba(230, 236, 250, .45); }
+body.buio:not(.pub) .come mark { color: #f2f5ff; background: linear-gradient(transparent 56%, rgba(110, 231, 168, .35) 56%); }
+</style>
 </head>
 <body class="pub">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
