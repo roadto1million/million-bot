@@ -1199,7 +1199,7 @@ body.pub.festa-natale .testata-in { border-color: rgba(246, 214, 128, .55); }
 .compagno.scorre .robot .r-mantello { animation-play-state: running !important; }   /* il mantello sventola anche mentre scorri */
 @media (prefers-reduced-motion: reduce) { .r-mantello { animation-duration: 5s; } }
 /* "Cos'è un bot di trading" e confronto con il trading a mano (in "Come funziona") */
-.cosbot { display: grid; grid-template-columns: .9fr 1.1fr; gap: 16px; margin-bottom: 16px; align-items: start; }
+.cosbot { display: grid; grid-template-columns: .9fr 1.1fr; gap: 16px; margin-bottom: 16px; align-items: stretch; }   /* 02/11/2026: colonne alte uguali */
 .cosbot-def, .cosbot-vs { background: var(--pannello); border: 1px solid var(--linea); border-radius: var(--raggio); padding: 22px 24px; }
 .cosbot h3 { font-family: var(--serif); font-weight: 600; font-size: 19.5px; margin: 0 0 10px; }
 .cosbot-def p { color: #3c4e43; font-size: 15px; margin: 0; line-height: 1.55; }
@@ -1895,6 +1895,54 @@ window.mbAltezzaHero = function (box) {
 };
 document.addEventListener('DOMContentLoaded', function () { var b = document.getElementById('h-curva'); if (b) window.mbAltezzaHero(b); });
 </script>
+<style>
+/* 02/11/2026: gruppo "Approfondimenti" nel menu a tendina del telefono: si apre e si chiude toccandolo */
+.menu-tel { max-height: calc(100vh - 96px); max-height: calc(100dvh - 96px); overflow-y: auto; overscroll-behavior: contain; }
+.menu-tel .menu-gruppo { border-top: 1px solid rgba(255, 255, 255, .07); }
+.menu-tel .menu-gruppo + button { border-top: 1px solid rgba(255, 255, 255, .07); }
+.menu-tel .menu-gruppo > summary { display: flex; align-items: center; gap: 10px; padding: 13px 14px; border-radius: 13px; color: #e8f3ec; font: 600 16px/1.2 var(--sans); cursor: pointer; list-style: none; -webkit-tap-highlight-color: transparent; }
+.menu-tel .menu-gruppo > summary::-webkit-details-marker { display: none; }
+.menu-tel .menu-gruppo > summary::after { content: ""; margin-left: auto; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-3px) rotate(45deg); transition: transform .2s; opacity: .85; }
+.menu-tel .menu-gruppo[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+.menu-tel .menu-gruppo > summary:hover, .menu-tel .menu-gruppo > summary:focus-visible, .menu-tel .menu-gruppo[open] > summary { color: #f6d680; }
+.menu-tel .menu-gruppo > summary:hover, .menu-tel .menu-gruppo > summary:focus-visible { background: rgba(246, 214, 128, .14); }
+.menu-tel .menu-gruppo .menu-sub { width: 100%; }
+.menu-tel .menu-gruppo .menu-sub:last-child { margin-bottom: 6px; }
+</style>
+<style>
+/* 02/11/2026: barra in alto sul computer con tutte le voci del menu del telefono; "Approfondimenti" apre un elenco sotto la barra */
+body.pub .testata .menu { gap: 18px; }
+.menu .menu-piu-b { display: inline-flex; align-items: center; gap: 7px; }
+.menu .menu-piu-b::after { content: ""; width: 6px; height: 6px; border-right: 1.8px solid currentColor; border-bottom: 1.8px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .2s; }
+.menu .menu-piu-b[aria-expanded="true"]::after { transform: translateY(1px) rotate(-135deg); }
+body.pub .testata .menu .menu-piu-b[aria-expanded="true"] { color: #f6d680; }
+.menu-piu { position: absolute; top: calc(100% + 8px); z-index: 31; display: grid; gap: 2px; min-width: 300px; padding: 8px; transform: translateX(-50%);
+  background: radial-gradient(120% 160% at 0% 0%, #2a7451 0%, #17503a 38%, #0e3c2a 70%, #0b3122 100%); border: 1px solid rgba(232, 190, 92, .45); border-radius: 18px;
+  box-shadow: 0 18px 40px rgba(9, 44, 29, .35); animation: menu-giu .18s ease-out; }
+.menu-piu[hidden] { display: none; }
+.menu-piu button { display: block; width: 100%; text-align: left; padding: 10px 13px; border: 0; border-radius: 11px; background: transparent; color: #e8f3ec; font: 500 15px/1.3 var(--sans); cursor: pointer; white-space: nowrap; }
+.menu-piu button + button { border-top: 1px solid rgba(255, 255, 255, .07); }
+.menu-piu button:hover, .menu-piu button:focus-visible { background: rgba(246, 214, 128, .14); color: #f6d680; }
+@media (max-width: 1140px) { .menu-piu { display: none !important; } }
+@media (min-width: 861px) and (max-width: 1140px) { .testata .menu { display: none; } .menu-apri { display: grid !important; } .menu-tel:not([hidden]) { display: grid !important; } }
+</style>
+<style>
+/* 02/11/2026: "Un trade, in pratica" sotto "Cos'è un bot di trading?" (Come funziona) */
+.cosbot-sx { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.cosbot-trade { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 12px; background: var(--pannello); border: 1px solid var(--linea); border-radius: var(--raggio); padding: 18px 24px; }
+.cosbot .cosbot-trade h3 { margin: 0; }
+.cosbot-trade p { margin: 0; color: #3c4e43; font-size: 14px; line-height: 1.5; }
+.ct-righello { position: relative; display: grid; grid-template-columns: 1fr 3fr; height: 48px; margin: 0; font: 600 12px/1 var(--sans); }
+.ct-righello::before { content: ""; position: absolute; left: 0; right: 0; top: 20px; height: 8px; border-radius: 999px; background: linear-gradient(90deg, #e0362c 0 25%, #1f9d5c 25% 100%); opacity: .9; }
+.ct-righello .ct-sl, .ct-righello .ct-tp { padding-top: 36px; white-space: nowrap; }
+.ct-righello .ct-sl { color: #b42a22; }
+.ct-righello .ct-tp { color: #0d6a3e; text-align: right; }
+.ct-righello b { font-family: var(--serif); font-size: 13px; }
+.ct-righello .ct-in { position: absolute; left: 25%; top: 0; transform: translateX(-50%); color: var(--inchiostro); white-space: nowrap; font-size: 11.5px; }
+.ct-righello .ct-in::after { content: ""; position: absolute; left: 50%; top: 14px; width: 3px; height: 19px; margin-left: -1.5px; border-radius: 2px; background: var(--inchiostro); }
+@media (min-width: 861px) { .cosbot-vs { display: flex; flex-direction: column; } .cosbot-vs .vs-riga:not(.vs-testa) { flex: 1; align-content: center; } }   /* righe del confronto alte quanto la colonna accanto */
+@media (max-width: 600px) { .cosbot-trade { padding: 16px 18px; } }
+</style>
 </head>
 <body class="pub">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1932,7 +1980,7 @@ document.addEventListener('DOMContentLoaded', function () { var b = document.get
     <div class="testata-in">
       <a class="marchio" href="#inizio"><img src="data:image/webp;base64,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" alt="Road to 1 Million"><span>Million Bot<small>Road to 1 Million</small></span></a>
       <nav class="menu" aria-label="Sezioni">
-        <button type="button" data-vai="risultati">Risultati</button><button type="button" data-vai="come">Come funziona</button><button type="button" data-vai="perche">Perché è diverso</button><button type="button" data-vai="chi">Chi sono</button><button type="button" class="menu-demo" data-demo><span class="punto rosso"></span>Conto demo</button>
+        <button type="button" data-vai="risultati">Risultati</button><button type="button" data-vai="come">Come funziona</button><button type="button" data-vai="perche">Perché è diverso</button><button type="button" data-vai="chi">Chi sono</button><button type="button" data-vai="domande">Domande</button><button type="button" class="menu-piu-b" id="b-piu" aria-expanded="false" aria-controls="menu-piu">Approfondimenti</button><button type="button" class="menu-demo" data-demo><span class="punto rosso"></span>Conto demo</button>
       </nav>
       <div class="social" aria-label="Seguimi">
         <a class="soc soc-tt" href="https://www.tiktok.com/@roadto1million_btc" target="_blank" rel="noopener" aria-label="Seguimi su TikTok" title="TikTok"><svg><use href="#i-tt"/></svg></a>
@@ -1940,14 +1988,31 @@ document.addEventListener('DOMContentLoaded', function () { var b = document.get
       </div>
       <button class="soc menu-apri" id="b-menu" type="button" aria-label="Apri il menu delle sezioni" aria-expanded="false" aria-controls="menu-tel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
     </div>
+    <div class="menu-piu" id="menu-piu" aria-label="Approfondimenti" hidden>
+      <button type="button" data-vai-sez="senzalimiti">E se non ci fosse il limite di lotti?</button>
+      <button type="button" data-vai-sez="rischio-scelta">Il calo dipende da quanto rischi</button>
+      <button type="button" data-vai-sez="stima2026">Come potrebbe finire l'anno</button>
+      <button type="button" data-vai-sez="tasse">E con le tasse?</button>
+      <button type="button" data-vai-sez="strategie-nomi">Le 6 strategie di Million Bot</button>
+      <button type="button" data-vai-sez="medie">Sopra ogni media</button>
+      <button type="button" data-vai-sez="crolli">Sopra ogni crollo</button>
+    </div>
     <nav class="menu-tel" id="menu-tel" aria-label="Sezioni" hidden>
       <button type="button" data-vai="risultati">Risultati</button>
-      <button type="button" class="menu-sub" data-vai-sez="senzalimiti">E se non ci fosse il limite di lotti?</button>
-      <button type="button" class="menu-sub" data-vai-sez="stima2026">Come potrebbe finire l'anno</button>
       <button type="button" data-vai="come">Come funziona</button>
       <button type="button" data-vai="perche">Perché è diverso</button>
       <button type="button" data-vai="chi">Chi sono</button>
       <button type="button" data-vai="domande">Domande</button>
+      <details class="menu-gruppo">
+        <summary>Approfondimenti</summary>
+        <button type="button" class="menu-sub" data-vai-sez="senzalimiti">E se non ci fosse il limite di lotti?</button>
+        <button type="button" class="menu-sub" data-vai-sez="rischio-scelta">Il calo dipende da quanto rischi</button>
+        <button type="button" class="menu-sub" data-vai-sez="stima2026">Come potrebbe finire l'anno</button>
+        <button type="button" class="menu-sub" data-vai-sez="tasse">E con le tasse?</button>
+        <button type="button" class="menu-sub" data-vai-sez="strategie-nomi">Le 6 strategie di Million Bot</button>
+        <button type="button" class="menu-sub" data-vai-sez="medie">Sopra ogni media</button>
+        <button type="button" class="menu-sub" data-vai-sez="crolli">Sopra ogni crollo</button>
+      </details>
       <button type="button" data-demo><span class="punto rosso"></span>Conto demo</button>
     </nav>
   </header>
@@ -2002,6 +2067,20 @@ document.addEventListener('DOMContentLoaded', function () { var b = document.get
         </div>
         <p class="demo-link"><a class="btn btn-vuoto" id="b-myfxbook" href="https://www.myfxbook.com/members/roadto1milion/million-bot-conto-demo/12285876" target="_blank" rel="noopener">Verifica il conto su Myfxbook ↗</a><span id="myfxbook-presto" hidden>Il collegamento al conto su <strong>Myfxbook</strong>, per verificarlo in modo indipendente, arriverà a breve.</span></p>
       </section>
+      <section class="tasse solo-pub" id="tasse" aria-label="Risultati con le tasse" data-robot-umore="felice" data-robot="Anche togliendo le tasse, <b>1.000 € diventano più di 2 milioni</b>. Le metto da parte ogni 1° gennaio, così sono sempre pronte.">
+        <h2>E con le tasse?</h2>
+        <p class="lead">Per essere il più onesto possibile: con un conto reale, in Italia avrei pagato il <strong>26% sui guadagni di ogni anno</strong>. Per non correre rischi, il <strong>1° gennaio</strong> metto da parte le tasse dell'anno appena chiuso, fuori dal conto: da quel giorno il bot lavora con meno soldi.</p>
+        <div class="tasse-tot">
+          <div><span>Senza tasse</span><b id="tx-senza">—</b></div>
+          <div><span>Tasse pagate in tutto</span><b class="neg" id="tx-tasse">—</b></div>
+          <div class="netto"><span>Con le tasse, netti</span><b id="tx-netto">—</b></div>
+        </div>
+        <div class="tasse-tab"><table>
+          <thead><tr><th>Anno</th><th>Guadagno<span class="eu-m"> (€)</span></th><th>Tasse 26%<span class="solo-largo"> messe da parte il 1° gennaio</span></th><th>Saldo<span class="solo-largo"> dopo le tasse</span></th></tr></thead>
+          <tbody id="tx-anni"></tbody>
+        </table></div>
+        <p class="tasse-nota">Partenza da 1.000 € a gennaio 2020, stessi trade e stesse regole del bot. Il guadagno è più basso dei risultati senza tasse perché, dopo ogni prelievo, il bot apre posizioni più piccole. <span id="tx-ultime"></span> Si aggiorna ogni giorno con i trade nuovi. Imposta del 26% sui redditi diversi (CFD con broker estero), perdite recuperabili nei 4 anni dopo; non è una consulenza fiscale.</p>
+      </section>
     </section>
 
     <section class="pannello scuro" data-p="perche" aria-label="Perché è diverso" data-robot-umore="fiero" data-robot="Ecco cosa mi rende <b>diverso dagli altri bot</b>." hidden>
@@ -2013,7 +2092,7 @@ document.addEventListener('DOMContentLoaded', function () { var b = document.get
         <div class="pregio"><b>24/7</b><h3>Sempre al lavoro</h3><p>Controlla il mercato <strong>senza sosta</strong>, giorno e notte.</p></div>
         <div class="pregio"><b>Sul conto</b><h3>Verificato sul conto</h3><p>Ogni trade reale è <strong>confrontato con il backtest</strong>.</p></div>
       </div>
-      <div class="strategie-nomi" data-robot-umore="fiero" data-robot="Sei strategie, sei caratteri diversi: <b>lavoriamo in squadra</b>.">
+      <div class="strategie-nomi" id="strategie-nomi" data-robot-umore="fiero" data-robot="Sei strategie, sei caratteri diversi: <b>lavoriamo in squadra</b>.">
         <h3>Le 6 strategie di Million&nbsp;Bot</h3>
         <p class="sn-sotto">Ognuna aspetta un momento diverso del mercato. Le regole restano segrete: qui ti presento la squadra.</p>
         <div class="sn-griglia">
@@ -2030,10 +2109,10 @@ document.addEventListener('DOMContentLoaded', function () { var b = document.get
         <p class="medie-sotto">Quanto è cresciuto <strong>in media ogni anno</strong>, dal 2020 a oggi, chi ha comprato e tenuto i mercati più famosi. E quanto è cresciuto Million Bot.</p>
         <div class="medie-barre" id="medie-barre">
           <div class="mb-riga mb-bot"><span class="mb-nome">Million Bot</span><span class="mb-barra"><i style="--w:1"></i></span><b id="media-bot">—</b></div>
-          <div class="mb-riga"><span class="mb-nome">Bitcoin</span><span class="mb-barra"><i data-v="41.7"></i></span><b>+42%</b></div>
-          <div class="mb-riga"><span class="mb-nome">Giappone 225</span><span class="mb-barra"><i data-v="15.49"></i></span><b>+15%</b></div>
-          <div class="mb-riga"><span class="mb-nome">Oro</span><span class="mb-barra"><i data-v="15.4"></i></span><b>+15%</b></div>
-          <div class="mb-riga"><span class="mb-nome">S&amp;P 500 (Borsa USA)</span><span class="mb-barra"><i data-v="13.3"></i></span><b>+13%</b></div>
+          <div class="mb-riga"><span class="mb-nome">Bitcoin</span><span class="mb-barra"><i data-v="41.7" data-k="btc"></i></span><b>+42%</b></div>
+          <div class="mb-riga"><span class="mb-nome">Giappone 225</span><span class="mb-barra"><i data-v="15.49" data-k="jp225"></i></span><b>+15%</b></div>
+          <div class="mb-riga"><span class="mb-nome">Oro</span><span class="mb-barra"><i data-v="15.4" data-k="oro"></i></span><b>+15%</b></div>
+          <div class="mb-riga"><span class="mb-nome">S&amp;P 500 (Borsa USA)</span><span class="mb-barra"><i data-v="13.3" data-k="sp500"></i></span><b>+13%</b></div>
         </div>
         <p class="medie-nota">Media annua composta dal 1° gennaio 2020. Million Bot: backtest fino a oggi, con i guadagni reinvestiti. Gli altri: fino a fine ottobre 2026, solo il prezzo, comprato e tenuto, senza dividendi.</p>
       </div>
@@ -2103,8 +2182,11 @@ document.addEventListener('DOMContentLoaded', function () { var b = document.get
 
     <section class="pannello" data-p="come" aria-label="Come funziona" data-robot-umore="sveglio" data-robot="Anche mentre dormi, io guardo il mercato. <b>Io non dormo mai!</b>" hidden>
       <div class="cosbot" data-robot-umore="fiero" data-robot="Io non ho paura e non ho fretta: <b>seguo le regole</b>, sempre.">
-        <div class="cosbot-def"><h3>Cos'è un bot di trading?</h3><p>Un programma che <strong>compra e vende al posto tuo</strong> seguendo regole precise, decise prima. Legge i grafici, apre il trade, mette stop loss e take profit e lo chiude da solo, <strong>senza che tu stia davanti allo schermo</strong>.</p>
+        <div class="cosbot-sx"><div class="cosbot-def"><h3>Cos'è un bot di trading?</h3><p>Un programma che <strong>compra e vende al posto tuo</strong> seguendo regole precise, decise prima. Legge i grafici, apre il trade, mette stop loss e take profit e lo chiude da solo, <strong>senza che tu stia davanti allo schermo</strong>.</p>
           <p class="cosbot-nota">Un bot non fa miracoli: <strong>è bravo quanto le sue regole</strong>. Per questo quelle di Million Bot sono provate anno per anno e i risultati sono tutti qui.</p></div>
+        <div class="cosbot-trade"><h3>Un trade, in pratica</h3>
+          <div class="ct-righello" aria-hidden="true"><span class="ct-sl"><i></i>Stop loss <b>−1</b></span><span class="ct-in">Entrata</span><span class="ct-tp"><i></i>Take profit <b>+3</b></span></div>
+          <p>Ogni trade si chiude da solo: <strong>−1</strong> se il prezzo tocca lo stop loss, <strong>+3</strong> se tocca il take profit. Così basta chiuderne in guadagno <strong>1&nbsp;su&nbsp;4</strong> per non perdere: Million Bot, dal 2020, ne ha chiusi in guadagno il&nbsp;<strong class="ct-tp-pct">33%</strong>.</p></div></div>
         <div class="cosbot-vs"><h3>A mano o con un bot?</h3>
           <div class="vs-riga vs-testa"><span class="vs-voce"></span><span class="vs-mano">A mano</span><span class="vs-bot">Con un bot</span></div>
           <div class="vs-riga"><span class="vs-voce">Emozioni</span><span class="vs-mano">Paura e avidità cambiano le scelte</span><span class="vs-bot">Segue le stesse regole, sempre</span></div><div class="vs-riga"><span class="vs-voce">Tempo</span><span class="vs-mano">Ore davanti ai grafici</span><span class="vs-bot">Lavora da solo, anche di notte</span></div><div class="vs-riga"><span class="vs-voce">Occasioni</span><span class="vs-mano">Perse mentre dormi o lavori</span><span class="vs-bot">Nessuna persa</span></div><div class="vs-riga"><span class="vs-voce">Disciplina</span><span class="vs-mano">Stop spostati, trade di “vendetta”</span><span class="vs-bot">Stop e rischio non si toccano</span></div><div class="vs-riga"><span class="vs-voce">Prove</span><span class="vs-mano">Non sai se il metodo funziona</span><span class="vs-bot">Regole provate su anni di prezzi veri</span></div>
@@ -2205,21 +2287,6 @@ document.addEventListener('DOMContentLoaded', function () { var b = document.get
         <details><summary>Quanto rischia per operazione?</summary><p>Da circa l'<strong>1,5% a circa il 5%</strong> del conto, sempre con lo stop loss. Il guadagno possibile è <strong>3 volte il rischio</strong>.</p></details>
         <details><summary>Posso usare Million Bot anch'io?</summary><p><strong>Non ancora.</strong> Lo annuncerò su TikTok e Instagram.</p></details>
       </div>
-    </section>
-
-    <section class="tasse solo-pub" id="tasse" aria-label="Risultati con le tasse" data-robot-umore="felice" data-robot="Anche togliendo le tasse, <b>1.000 € diventano più di 2 milioni</b>. Le metto da parte ogni 1° gennaio, così sono sempre pronte.">
-      <h2>E con le tasse?</h2>
-      <p class="lead">Per essere il più onesto possibile: con un conto reale, in Italia avrei pagato il <strong>26% sui guadagni di ogni anno</strong>. Per non correre rischi, il <strong>1° gennaio</strong> metto da parte le tasse dell'anno appena chiuso, fuori dal conto: da quel giorno il bot lavora con meno soldi.</p>
-      <div class="tasse-tot">
-        <div><span>Senza tasse</span><b id="tx-senza">—</b></div>
-        <div><span>Tasse pagate in tutto</span><b class="neg" id="tx-tasse">—</b></div>
-        <div class="netto"><span>Con le tasse, netti</span><b id="tx-netto">—</b></div>
-      </div>
-      <div class="tasse-tab"><table>
-        <thead><tr><th>Anno</th><th>Guadagno<span class="eu-m"> (€)</span></th><th>Tasse 26%<span class="solo-largo"> messe da parte il 1° gennaio</span></th><th>Saldo<span class="solo-largo"> dopo le tasse</span></th></tr></thead>
-        <tbody id="tx-anni"></tbody>
-      </table></div>
-      <p class="tasse-nota">Partenza da 1.000 € a gennaio 2020, stessi trade e stesse regole del bot. Il guadagno è più basso dei risultati senza tasse perché, dopo ogni prelievo, il bot apre posizioni più piccole. <span id="tx-ultime"></span> Si aggiorna ogni giorno con i trade nuovi. Imposta del 26% sui redditi diversi (CFD con broker estero), perdite recuperabili nei 4 anni dopo; non è una consulenza fiscale.</p>
     </section>
 
     <section class="finale">
@@ -2511,7 +2578,7 @@ dash.calc('totale', {
       trade: t.length,
       tp: t.filter((r) => r.R > 0).length,
       sl: t.filter((r) => r.R < 0).length,
-      R: Math.round(t.reduce((s, r) => s + r.R, 0) * 10) / 10,
+      R: Math.round(t.reduce((s, r) => s + r.R, 0) * 100) / 100,   // 02/11/2026: 2 decimali, come gli R dei trade
       saldo_finale: Math.round(uscite[uscite.length - 1].saldo),
       calo_max: Math.round(calo * 1000) / 1000,
       max_sl_fila: max,
@@ -2539,8 +2606,8 @@ dash.calc('anni', {
       return {
         anno: a, trade: k.length, tp, sl: k.length - tp,
         pct_tp: Math.round(tp / k.length * 1000) / 1000,
-        R: Math.round(k.reduce((s, r) => s + r.R, 0) * 10) / 10,
-        euro: Math.round(k.reduce((s, r) => s + r.euro, 0) * 100) / 100,
+        R: Math.round(k.reduce((s, r) => s + r.R, 0) * 100) / 100,   // 02/11/2026: 2 decimali (con 1 la tabella mostrava +39,00R invece di +39,05R)
+        euro: Math.round((fine - inizio) * 100) / 100,   // 02/11/2026: saldo fine − saldo inizio (la somma dei trade arrotondati sbagliava di qualche centesimo)
         saldo_inizio: Math.round(inizio * 100) / 100,
         saldo_fine: Math.round(fine * 100) / 100,
         rendimento: Math.round((fine / inizio - 1) * 1000) / 1000,
@@ -2569,7 +2636,7 @@ dash.calc('mesi', {
       return {
         chiave: c, anno: a, mese: m, trade: k.length, tp, sl: k.length - tp,
         R: Math.round(k.reduce((s, r) => s + r.R, 0) * 100) / 100,
-        euro: Math.round(k.reduce((s, r) => s + r.euro, 0) * 100) / 100,
+        euro: Math.round((saldoPrima(dopo) - saldoPrima(c + '-01')) * 100) / 100,   // 02/11/2026: come il saldo
         saldo_fine: Math.round(saldoPrima(dopo) * 100) / 100,
         rendimento: saldoPrima(c + '-01') > 0 ? Math.round((saldoPrima(dopo) / saldoPrima(c + '-01') - 1) * 1e6) / 1e6 : 0,   // 02/11/2026: 6 decimali (con 4 la % mostrata poteva arrotondarsi due volte)
       };
@@ -2592,7 +2659,7 @@ dash.calc('strategie', {
     return [...out.values()].map((o) => ({
       anno: o.anno, strategia: o.strategia, trade: o.trade, tp: o.tp,
       pct_tp: Math.round(o.tp / o.trade * 1000) / 1000,
-      R: Math.round(o.R * 10) / 10, euro: Math.round(o.euro * 100) / 100,
+      R: Math.round(o.R * 1e4) / 1e4, euro: Math.round(o.euro * 100) / 100,   // 02/11/2026: niente arrotondamento a 1 decimale qui (il Complessivo somma gli anni)
     }));
   },
 });
@@ -2613,7 +2680,7 @@ dash.calc('strategie', {
   }
   const ORDINE = { indexOf: (n) => ((window.RISERVATO || {}).ordine || []).indexOf(n) };   // nomi delle strategie solo nei dati cifrati (riservato.enc)
   const nf = (d) => new Intl.NumberFormat('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: 'always' });
-  const num = (v, d = 0) => nf(d).format(v);
+  const num = (v, d = 0) => { const s = nf(d).format(v); return s.charAt(0) === '-' ? (/[1-9]/.test(s) ? '−' + s.slice(1) : s.slice(1)) : s; };   // 02/11/2026: segno meno tipografico (−), niente "-0"
   const eur = (v) => num(v, Math.abs(v) < 10000 ? 2 : 0) + ' €';
   const eurS = (v) => (v > 0 ? '+' : '') + eur(v);
   const pct = (v) => { const s = num(Math.abs(v) * 100, 1); return (v < 0 && /[1-9]/.test(s) ? '−' : '') + s + '%'; };   // 02/11/2026: segno meno tipografico come nel resto del sito
@@ -3037,7 +3104,7 @@ dash.calc('strategie', {
         if (!m.has(r.strategia)) m.set(r.strategia, { anno: 'tutti', strategia: r.strategia, trade: 0, tp: 0, R: 0, euro: 0 });
         const o = m.get(r.strategia); o.trade += r.trade; o.tp += r.tp; o.R += r.R; o.euro += r.euro;
       }
-      sr = [...m.values()].map((o) => ({ ...o, pct_tp: o.tp / o.trade, R: Math.round(o.R * 10) / 10 }));
+      sr = [...m.values()].map((o) => ({ ...o, pct_tp: o.tp / o.trade, R: Math.round(o.R * 100) / 100 }));
     }
     sr.sort((a, b) => ORDINE.indexOf(a.strategia) - ORDINE.indexOf(b.strategia));
     for (const r of sr) {
@@ -3084,7 +3151,7 @@ dash.calc('strategie', {
       thead.append(htr);
       const tbody = document.createElement('tbody');
       // sul sito pubblico in alto l'ultimo trade chiuso del mese
-      const ord = window.PUB ? (a, b) => (a.chiusura < b.chiusura ? 1 : a.chiusura > b.chiusura ? -1 : b.id - a.id) : (a, b) => a.id - b.id;
+      const ord = window.PUB ? (a, b) => (a.chiusura < b.chiusura ? 1 : a.chiusura > b.chiusura ? -1 : b.id - a.id) : (a, b) => (a.chiusura < b.chiusura ? -1 : a.chiusura > b.chiusura ? 1 : a.id - b.id);   // 02/11/2026: area riservata in ordine di chiusura, così "Saldo dopo" segue riga per riga
       for (const x of tAnno.filter((t) => Number(t.mese) === m).sort(ord)) {
         const tr = document.createElement('tr');
         if (Number(x.id) === Number(dash.params().grafico || 0)) tr.className = 'sel';
@@ -3203,7 +3270,7 @@ dash.calc('strategie', {
   const $$ = (s) => Array.from(document.querySelectorAll(s));
   const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
   const nf = (d) => new Intl.NumberFormat('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: 'always' });
-  const num = (v, d = 0) => (v == null || isNaN(v)) ? '—' : nf(d).format(v);
+  const num = (v, d = 0) => { if (v == null || isNaN(v)) return '—'; const s = nf(d).format(v); return s.charAt(0) === '-' ? (/[1-9]/.test(s) ? '−' + s.slice(1) : s.slice(1)) : s; };   // 02/11/2026: segno meno tipografico (−), niente "-0"
   const eur = (v) => (v == null || isNaN(v)) ? '—' : num(v, Math.abs(v) < 10000 ? 2 : 0) + ' €';
   const eurS = (v) => (v == null || isNaN(v)) ? '—' : (v > 0 ? '+' : '') + eur(v);
   const euroIntero = (v) => num(Math.round(v), 0) + ' €';
@@ -3509,6 +3576,27 @@ dash.calc('strategie', {
       `<td class="neg">${tasse[a] > 0 ? '−' + n0(tasse[a]) + eu : '0' + eu}</td><td><b>${n0(saldoA[a])}${eu}</b></td></tr>`).join('');
     $('#tx-ultime').textContent = `Le tasse del ${anno} si mettono da parte il 1° gennaio ${anno + 1} e sono già tolte dal saldo finale. Aggiornato al ${agg.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Rome' })}.`;
   }
+  // 02/11/2026: "Sopra ogni media" con le medie che il bot calcola ogni giorno dai prezzi del conto XM (pubblico.json → medie);
+  // se non ci sono restano i valori scritti nella pagina (fine ottobre 2026)
+  function mediaMercati() {
+    const M = P && P.medie, v = M && M.valori, box = $('#medie-barre');
+    if (!v || !box || !['btc', 'jp225', 'oro', 'sp500'].every((k) => v[k] != null && isFinite(Number(v[k])))) return;   // solo con tutti e quattro i mercati
+    $$('#medie-barre i[data-k]').forEach((i) => {
+      const x = Number(v[i.dataset.k]);
+      if (v[i.dataset.k] == null || !isFinite(x)) return;
+      i.dataset.v = x.toFixed(2);
+      const b = i.closest('.mb-riga').querySelector('b'); if (b) b.textContent = (Math.round(x) > 0 ? '+' : '') + num(x, 0) + '%';
+    });
+    $$('#medie-barre .mb-riga:not(.mb-bot)').sort((a, b) => Number(b.querySelector('i').dataset.v) - Number(a.querySelector('i').dataset.v)).forEach((r) => box.append(r));
+    const n = $('.medie-nota'), d = String(M.data || '');
+    if (n && /^\d{4}-\d\d-\d\d$/.test(d)) {
+      const oggi = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' });
+      const fresco = (new Date(oggi) - new Date(d)) / 864e5 <= 3;
+      const quando = new Date(d + 'T12:00:00Z').toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Rome' });
+      n.textContent = 'Media annua composta dal 1° gennaio 2020' + (fresco ? ' a oggi' : '') + '. Million Bot: backtest con i guadagni reinvestiti. Gli altri: ' +
+        (fresco ? '' : 'fino al ' + quando + ', ') + 'solo il prezzo, comprato e tenuto, senza dividendi.';
+    }
+  }
   function riempiHero() {
     if (!window.PUB) return;
     riempiTasse();
@@ -3522,7 +3610,7 @@ dash.calc('strategie', {
     const riq = $('.confronto');
     conta($('#h-titolo-num'), media, (v) => '+' + num(v, 0) + '%', 3000, 0, riq);
     // "Sopra ogni media": la barra del bot è la più lunga, le altre in proporzione
-    { const mb = $('#media-bot'); if (mb) { mb.textContent = '+' + num(media, 0) + '%';
+    { const mb = $('#media-bot'); if (mb) { mb.textContent = '+' + num(media, 0) + '%'; mediaMercati();
         $$('#medie-barre i[data-v]').forEach((i) => i.style.setProperty('--w', Math.max(0.012, Number(i.dataset.v) / media).toFixed(4))); } }
     conta($('#h-c-bot'), molt, (v) => '×' + num(v, 0), 3500, 1, riq);
     conta($('#h-saldo'), t.saldo_finale, (v) => euroIntero(v), 4000, 1000);
@@ -4190,7 +4278,7 @@ dash.calc('strategie', {
     voce('Trade chiusi', num(dopo.length) + ' (' + num(tp) + ' vinti)');
     voce('Calo massimo', '−' + num(calo * 100, 0) + '%');
     $('#calc-avviso').hidden = scritto >= MIN_EURO;
-    $('#calc-nota').textContent = `Backtest con le regole del bot da gennaio 2020 a oggi, aggiornata ogni giorno; dal 26 ottobre 2026 con i trade chiusi dal bot sul conto demo. Ultimo trade chiuso il ${giornoIt(ultimo)}. Nel periodo il capitale è sceso al massimo del ${num(calo * 100, 1)}% dal suo punto più alto prima di risalire.`;
+    $('#calc-nota').textContent = `Backtest con le regole del bot da gennaio 2020 a oggi, aggiornato ogni giorno; dal 26 ottobre 2026 con i trade chiusi dal bot sul conto demo. Ultimo trade chiuso il ${giornoIt(ultimo)}. Nel periodo il capitale è sceso al massimo del ${num(calo * 100, 1)}% dal suo punto più alto prima di risalire.`;
     const g = $('#calc-graf');
     if (pts.length > 1 && g.offsetParent) curva(g, pts, { altezza: 280, chiave: calc.chiave + da + cap });
   }
@@ -4875,7 +4963,9 @@ dash.onData(() => {
   // 02/11/2026: voci "E se non ci fosse il limite di lotti?" e "Come potrebbe finire il ..." nel menu a tendina:
   // aprono Risultati e scorrono fino alla sezione (come "Conto demo"); il menu si chiude da solo (app.js)
   function vaiA(id) {
-    var sch = document.querySelector('.scheda[data-pannello="risultati"]'); if (sch) sch.click();
+    // 02/11/2026: si apre la scheda dove sta la sezione (le tasse stanno fuori dalle schede: lì si scorre e basta)
+    var t0 = document.getElementById(id), pan = t0 && t0.closest('[data-p]');
+    var sch = pan ? document.querySelector('.scheda[data-pannello="' + pan.dataset.p + '"]') : null; if (sch) sch.click();
     requestAnimationFrame(function () { requestAnimationFrame(function () {
       var t = document.getElementById(id), sc = document.getElementById('schede'); if (!t) return;
       window.scrollTo({ top: Math.max(0, scrollY + t.getBoundingClientRect().top - ((sc ? sc.offsetHeight + 8 : 0) + 14)), behavior: 'smooth' });
@@ -4883,10 +4973,37 @@ dash.onData(() => {
   }
   document.querySelectorAll('[data-vai-sez]').forEach(function (b) { b.addEventListener('click', function () { vaiA(b.dataset.vaiSez); }); });
   // la voce della stima prende il titolo della sezione, con l'anno giusto
-  function anno() { var t = document.querySelector('.stima-tit'), b = document.querySelector('[data-vai-sez="stima2026"]'); if (t && b && /\d{4}/.test(t.textContent)) b.textContent = t.textContent; }
+  function anno() { var t = document.querySelector('.stima-tit'); if (!t || !/\d{4}/.test(t.textContent)) return;   // 02/11/2026: tutte e due le voci (computer e telefono)
+    document.querySelectorAll('[data-vai-sez="stima2026"]').forEach(function (b) { b.textContent = t.textContent; }); }
   if (typeof dash !== 'undefined') dash.onData(function () { setTimeout(anno, 0); });
   setTimeout(anno, 1500);
 })();
+</script>
+<script>
+(function () {
+  // 02/11/2026: "Approfondimenti" nella barra in alto del computer: si apre sotto il pulsante, si chiude scegliendo una voce,
+  // toccando fuori o con Esc (le voci portano alla sezione come quelle del menu del telefono)
+  var b = document.getElementById('b-piu'), l = document.getElementById('menu-piu'), t = document.querySelector('.testata');
+  if (!b || !l || !t) return;
+  function apri(si) {
+    if (si) { var rb = b.getBoundingClientRect(), rt = t.getBoundingClientRect(); l.style.left = Math.round(rb.left + rb.width / 2 - rt.left) + 'px'; }
+    l.hidden = !si; b.setAttribute('aria-expanded', String(si));
+    if (si) { var r = l.getBoundingClientRect(), d = Math.max(0, r.right - innerWidth + 12) - Math.max(0, 12 - r.left); if (d) l.style.left = (parseFloat(l.style.left) - d) + 'px'; }
+  }
+  b.addEventListener('click', function (e) { e.stopPropagation(); apri(l.hidden); });
+  l.querySelectorAll('button').forEach(function (x) { x.addEventListener('click', function () { apri(false); }); });
+  document.addEventListener('click', function (e) { if (!l.hidden && !l.contains(e.target) && e.target !== b) apri(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !l.hidden) { apri(false); b.focus(); } });
+  addEventListener('resize', function () { if (!l.hidden) apri(false); });
+})();
+</script>
+<script>
+// 02/11/2026: "Un trade, in pratica": la % di trade chiusi in guadagno arriva dai dati del sito (backtest + trade nuovi del bot)
+if (typeof dash !== 'undefined') dash.onData(function () {
+  var T = dash.data('totale'), e = document.querySelector('.ct-tp-pct');
+  if (!e || T.status !== 'ok' || !T.data.length || !T.data[0].trade) return;
+  e.textContent = new Intl.NumberFormat('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(T.data[0].tp / T.data[0].trade * 100) + '%';
+});
 </script>
 </body>
 </html>
