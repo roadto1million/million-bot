@@ -2054,7 +2054,7 @@ body.pub .testata .menu .menu-piu-b[aria-expanded="true"] { color: #f6d680; }
     </section>
     <div class="anni-striscia" id="h-anni-lista" data-robot-umore="felice" data-robot="Tutti gli anni in positivo! <b>Tocca un anno</b> per vederlo da vicino." aria-label="Rendimento di ogni anno: tocca un anno per vederlo"></div>
     <p class="nota-cifre" id="h-nota-num">Backtest da gennaio 2020: le regole del bot sui prezzi passati, con costi e limiti reali del broker. Calo massimo: <span id="h-calo">—</span>. Non garantiti per il futuro.</p>
-    <p class="nota-cifre nota-limite">Le percentuali sono limitate dal numero massimo di lotti che il broker permette di aprire: ecco come sarebbero <button type="button" class="link-sl" data-vai-sez="sl-anni">senza limite</button>.</p>
+    <p class="nota-cifre nota-limite">Le percentuali sono limitate dal numero massimo di lotti che il broker permette di aprire: ecco come sarebbero <button type="button" class="link-sl" data-vai-sez="senzalimiti">senza limite</button>.</p>
 
     <nav class="schede" id="schede" aria-label="Sezioni">
       <button type="button" class="scheda" data-pannello="risultati">Risultati</button>
@@ -2428,7 +2428,7 @@ body.pub .testata .menu .menu-piu-b[aria-expanded="true"] { color: #f6d680; }
       <p class="mg-fonte solo-pub">Backtest dal 2020, con i trade del conto demo dal 26 ottobre 2026.</p>
       <p class="bt-sub solo-pub">Ogni barra è un mese dell'anno scelto: sopra lo zero il mese ha chiuso in guadagno, sotto in perdita. Passa sopra una barra per i dettagli.</p>
       <p class="bt-sub solo-priv">In % del saldo (variazione nel mese, o nell'anno in Complessivo); passa sopra una barra per vedere anche gli R.</p>
-      <div class="barre-sl solo-pub"><button type="button" class="b-sl" data-vai-sez="sl-grafico">E senza il limite di lotti? →</button></div>
+      <div class="barre-sl solo-pub"><button type="button" class="b-sl" data-vai-sez="senzalimiti">E senza il limite di lotti? →</button></div>
       <div class="bt-chart bt-small" id="barre" data-source="mesi"></div>
     </section>
     <section class="bt-card solo-priv" id="per-strategia">
@@ -2474,9 +2474,9 @@ body.pub .testata .menu .menu-piu-b[aria-expanded="true"] { color: #f6d680; }
       <div><span>Dal 2020 senza limite</span><b class="n-senza">+1.576.499%</b></div>
       <div><span>Con il limite (come sul sito)</span><b class="n-con">+536.790%</b></div>
     </div>
-    <svg class="sl-graf" id="sl-grafico" viewBox="0 0 640 380" role="img" aria-label="Dal 2020: +1.576.499% senza limite di lotti, +536.790% con il limite"></svg>
+    <svg class="sl-graf" viewBox="0 0 640 380" role="img" aria-label="Dal 2020: +1.576.499% senza limite di lotti, +536.790% con il limite"></svg>
     <div class="sl-leg"><span><i class="g-senza"></i>senza limite di lotti</span><span><i class="g-con"></i>con il limite di XM</span><span><i class="g-zona"></i>periodo con il limite</span></div>
-    <div class="sl-anni" id="sl-anni"></div>
+    <div class="sl-anni"></div>
     <p class="sl-nota">Simulazione sul backtest: nessun broker permette posizioni senza limiti, e con conti così grandi conterebbero anche liquidità e slittamento dei prezzi. <span class="sl-fino">Il 2026 è aggiornato al 22 ottobre, giorno dell’ultimo trade chiuso.</span> I risultati passati non garantiscono quelli futuri.</p>
   </section>
 
