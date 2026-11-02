@@ -1856,18 +1856,18 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
 .menu-tel button.menu-sub::before { content: ""; position: absolute; left: 21px; top: 9px; width: 10px; height: 9px; border-left: 2px solid rgba(246, 214, 128, .6); border-bottom: 2px solid rgba(246, 214, 128, .6); border-bottom-left-radius: 5px; }
 </style>
 <style>
-/* 02/11/2026: "Le 6 strategie di Million Bot" (Come funziona): solo i nomi, le regole restano riservate */
+/* 02/11/2026: "Le 6 strategie di Million Bot" (Perché è diverso, dopo i pregi): solo i nomi, le regole restano riservate */
 .strategie-nomi { margin: 16px 0; background: var(--pannello); border: 1px solid var(--linea); border-radius: var(--raggio); padding: 22px 24px; box-shadow: var(--ombra); }
 .strategie-nomi h3 { font-family: var(--serif); font-weight: 600; font-size: 21px; margin: 0 0 6px; color: var(--inchiostro); }
 .sn-sotto { color: var(--grigio); font-size: 15px; margin: 0 0 14px; }
 .sn-griglia { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.sn { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; align-content: start; padding: 12px 14px; border-radius: 14px; background: var(--pannello-2, #f2f7f3); border: 1px solid var(--linea); }
+.sn { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 12px; align-items: center; align-content: start; padding: 12px 14px; border-radius: 14px; background: var(--pannello-2, #f2f7f3); border: 1px solid var(--linea); }
 .sn-ico { grid-row: span 2; font-size: 30px; line-height: 1; }
-.sn b { font-family: var(--serif); font-weight: 600; font-size: 19px; line-height: 1.15; color: var(--inchiostro); }
+.sn b { font-family: var(--serif); font-weight: 600; font-size: 19px; line-height: 1.15; color: var(--inchiostro); overflow-wrap: anywhere; }
 .sn small { font-size: 11px; font-weight: 700; color: #0d6a3e; text-transform: uppercase; letter-spacing: .06em; }
 .sn p { grid-column: 1 / -1; margin: 8px 0 0; font-size: 14px; line-height: 1.4; color: var(--grigio); }
 @media (max-width: 900px) { .sn-griglia { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 480px) { .strategie-nomi { padding: 18px 16px; } .sn { padding: 10px 11px; column-gap: 9px; } .sn-ico { font-size: 24px; } .sn b { font-size: 16.5px; } .sn small { font-size: 10px; } .sn p { font-size: 13px; } }
+@media (max-width: 560px) { .strategie-nomi { padding: 18px 16px; } .sn-griglia { grid-template-columns: minmax(0, 1fr); gap: 8px; } .sn { padding: 11px 13px; column-gap: 11px; } .sn-ico { font-size: 27px; } .sn b { font-size: 18px; } .sn small { font-size: 10.5px; } .sn p { font-size: 14px; margin-top: 6px; } }
 </style>
 <style>
 /* 02/11/2026: sul computer il grafico in alto senza spazio sotto la linea di base (l'altezza la decide mbAltezzaHero) */
@@ -2013,17 +2013,29 @@ document.addEventListener('DOMContentLoaded', function () { var b = document.get
         <div class="pregio"><b>24/7</b><h3>Sempre al lavoro</h3><p>Controlla il mercato <strong>senza sosta</strong>, giorno e notte.</p></div>
         <div class="pregio"><b>Sul conto</b><h3>Verificato sul conto</h3><p>Ogni trade reale è <strong>confrontato con il backtest</strong>.</p></div>
       </div>
+      <div class="strategie-nomi" data-robot-umore="fiero" data-robot="Sei strategie, sei caratteri diversi: <b>lavoriamo in squadra</b>.">
+        <h3>Le 6 strategie di Million&nbsp;Bot</h3>
+        <p class="sn-sotto">Ognuna aspetta un momento diverso del mercato. Le regole restano segrete: qui ti presento la squadra.</p>
+        <div class="sn-griglia">
+          <div class="sn"><span class="sn-ico" aria-hidden="true">🐏</span><b>Ariete</b><small>Bitcoin</small><p>Aspetta il momento giusto, poi sfonda.</p></div>
+          <div class="sn"><span class="sn-ico" aria-hidden="true">🪃</span><b>Boomerang</b><small>Bitcoin</small><p>Quello che va, prima o poi torna.</p></div>
+          <div class="sn"><span class="sn-ico" aria-hidden="true">🔥</span><b>Fenice</b><small>Bitcoin</small><p>Rinasce proprio quando gli altri si arrendono.</p></div>
+          <div class="sn"><span class="sn-ico" aria-hidden="true">🌅</span><b>Alba</b><small>Bitcoin</small><p>Si sveglia presto e ascolta come parte la giornata.</p></div>
+          <div class="sn"><span class="sn-ico" aria-hidden="true">🪞</span><b>Specchio</b><small>Bitcoin</small><p>Guarda dove il prezzo torna a specchiarsi.</p></div>
+          <div class="sn"><span class="sn-ico" aria-hidden="true">🗾</span><b>Sol Levante</b><small>Giappone 225</small><p>Si sveglia con l'apertura di Tokyo.</p></div>
+        </div>
+      </div>
       <div class="medie" id="medie" data-robot-umore="fiero" data-robot="Bitcoin, oro, Borsa americana e giapponese: <b>li ho superati tutti</b>, anno dopo anno.">
         <h3>Sopra ogni media</h3>
         <p class="medie-sotto">Quanto è cresciuto <strong>in media ogni anno</strong>, dal 2020 a oggi, chi ha comprato e tenuto i mercati più famosi. E quanto è cresciuto Million Bot.</p>
         <div class="medie-barre" id="medie-barre">
           <div class="mb-riga mb-bot"><span class="mb-nome">Million Bot</span><span class="mb-barra"><i style="--w:1"></i></span><b id="media-bot">—</b></div>
-          <div class="mb-riga"><span class="mb-nome">Bitcoin</span><span class="mb-barra"><i data-v="42.9"></i></span><b>+43%</b></div>
-          <div class="mb-riga"><span class="mb-nome">Giappone 225</span><span class="mb-barra"><i data-v="15.5"></i></span><b>+16%</b></div>
+          <div class="mb-riga"><span class="mb-nome">Bitcoin</span><span class="mb-barra"><i data-v="41.7"></i></span><b>+42%</b></div>
+          <div class="mb-riga"><span class="mb-nome">Giappone 225</span><span class="mb-barra"><i data-v="15.49"></i></span><b>+15%</b></div>
           <div class="mb-riga"><span class="mb-nome">Oro</span><span class="mb-barra"><i data-v="15.4"></i></span><b>+15%</b></div>
-          <div class="mb-riga"><span class="mb-nome">S&amp;P 500 (Borsa USA)</span><span class="mb-barra"><i data-v="13.6"></i></span><b>+14%</b></div>
+          <div class="mb-riga"><span class="mb-nome">S&amp;P 500 (Borsa USA)</span><span class="mb-barra"><i data-v="13.3"></i></span><b>+13%</b></div>
         </div>
-        <p class="medie-nota">Media annua composta dal 1° gennaio 2020 a fine ottobre 2026. Million Bot: backtest con i guadagni reinvestiti. Gli altri: solo il prezzo, comprato e tenuto, senza dividendi.</p>
+        <p class="medie-nota">Media annua composta dal 1° gennaio 2020. Million Bot: backtest fino a oggi, con i guadagni reinvestiti. Gli altri: fino a fine ottobre 2026, solo il prezzo, comprato e tenuto, senza dividendi.</p>
       </div>
       <div class="crolli" id="crolli" data-robot-umore="determinato" data-robot="Perdere fa parte del gioco: <b>conta come ti rialzi</b>.">
         <h3>Sopra ogni crollo</h3>
@@ -2104,19 +2116,7 @@ document.addEventListener('DOMContentLoaded', function () { var b = document.get
         <div class="passo"><h3>Protegge il trade</h3><p><strong>Stop loss</strong> e take profit subito.</p></div>
         <div class="passo"><h3>Si controlla da solo</h3><p>Se qualcosa non va, <strong>avvisa subito</strong>.</p></div>
       </div>
-      <div class="strategie-nomi" data-robot-umore="fiero" data-robot="Sei strategie, sei caratteri diversi: <b>lavoriamo in squadra</b>.">
-      <h3>Le 6 strategie di Million Bot</h3>
-      <p class="sn-sotto">Ognuna aspetta un momento diverso del mercato. Le regole restano segrete: qui ti presento la squadra.</p>
-      <div class="sn-griglia">
-        <div class="sn"><span class="sn-ico" aria-hidden="true">🐏</span><b>Ariete</b><small>Bitcoin</small><p>Aspetta il momento giusto, poi sfonda.</p></div>
-        <div class="sn"><span class="sn-ico" aria-hidden="true">🪃</span><b>Boomerang</b><small>Bitcoin</small><p>Quello che va, prima o poi torna.</p></div>
-        <div class="sn"><span class="sn-ico" aria-hidden="true">🔥</span><b>Fenice</b><small>Bitcoin</small><p>Rinasce proprio quando gli altri si arrendono.</p></div>
-        <div class="sn"><span class="sn-ico" aria-hidden="true">🌅</span><b>Alba</b><small>Bitcoin</small><p>Si sveglia presto e ascolta come parte la giornata.</p></div>
-        <div class="sn"><span class="sn-ico" aria-hidden="true">🪞</span><b>Specchio</b><small>Bitcoin</small><p>Guarda dove il prezzo torna a specchiarsi.</p></div>
-        <div class="sn"><span class="sn-ico" aria-hidden="true">🗾</span><b>Sol Levante</b><small>Giappone 225</small><p>Si sveglia con l'apertura di Tokyo.</p></div>
-      </div>
-    </div>
-    <div class="regole">
+      <div class="regole">
         <div class="lista"><h3>Sempre</h3><ul>
           <li><span><strong>Stop loss</strong> su ogni operazione</span></li>
           <li><span><strong>Rischio fisso</strong>, deciso prima</span></li>
@@ -2571,7 +2571,7 @@ dash.calc('mesi', {
         R: Math.round(k.reduce((s, r) => s + r.R, 0) * 100) / 100,
         euro: Math.round(k.reduce((s, r) => s + r.euro, 0) * 100) / 100,
         saldo_fine: Math.round(saldoPrima(dopo) * 100) / 100,
-        rendimento: saldoPrima(c + '-01') > 0 ? Math.round((saldoPrima(dopo) / saldoPrima(c + '-01') - 1) * 10000) / 10000 : 0,
+        rendimento: saldoPrima(c + '-01') > 0 ? Math.round((saldoPrima(dopo) / saldoPrima(c + '-01') - 1) * 1e6) / 1e6 : 0,   // 02/11/2026: 6 decimali (con 4 la % mostrata poteva arrotondarsi due volte)
       };
     });
   },
@@ -2616,7 +2616,7 @@ dash.calc('strategie', {
   const num = (v, d = 0) => nf(d).format(v);
   const eur = (v) => num(v, Math.abs(v) < 10000 ? 2 : 0) + ' €';
   const eurS = (v) => (v > 0 ? '+' : '') + eur(v);
-  const pct = (v) => num(v * 100, 1) + '%';
+  const pct = (v) => { const s = num(Math.abs(v) * 100, 1); return (v < 0 && /[1-9]/.test(s) ? '−' : '') + s + '%'; };   // 02/11/2026: segno meno tipografico come nel resto del sito
   const pctS = (v) => (v > 0 ? '+' : '') + pct(v);
   const rS = (v) => (v > 0 ? '+' : '') + num(v, 2) + 'R';
   const corto = (v) => (v >= 1e6 ? num(v / 1e6, v >= 1e7 ? 0 : 1) + ' mln €' : v >= 1e3 ? num(v / 1e3, v >= 1e4 ? 0 : 1) + 'k €' : num(v) + ' €');
@@ -2987,9 +2987,10 @@ dash.calc('strategie', {
     };
     const ra = tutti ? tot : anni.find((r) => Number(r.anno) === anno);
     // mesi chiusi in guadagno (variazione del saldo nel mese > 0), dell'anno scelto o di tutto il periodo
-    const mm = M.status === 'ok' ? M.data.filter((r) => tutti || Number(r.anno) === anno) : [];
+    const meseOra = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' }).slice(0, 7);   // 02/11/2026: il mese in corso non è ancora chiuso
+    const mm = M.status === 'ok' ? M.data.filter((r) => (tutti || Number(r.anno) === anno) && r.chiave !== meseOra) : [];
     const mesiPos = mm.length ? mm.filter((r) => Number(r.rendimento) > 0).length + ' su ' + mm.length : null;
-    root.querySelectorAll('.bt-tile-saldo').forEach((e) => { e.textContent = tutti ? 'Saldo oggi' : 'Saldo a fine anno'; });
+    root.querySelectorAll('.bt-tile-saldo').forEach((e) => { e.textContent = (tutti || anno === Number((anni[anni.length - 1] || {}).anno)) ? 'Saldo oggi' : 'Saldo a fine anno'; });   // 02/11/2026: l'anno in corso non è finito
     root.querySelectorAll('.bt-tile-rend').forEach((e) => { e.textContent = tutti ? 'sui 1.000 € di partenza' : 'sul saldo di inizio anno'; });
     root.querySelectorAll('.bt-tile-mesi').forEach((e) => { e.textContent = tutti ? 'mesi chiusi in guadagno dal 2020' : 'mesi chiusi in guadagno'; });
     root.querySelectorAll('.bt-tiles [data-k]').forEach((el) => {
