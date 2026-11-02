@@ -1788,8 +1788,7 @@ body.buio:not(.pub) .come mark { color: #f2f5ff; background: linear-gradient(tra
 <style>
 /* 02/11/2026: sezione "Come potrebbe finire l'anno" (stima dalla forma media degli anni passati) */
 .stima2026 { margin: 22px 0; padding: 22px 22px 18px; background: var(--pannello, #fff); border: 1px solid var(--linea, #dfe9e2); border-radius: var(--raggio, 22px); box-shadow: var(--ombra, 0 10px 30px rgba(15,45,34,.08)); }
-.stima-etic { display: inline-block; padding: 5px 12px; border-radius: 999px; background: rgba(227,178,60,.14); border: 1px solid rgba(227,178,60,.5); color: #8a6410; font: 700 11.5px/1 var(--sans, Inter, sans-serif); letter-spacing: .06em; text-transform: uppercase; }
-.stima-tit { font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 24px; margin: 10px 0 12px; color: var(--inchiostro, #10241a); }
+.stima-tit { font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 24px; margin: 2px 0 12px; color: var(--inchiostro, #10241a); }
 .stima-num { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-bottom: 6px; }
 .stima-num span { display: block; font-size: 12.5px; color: var(--grigio, #44564b); }
 .stima-num b { font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 26px; }
@@ -2406,7 +2405,6 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
     <p>I risultati passati, e ancora di più quelli di un backtest, non garantiscono risultati futuri. Il trading con leva può far perdere tutto il capitale. Questa pagina non è un consiglio di investimento.</p>
   </details>
   <section class="stima2026" id="stima2026" aria-label="Come potrebbe finire l'anno" data-robot-umore="curioso" data-robot="Se il resto dell'anno va come la media, <b>ecco dove arrivo</b>. Ma è solo una stima!">
-    <span class="stima-etic">Stima, non previsione</span>
     <h2 class="stima-tit">Come potrebbe finire l'anno</h2>
     <div class="stima-corpo">
       <div class="stima-num">
@@ -3410,7 +3408,7 @@ dash.calc('strategie', {
     });
   }), { threshold: 0 }) : null;
   // numeri che, appena finiscono di salire, si ingrandiscono per un attimo
-  const SALTA = '#h-saldo, #h-anni-lista b, #tx-netto, #lav-sei, #lav-idee, #lav-candele, #lav-comb, #lav-trade, .n-senza, .n-con, .v-reale, .v-proj';
+  const SALTA = '#h-saldo, #h-anni-lista b, #tx-netto, #lav-sei, #lav-idee, #lav-candele, #lav-comb, #lav-trade, .n-senza, .v-reale, .v-proj';
   function avviaConta(e) {
     const c = e._conta; if (!c || c.stato !== 'attesa') return;
     c.stato = 'corre';
