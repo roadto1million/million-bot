@@ -1818,7 +1818,7 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
 /* 02/11/2026: sezione "E se non ci fosse il limite di lotti?" (stesso conto senza il massimo di 80 lotti di XM) */
 .senzalimiti { margin: 22px 0; padding: 22px 22px 18px; background: var(--pannello, #fff); border: 1px solid var(--linea, #dfe9e2); border-radius: var(--raggio, 22px); box-shadow: var(--ombra, 0 10px 30px rgba(15,45,34,.08)); }
 .sl-etic { display: inline-block; padding: 5px 12px; border-radius: 999px; background: rgba(15,122,71,.1); border: 1px solid rgba(15,122,71,.4); color: #0f5f39; font: 700 11.5px/1 var(--sans, Inter, sans-serif); letter-spacing: .06em; text-transform: uppercase; }
-.sl-tit { font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 24px; margin: 10px 0 8px; color: var(--inchiostro, #10241a); }
+.sl-tit { font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 24px; margin: 0 0 8px; color: var(--inchiostro, #10241a); }
 .sl-lead { font-size: 14.5px; line-height: 1.55; color: var(--grigio, #44564b); margin: 0 0 12px; }
 .sl-num { display: flex; flex-wrap: wrap; gap: 8px 30px; margin-bottom: 6px; }
 .sl-num span { display: block; font-size: 12.5px; color: var(--grigio, #44564b); }
@@ -2220,7 +2220,7 @@ body.pub .testata .menu .menu-piu-b[aria-expanded="true"] { color: #f6d680; }
           <div>
             <p class="chi-ciao">Piacere, sono</p>
             <h2 class="chi-nome"><em>Samuel</em></h2>
-            <p class="chi-ruolo">Faccio trading da oltre 7 anni. Million Bot è tutto quello che ho imparato, <strong>soprattutto dai miei errori</strong>.</p>
+            <p class="chi-ruolo">Faccio trading da oltre <span class="anni-trading">7</span> anni. Million Bot è tutto quello che ho imparato, <strong>soprattutto dai miei errori</strong>.</p>
           </div>
         </div>
 
@@ -2257,7 +2257,7 @@ body.pub .testata .menu .menu-piu-b[aria-expanded="true"] { color: #f6d680; }
               <p>Con l'<strong>intelligenza artificiale</strong> ho trasformato le mie regole in un programma e le ho provate una per una sui prezzi reali dal 2020 a oggi. Sono rimaste solo quelle che hanno retto anno dopo anno.</p>
               <div class="st-numeri">
                 <span><b>100+</b>idee provate</span>
-                <span><b>398.841</b>candele studiate</span>
+                <span><b class="n-candele">398.841</b>candele studiate</span>
                 <span><b>6</b>strategie rimaste</span>
               </div>
             </div>
@@ -2301,7 +2301,7 @@ body.pub .testata .menu .menu-piu-b[aria-expanded="true"] { color: #f6d680; }
 
     <footer class="piede">
       <div class="rischio">I CFD sono strumenti complessi con un alto rischio di perdere denaro a causa della leva: tra il 74% e l'89% dei conti al dettaglio perde denaro con i CFD. Risultati in gran parte da backtest; i risultati passati non garantiscono quelli futuri. Non è una consulenza finanziaria.</div>
-      <div class="righe"><span>© 2026 Samuel · Million Bot · Road to 1 Million</span><span><a href="https://t.me/Samu7740" target="_blank" rel="noopener">Telegram</a> · <a href="https://www.tiktok.com/@roadto1million_btc" target="_blank" rel="noopener">TikTok</a> · <a href="https://www.instagram.com/roadto1million_btc/" target="_blank" rel="noopener">Instagram</a> · <button class="piede-ris" id="b-entra" type="button"><svg aria-hidden="true"><use href="#i-lucchetto"/></svg>Area riservata</button></span></div>
+      <div class="righe"><span>© <span class="anno-oggi">2026</span> Samuel · Million Bot · Road to 1 Million</span><span><a href="https://t.me/Samu7740" target="_blank" rel="noopener">Telegram</a> · <a href="https://www.tiktok.com/@roadto1million_btc" target="_blank" rel="noopener">TikTok</a> · <a href="https://www.instagram.com/roadto1million_btc/" target="_blank" rel="noopener">Instagram</a> · <button class="piede-ris" id="b-entra" type="button"><svg aria-hidden="true"><use href="#i-lucchetto"/></svg>Area riservata</button></span></div>
     </footer>
   </main>
 </div>
@@ -2459,7 +2459,6 @@ body.pub .testata .menu .menu-piu-b[aria-expanded="true"] { color: #f6d680; }
   </header>
   <section class="bt-mesi" id="mesi"></section>
   <section class="senzalimiti" id="senzalimiti" aria-label="Il bot senza limiti di lotti" data-robot-umore="fiero" data-robot="Il calo del 2025 e del 2026 non è colpa mia: <b>è il limite di lotti del broker</b>.">
-    <span class="sl-etic">Simulazione teorica</span>
     <h2 class="sl-tit">E se non ci fosse il limite di lotti?</h2>
     <p class="sl-lead">XM (il broker, cioè la piattaforma dove il bot apre i trade) permette al massimo 80 lotti per ordine su Bitcoin: <span class="sl-da">dal 2025</span> il conto simulato li raggiunge e da lì rischia meno di quanto prevedono le regole. Qui lo stesso conto senza quel limite, solo in percentuale: senza limiti il risultato non dipende da quanto si mette sul conto.</p>
     <div class="sl-num">
@@ -3565,6 +3564,11 @@ dash.calc('strategie', {
     while (anno < oggiA) chiudiAnno();
     tasse[anno] = imposta(anno); saldoA[anno] = eq - tasse[anno];
     const netto = saldoA[anno], tot = Object.values(tasse).reduce((x, y) => x + y, 0);
+    // 02/11/2026: la frase del robottino segue il saldo netto (prima "più di 2 milioni" scritto a mano)
+    { const s = $('#tasse'); if (s && netto > 1000) { const mln = Math.floor(netto / 1e5) / 10;
+        s.dataset.robot = 'Anche togliendo le tasse, <b>1.000 € diventano ' + (netto >= 1e7 ? 'più di ' + num(Math.floor(netto / 1e6), 0) + ' milioni'
+          : netto >= 1e6 ? 'più di ' + num(mln, mln % 1 ? 1 : 0) + (mln >= 2 ? ' milioni' : ' milione') : 'più di ' + num(Math.floor(netto / 1e3), 0) + ' mila €') +
+          '</b>. Le metto da parte ogni 1° gennaio, così sono sempre pronte.'; } }
     const senza = Number(righe[righe.length - 1].saldo);
     conta($('#tx-senza'), senza, (v) => euroIntero(v), 3000, 1000, $('.tasse-tot'));
     conta($('#tx-tasse'), tot, (v) => (Math.round(v) > 0 ? '−' : '') + euroIntero(v), 2500, 0, $('.tasse-tot'));
@@ -3597,6 +3601,15 @@ dash.calc('strategie', {
         (fresco ? '' : 'fino al ' + quando + ', ') + 'solo il prezzo, comprato e tenuto, senza dividendi.';
     }
   }
+  // 02/11/2026: candele studiate dal 2020: le conta il bot (pubblico.json → candele); se non ci sono resta il numero scritto nella pagina
+  function candeleBot() {
+    const n = P && Number(P.candele);
+    if (!(n >= 398841)) return;
+    const it = (v) => new Intl.NumberFormat('it-IT', { maximumFractionDigits: 0, useGrouping: 'always' }).format(Math.round(v));
+    const e = $('#lav-candele'), g = $('.lavoro');
+    if (e && g) conta(e, n, it, 2600, 0, g);
+    $$('.n-candele').forEach((b) => { b.textContent = it(n); });
+  }
   function riempiHero() {
     if (!window.PUB) return;
     riempiTasse();
@@ -3610,7 +3623,7 @@ dash.calc('strategie', {
     const riq = $('.confronto');
     conta($('#h-titolo-num'), media, (v) => '+' + num(v, 0) + '%', 3000, 0, riq);
     // "Sopra ogni media": la barra del bot è la più lunga, le altre in proporzione
-    { const mb = $('#media-bot'); if (mb) { mb.textContent = '+' + num(media, 0) + '%'; mediaMercati();
+    { const mb = $('#media-bot'); if (mb) { mb.textContent = '+' + num(media, 0) + '%'; mediaMercati(); candeleBot();
         $$('#medie-barre i[data-v]').forEach((i) => i.style.setProperty('--w', Math.max(0.012, Number(i.dataset.v) / media).toFixed(4))); } }
     conta($('#h-c-bot'), molt, (v) => '×' + num(v, 0), 3500, 1, riq);
     conta($('#h-saldo'), t.saldo_finale, (v) => euroIntero(v), 4000, 1000);
@@ -4903,14 +4916,18 @@ dash.onData(() => {
 
   // riquadri degli anni (come all'inizio): in arancione gli anni in cui il limite ha tolto qualcosa
   function tessere() {
-    var html = '', prima = [1, 1];
+    var html = '', prima = [1, 1], anniLim = [];
     S.anni.forEach(function (y) {
       var f = S.fine[y], c = (f[0] / prima[0] - 1) * 100, u = (f[1] / prima[1] - 1) * 100, diverso = Math.abs(u - c) > 0.5;
+      if (diverso) anniLim.push(y);
       html += '<div class="sl-anno' + (diverso ? ' diverso' : '') + '"><span>' + y + '</span><b>' + pct(u) + '</b><small>' +
         (diverso ? 'con limite ' + pct(c) : 'uguale') + '</small></div>';
       prima = f;
     });
     sez.querySelector('.sl-anni').innerHTML = html;
+    // 02/11/2026: la frase del robottino nomina da sola gli anni in cui il limite ha tolto qualcosa (prima "del 2025 e del 2026" scritti a mano)
+    if (anniLim.length) sez.dataset.robot = 'Il calo ' + anniLim.map(function (y) { return 'del ' + y; }).join(', ').replace(/, (del \d+)$/, ' e $1') +
+      ' non è colpa mia: <b>è il limite di lotti del broker</b>.';
   }
 
   // i due numeri principali salgono quando arrivano sullo schermo, come gli altri numeri del sito (window.mbConta dell'app)
@@ -5004,6 +5021,15 @@ if (typeof dash !== 'undefined') dash.onData(function () {
   if (!e || T.status !== 'ok' || !T.data.length || !T.data[0].trade) return;
   e.textContent = new Intl.NumberFormat('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(T.data[0].tp / T.data[0].trade * 100) + '%';
 });
+</script>
+<script>
+// 02/11/2026: anno del piè di pagina e anni di trading di "Chi sono" si aggiornano da soli (dal 2019: "oltre 7 anni" nel 2026)
+(function () {
+  var a = Number(new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' }).slice(0, 4));
+  if (!(a >= 2026)) return;
+  document.querySelectorAll('.anno-oggi').forEach(function (e) { e.textContent = a; });
+  document.querySelectorAll('.anni-trading').forEach(function (e) { e.textContent = Math.max(7, a - 2019); });
+})();
 </script>
 </body>
 </html>
