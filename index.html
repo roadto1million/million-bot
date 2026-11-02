@@ -1836,24 +1836,15 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
 .sl-leg i { display: inline-block; width: 22px; height: 0; margin-right: 6px; vertical-align: middle; border-top: 4px solid; }
 .g-senza { border-color: #e3b23c !important; } .g-con { border-color: #0f7a47 !important; border-top-width: 3px !important; }
 .g-zona { height: 10px !important; border: 0 !important; background: rgba(227,178,60,.22); border-radius: 3px; }
-.sl-anni { display: grid; grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); gap: 8px; margin-bottom: 12px; }
-/* anni come quelli in alto: colore in base al risultato, oro/argento/bronzo con medaglia, luce che passa (come button.anno-b) */
-.sl-anni .anno-b { position: relative; overflow: hidden; --t: .3; border: 1px solid rgba(23, 163, 98, .25); border-radius: 12px; padding: 10px 12px;
-  background: color-mix(in srgb, #1fb06b calc(var(--t) * 42%), #f1faf4); border-color: color-mix(in srgb, #0f7a47 calc(var(--t) * 70%), rgba(23, 163, 98, .25));
-  animation: luce-anno calc(var(--n, 7) * .9s) ease-in-out infinite; animation-delay: calc(var(--i, 0) * .9s); }
-.sl-anni .anno-b span { display: block; font-size: 13px; color: #2f5a43; }
-.sl-anni .anno-b b { display: inline-block; transform-origin: left center; font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 22px; line-height: 1.15; color: #0b4f2f; margin: 2px 0; }
-.sl-anni .anno-b small { display: block; font-size: 12px; color: #2f5a43; }
-.sl-anni .anno-b.diverso small { color: #8a5f0e; font-weight: 600; }
-.sl-anni .anno-b.top { background: linear-gradient(135deg, #fdf0c4, #f3cf72 60%, #e9b94a); border-color: #d1a13a; animation-name: luce-oro; }
-.sl-anni .anno-b.top span, .sl-anni .anno-b.top small { color: #6a4c0c; }
-.sl-anni .anno-b.argento { background: linear-gradient(135deg, #f6f9fb, #d6dee5 55%, #b3bfca); border-color: #94a3b0; animation-name: luce-argento; }
-.sl-anni .anno-b.argento span, .sl-anni .anno-b.argento small { color: #44515b; }
-.sl-anni .anno-b.bronzo { background: linear-gradient(135deg, #fef8f2, #f7e2cc 60%, #edcba8); border-color: #dcb08c; animation-name: luce-bronzo; }
-.sl-anni .anno-b.bronzo span, .sl-anni .anno-b.bronzo small { color: #6b3f1b; }
-.sl-anni .anno-b.negativo { background: #fdecea; border-color: rgba(200, 68, 58, .35); }
-@media (max-width: 600px) { .sl-anni .anno-b .medaglia { top: 10px; right: 7px; width: 21px; height: 21px; font-size: 11px; } .sl-anni .anno-b b { font-size: 19px; } }
-@media (prefers-reduced-motion: reduce) { .sl-anni .anno-b { animation: none; } }
+.sl-anni { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 8px; margin-bottom: 12px; }
+.sl-anno { border: 1px solid var(--linea, #dfe9e2); border-radius: 14px; padding: 10px; background: var(--pannello-2, #f6faf7); }
+.sl-anno span { display: block; font-size: 12px; color: #7d8f84; }
+.sl-anno b { display: block; font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 18px; color: #0f7a47; margin: 2px 0; }
+.sl-anno small { font-size: 11.5px; color: #7d8f84; }
+.sl-anno.diverso { border-color: rgba(227,178,60,.6); background: rgba(227,178,60,.08); }
+.sl-anno.diverso b { color: #c48a12; }
+/* numeri principali delle sezioni nuove: salgono come gli altri del sito e alla fine fanno il saltino */
+.n-senza, .n-con, .v-reale, .v-proj { display: inline-block; transform-origin: left center; }
 .sl-nota { font-size: 12.5px; color: #7d8f84; margin: 0; }
 .barre-limite { cursor: pointer; }
 .barre-limite text { fill: #a7801d; font-weight: 700; font-family: var(--sans, Inter, sans-serif); }
@@ -3393,7 +3384,7 @@ dash.calc('strategie', {
     });
   }), { threshold: 0 }) : null;
   // numeri che, appena finiscono di salire, si ingrandiscono per un attimo
-  const SALTA = '#h-saldo, #h-anni-lista b, #tx-netto, #lav-sei, #lav-idee, #lav-candele, #lav-comb, #lav-trade, .sl-anni b';
+  const SALTA = '#h-saldo, #h-anni-lista b, #tx-netto, #lav-sei, #lav-idee, #lav-candele, #lav-comb, #lav-trade, .n-senza, .n-con, .v-reale, .v-proj';
   function avviaConta(e) {
     const c = e._conta; if (!c || c.stato !== 'attesa') return;
     c.stato = 'corre';
@@ -4644,10 +4635,16 @@ dash.onData(() => {
     var finoA = fresco ? 'fino a oggi' : 'fino ' + al(rif);
     g2.setAttribute('aria-label', Y + ': ' + pct(R0 * 100) + ' ' + finoA + ', stima a fine anno circa ' + pct(P * 100));
     var lo = fascia[0].P * 100, hi = fascia[fascia.length - 1].P * 100;
-    sez.querySelector('.v-reale').textContent = pct(R0 * 100);
+    // oggi e stima a fine anno salgono quando arrivano sullo schermo, come gli altri numeri del sito (window.mbConta dell'app)
+    var gruppo = sez.querySelector('.stima-num');
+    function conta(el, v, fmt, durata) {
+      if (typeof window.mbConta === 'function') window.mbConta(el, v, fmt, durata, 0, gruppo);
+      else el.textContent = fmt(v);
+    }
+    conta(sez.querySelector('.v-reale'), R0 * 100, pct, 2500);
     var lab = sez.querySelector('.lab-reale');
     if (lab) lab.textContent = fresco ? 'Oggi' : al(rif).charAt(0).toUpperCase() + al(rif).slice(1);
-    sez.querySelector('.v-proj').textContent = '≈ ' + pct(P * 100);
+    conta(sez.querySelector('.v-proj'), P * 100, function (v) { return '≈ ' + pct(v); }, 3000);
     sez.querySelector('.v-fascia').textContent = pct(lo) + ' / ' + pct(hi);
     var a1 = anniOk[0], a2 = anniOk[anniOk.length - 1];
     sez.querySelector('.leg-anno').textContent = Y + ' ' + finoA;
@@ -4744,8 +4741,8 @@ dash.onData(() => {
 
   function testi() {
     var n = S.d.length - 1, fu = (S.u[n] - 1) * 100, fc = (S.c[n] - 1) * 100;
-    sez.querySelector('.n-senza').textContent = pct(fu);
-    sez.querySelector('.n-con').textContent = pct(fc);
+    conta(sez.querySelector('.n-senza'), fu, 4000);
+    conta(sez.querySelector('.n-con'), fc, 3500);
     g.setAttribute('aria-label', 'Dal ' + S.anni[0] + ': ' + pct(fu) + ' senza limite di lotti, ' + pct(fc) + ' con il limite');
     var lim = S.B.limite, da = sez.querySelector('.sl-da');
     if (da) da.textContent = +lim.slice(5, 7) <= 2 ? 'dal ' + lim.slice(0, 4) : 'da ' + MESI[+lim.slice(5, 7) - 1] + ' ' + lim.slice(0, 4);
@@ -4754,50 +4751,22 @@ dash.onData(() => {
     if (fino) fino.textContent = 'Il ' + S.d[n].slice(0, 4) + ' è aggiornato ' + al(S.d[n]) + ', giorno dell’ultimo trade chiuso.';
   }
 
-  // anni come quelli in alto nella pagina: colore in base al risultato, oro/argento/bronzo e medaglia ai tre migliori,
-  // una luce che passa da un anno all'altro e i numeri che salgono quando arrivano sullo schermo (window.mbConta dell'app)
-  var box = sez.querySelector('.sl-anni');
+  // riquadri degli anni (come all'inizio): in arancione gli anni in cui il limite ha tolto qualcosa
   function tessere() {
-    var righe = [], prima = [1, 1];
+    var html = '', prima = [1, 1];
     S.anni.forEach(function (y) {
-      var f = S.fine[y];
-      righe.push({ y: y, c: (f[0] / prima[0] - 1) * 100, u: (f[1] / prima[1] - 1) * 100 });
+      var f = S.fine[y], c = (f[0] / prima[0] - 1) * 100, u = (f[1] / prima[1] - 1) * 100, diverso = Math.abs(u - c) > 0.5;
+      html += '<div class="sl-anno' + (diverso ? ' diverso' : '') + '"><span>' + y + '</span><b>' + pct(u) + '</b><small>' +
+        (diverso ? 'con limite ' + pct(c) : 'uguale') + '</small></div>';
       prima = f;
     });
-    var vmax = Math.max.apply(null, righe.map(function (r) { return Math.abs(r.u); }).concat([1e-9]));
-    var podio = righe.filter(function (r) { return r.u > 0; }).sort(function (a, b) { return b.u - a.u; }).slice(0, 3).map(function (r) { return r.y; });
-    var chiave = S.m + '|' + righe.map(function (r) { return r.y; }).join(',');
-    if (box.dataset.k !== chiave) {
-      // anni o modalità cambiati: riquadri nuovi in un contenitore nuovo, così il conteggio riparte quando torna sullo schermo
-      var nuovo = box.cloneNode(false);
-      box.replaceWith(nuovo); box = nuovo; box.dataset.k = chiave;
-      righe.forEach(function (r, k) {
-        var d = document.createElement('div');
-        d.className = 'anno-b'; d.dataset.anno = r.y; d.style.setProperty('--i', k);
-        d.innerHTML = '<span>' + r.y + '</span><b></b><small></small>';
-        box.appendChild(d);
-      });
-    }
-    box.style.setProperty('--n', righe.length);
-    righe.forEach(function (r) {
-      var d = box.querySelector('[data-anno="' + r.y + '"]'); if (!d) return;
-      var t = Math.max(0, Math.min(1, r.u / vmax)), pos = podio.indexOf(r.y), diverso = Math.abs(r.u - r.c) > 0.5;
-      d.style.setProperty('--t', Math.pow(t, 0.8).toFixed(3));
-      ['top', 'argento', 'bronzo'].forEach(function (c, k) { d.classList.toggle(c, pos === k); });
-      d.classList.toggle('negativo', r.u < 0);
-      d.classList.toggle('diverso', diverso);
-      var m = d.querySelector('.medaglia'); if (m) m.remove();
-      if (pos >= 0) {
-        var md = document.createElement('i');
-        md.className = 'medaglia m' + (pos + 1); md.textContent = String(pos + 1); md.setAttribute('aria-label', (pos + 1) + '° posto');
-        d.insertBefore(md, d.firstChild);
-      }
-      d.querySelector('small').textContent = diverso ? 'con limite ' + pct(r.c) : 'uguale';
-      d.title = r.y + ': ' + pct(r.u) + ' senza limite di lotti' + (diverso ? ', ' + pct(r.c) + ' con il limite' : '') + (pos >= 0 ? ' · ' + (pos + 1) + '° anno migliore' : '');
-      var b = d.querySelector('b'), durata = 1200 + 3800 * Math.abs(r.u) / vmax;      // come in alto: il più alto circa 5 secondi
-      if (typeof window.mbConta === 'function') window.mbConta(b, r.u, pct, durata, 0, box);
-      else b.textContent = pct(r.u);
-    });
+    sez.querySelector('.sl-anni').innerHTML = html;
+  }
+
+  // i due numeri principali salgono quando arrivano sullo schermo, come gli altri numeri del sito (window.mbConta dell'app)
+  function conta(el, v, durata) {
+    if (typeof window.mbConta === 'function') window.mbConta(el, v, pct, durata, 0, sez.querySelector('.sl-num'));
+    else el.textContent = pct(v);
   }
 
   function aggiorna() {
