@@ -1860,6 +1860,11 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
 .barre-limite path { fill: none; stroke: #e3b23c; stroke-width: 1.4; }
 .barre-limite:hover text { text-decoration: underline; }
 </style>
+<style>
+/* 02/11/2026: voci delle sezioni nuove nel menu a tendina, sotto "Risultati" */
+.menu-tel button.menu-sub { position: relative; padding: 9px 14px 9px 40px; border-top: 0; font: 500 14.5px/1.3 var(--sans); color: #cfe3d7; }
+.menu-tel button.menu-sub::before { content: ""; position: absolute; left: 21px; top: 9px; width: 10px; height: 9px; border-left: 2px solid rgba(246, 214, 128, .6); border-bottom: 2px solid rgba(246, 214, 128, .6); border-bottom-left-radius: 5px; }
+</style>
 </head>
 <body class="pub">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1907,6 +1912,8 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
     </div>
     <nav class="menu-tel" id="menu-tel" aria-label="Sezioni" hidden>
       <button type="button" data-vai="risultati">Risultati</button>
+      <button type="button" class="menu-sub" data-vai-sez="senzalimiti">E se non ci fosse il limite di lotti?</button>
+      <button type="button" class="menu-sub" data-vai-sez="stima2026">Come potrebbe finire l'anno</button>
       <button type="button" data-vai="come">Come funziona</button>
       <button type="button" data-vai="perche">Perché è diverso</button>
       <button type="button" data-vai="chi">Chi sono</button>
@@ -3133,7 +3140,7 @@ dash.calc('strategie', {
       const ba = bz('h', alto ? 'Più basso' : 'Più alto', 'Altezza del grafico'); ba.setAttribute('aria-pressed', String(alto));
       zc.append(meno, piu, lv, ba);
       const sub = document.createElement('p'); sub.className = 'bt-sub';
-      const isJ = String(tg.strategia).startsWith('Giappone');
+      const isJ = /^(Giappone|Sol Levante)/.test(String(tg.strategia));   // 02/11/2026: anche con il nome nuovo
       sub.textContent = (isJ ? 'Candele XM del Giappone 225' : 'Candele Bybit di Bitcoin') + ', ora italiana. In grigio il tempo in cui il trade è rimasto aperto. Con + il grafico si allarga: scorri di lato per vederlo tutto. Passa sopra una candela per i prezzi.';
       const gbox = document.createElement('div'); gbox.className = 'bt-grafico' + (alto ? ' alto' : ''); gbox.dataset.source = 'candele trade';
       card.append(head, zc, sub, gbox);
@@ -4823,6 +4830,24 @@ dash.onData(() => {
   if ('ResizeObserver' in window) new ResizeObserver(function () { prova(aggiorna); }).observe(g);
   window.addEventListener('resize', function () { setTimeout(function () { prova(segna); }, 400); });
   setTimeout(function () { prova(segna); }, 1500);
+})();
+</script>
+<script>
+(function () {
+  // 02/11/2026: voci "E se non ci fosse il limite di lotti?" e "Come potrebbe finire il ..." nel menu a tendina:
+  // aprono Risultati e scorrono fino alla sezione (come "Conto demo"); il menu si chiude da solo (app.js)
+  function vaiA(id) {
+    var sch = document.querySelector('.scheda[data-pannello="risultati"]'); if (sch) sch.click();
+    requestAnimationFrame(function () { requestAnimationFrame(function () {
+      var t = document.getElementById(id), sc = document.getElementById('schede'); if (!t) return;
+      window.scrollTo({ top: Math.max(0, scrollY + t.getBoundingClientRect().top - ((sc ? sc.offsetHeight + 8 : 0) + 14)), behavior: 'smooth' });
+    }); });
+  }
+  document.querySelectorAll('[data-vai-sez]').forEach(function (b) { b.addEventListener('click', function () { vaiA(b.dataset.vaiSez); }); });
+  // la voce della stima prende il titolo della sezione, con l'anno giusto
+  function anno() { var t = document.querySelector('.stima-tit'), b = document.querySelector('[data-vai-sez="stima2026"]'); if (t && b && /\d{4}/.test(t.textContent)) b.textContent = t.textContent; }
+  if (typeof dash !== 'undefined') dash.onData(function () { setTimeout(anno, 0); });
+  setTimeout(anno, 1500);
 })();
 </script>
 </body>
