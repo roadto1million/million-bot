@@ -4741,7 +4741,7 @@ dash.onData(() => {
       var fy = interp(t0, G, forme[y]);
       return { y: y, fy: fy, P: fy >= 0.1 ? Math.pow(1 + R0, 1 / fy) - 1 : null };
     }).filter(function (o) { return o.P !== null; }).sort(function (a, b) { return a.P - b.P; });
-    var fascia = proiez.length >= 4 ? proiez.slice(1, -1) : proiez;
+    var fascia = proiez;   // 02/11/2026: tutti gli anni passati (prima si toglievano il migliore e il peggiore)
     // curve in %
     var medio = G.map(function (t) { return [t, (Math.pow(1 + P, interp(t, G, fbar)) - 1) * 100]; });
     var reale = att.map(function (v, i) { return [i / (nY - 1), v * 100]; });
@@ -4806,12 +4806,12 @@ dash.onData(() => {
     var a1 = anniOk[0], a2 = anniOk[anniOk.length - 1];
     sez.querySelector('.leg-anno').textContent = Y + ' ' + finoA;
     sez.querySelector('.leg-medio').textContent = 'anno medio ' + a1 + '–' + a2;
-    sez.querySelector('.leg-fascia').textContent = 'fascia: ' + fascia.length + ' anni su ' + anniOk.length;
+    sez.querySelector('.leg-fascia').textContent = (fascia.length === anniOk.length && anniOk.length === Y - y0) ? 'fascia: tutti gli anni passati' : 'fascia: ' + fascia.length + ' anni passati';
     var p = sez.querySelector('.stima-txt');
     p.innerHTML = 'In media, ' + al(rif) + ' gli anni dal ' + a1 + ' al ' + a2 + ' avevano già fatto il ' + Math.round(f0 * 100) +
       '% del loro risultato. Il ' + Y + ' è a <strong>' + pct(R0 * 100) + '</strong>: se gli ultimi mesi andassero come la media, chiuderebbe intorno a <strong>' +
       pct(P * 100) + '</strong>. La fascia mostra dove sarebbe arrivato seguendo ciascuno degli anni passati' +
-      (fascia.length < proiez.length ? ', tolti il migliore e il peggiore.' : '.');
+      (fascia.length > 1 ? ', dal peggiore (' + fascia[0].y + ') al migliore (' + fascia[fascia.length - 1].y + ').' : '.');
   }
   dash.onData(function () { try { disegna(); } catch (e) { console.error(e); } });
   // se il riquadro cambia larghezza (o compare dopo essere stato nascosto) il grafico si ridisegna
