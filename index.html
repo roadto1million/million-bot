@@ -4700,11 +4700,18 @@ dash.onData(() => {
       nuovi = T.data.filter(function (r) { return Number(r.id) > B.id && r.chiusura && isFinite(Number(r.saldo)) && Number(r.saldo) > 0; })
         .sort(function (a, b) { return a.chiusura < b.chiusura ? -1 : a.chiusura > b.chiusura ? 1 : Number(a.id) - Number(b.id); });
     }
-    var s = { m: m, B: B, d: B.d.slice(), c: B.c.slice(), u: B.u.slice(), fine: {} };
+    var s = { m: m, B: B, d: B.d.slice(), c: B.c.slice(), u: B.u.slice(), fine: {}, anniLim: B.anni_limite.slice() };
     Object.keys(B.fine).forEach(function (y) { s.fine[y] = B.fine[y].slice(); });
-    // i trade nuovi del bot sono calcolati senza limite: il conto senza limite resta nello stesso rapporto con quello del sito
+    // trade nuovi del bot (dal 02/11/2026 con il limite di lotti come il backtest): fs = quanto il limite ha tolto a quel trade
+    // (nei dati di prima del 02/11/2026 manca: i trade erano senza limite, il rapporto tra i due conti non cambia)
+    var F = B.fattore;
     nuovi.forEach(function (r) {
-      var c = Number(r.saldo) / 1000, u = c * B.fattore, d = String(r.chiusura).slice(0, 10);
+      var f = Number(r.fs), d = String(r.chiusura).slice(0, 10);
+      if (isFinite(f) && f > 0) {
+        F *= f;
+        if (Math.abs(f - 1) > 1e-6 && s.anniLim.indexOf(+d.slice(0, 4)) < 0) s.anniLim.push(+d.slice(0, 4));
+      }
+      var c = Number(r.saldo) / 1000, u = c * F;
       s.d.push(d); s.c.push(c); s.u.push(u); s.fine[d.slice(0, 4)] = [c, u];
     });
     s.anni = Object.keys(s.fine).sort();
@@ -4807,7 +4814,7 @@ dash.onData(() => {
   function segna() {
     var svg = document.querySelector('#barre svg'); if (!svg || !S) return;
     var vecchio = svg.querySelector('.barre-limite'); if (vecchio) vecchio.remove();
-    var anni = S.B.anni_limite;
+    var anni = S.anniLim;
     var rs = [].slice.call(svg.querySelectorAll('rect.b')).filter(function (r) { return r.__data__ && anni.indexOf(Number(r.__data__.anno)) >= 0 && r.__data__.mese == null; });
     if (!rs.length) return;
     var x1 = Math.min.apply(null, rs.map(function (r) { return +r.getAttribute('x'); }));
