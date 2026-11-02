@@ -1869,6 +1869,32 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
 @media (max-width: 900px) { .sn-griglia { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 480px) { .strategie-nomi { padding: 18px 16px; } .sn { padding: 10px 11px; column-gap: 9px; } .sn-ico { font-size: 24px; } .sn b { font-size: 16.5px; } .sn small { font-size: 10px; } .sn p { font-size: 13px; } }
 </style>
+<style>
+/* 02/11/2026: sul computer il grafico in alto senza spazio sotto la linea di base (l'altezza la decide mbAltezzaHero) */
+@media (min-width: 901px) { #h-curva > svg { display: block; } .vetrina #h-curva { min-height: 0; } }
+</style>
+<script>
+/* 02/11/2026: sul computer, con la finestra bassa (es. portatile), il riquadro del grafico in alto deve stare tutto nella
+   prima schermata: il grafico si accorcia fino a 170 px. Sul telefono e sugli schermi alti resta di 230 px. */
+window.mbAltezzaHero = function (box) {
+  try {
+    if (innerWidth <= 900) { box.style.height = ''; box.style.minHeight = ''; return 230; }
+    var v = box.closest('.vetrina');
+    if (!v || !v.offsetParent) return 230;
+    var h = parseFloat(box.style.height) || 230;
+    for (var n = 0; n < 8; n++) {          // la colonna è centrata: si prova finché il fondo del riquadro non sta nella finestra
+      box.style.height = h + 'px'; box.style.minHeight = h + 'px';
+      var fondo = v.getBoundingClientRect().bottom + (window.scrollY || 0);
+      var nuova = Math.max(170, Math.min(230, Math.floor(h - (fondo + 16 - innerHeight))));
+      if (Math.abs(nuova - h) < 1) break;
+      h = nuova;
+    }
+    box.style.height = h + 'px'; box.style.minHeight = h + 'px';
+    return h;
+  } catch (e) { return 230; }
+};
+document.addEventListener('DOMContentLoaded', function () { var b = document.getElementById('h-curva'); if (b) window.mbAltezzaHero(b); });
+</script>
 </head>
 <body class="pub">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -3556,7 +3582,7 @@ dash.calc('strategie', {
       });
     }
     const box = $('#h-curva');
-    if (box.offsetParent) curva(box, c.pts, { altezza: 230, chiave: c.k, piccolo: true, lineare: true, etichetta: 'Saldo del backtest da 1.000 € nel 2020 a oggi' });
+    if (box.offsetParent) curva(box, c.pts, { altezza: (window.mbAltezzaHero ? window.mbAltezzaHero(box) : 230), chiave: c.k, piccolo: true, lineare: true, etichetta: 'Saldo del backtest da 1.000 € nel 2020 a oggi' });
   }
   // grafico della pagina iniziale ingrandito in una finestra
   const sg = $('#schermo-grafico'), sgFin = sg.querySelector('.sg-finestra');
@@ -4537,6 +4563,10 @@ dash.onData(() => {
     var g = d.getUTCDate(), m = MESI[d.getUTCMonth()];
     return (g === 8 || g === 11 ? "all'" + g : 'al ' + (g === 1 ? '1º' : g)) + ' ' + m;
   }
+  // onde del puntino finale, come nel grafico in alto (classe punto-onda dell'app)
+  function onde(cx, cy, r, col) {
+    return ['', ' due'].map(function (c) { return '<circle class="punto-onda' + c + '" cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + col + '" opacity=".18"/>'; }).join('');
+  }
   var ultimoDisegno = '';
 
   function disegna() {
@@ -4651,6 +4681,7 @@ dash.onData(() => {
       '<text x="' + (xr - 8).toFixed(1) + '" y="' + (Ya + 4) + '" class="s-oggi-t" text-anchor="end">' + quando + '</text>' +
       (reale.length > 1 ? '<path d="' + path(reale) + '" class="s-reale"/>' : '') +
       '<path d="' + path(stimaC) + '" class="s-proj"/>' +
+      onde(xr.toFixed(1), yr.toFixed(1), 11, '#0f7a47') + onde(X(1).toFixed(1), yp.toFixed(1), 11, '#e3b23c') +
       '<circle cx="' + xr.toFixed(1) + '" cy="' + yr.toFixed(1) + '" r="7" class="s-p-reale"/>' +
       '<circle cx="' + X(1).toFixed(1) + '" cy="' + yp.toFixed(1) + '" r="7" class="s-p-proj"/>' +
       '<text x="' + (xr - 12).toFixed(1) + '" y="' + (yr - 14).toFixed(1) + '" class="s-v s-v-reale" text-anchor="end">' + pct(R0 * 100) + '</text>' +
@@ -4740,6 +4771,11 @@ dash.onData(() => {
     return s;
   }
 
+  // onde del puntino finale, come nel grafico in alto (classe punto-onda dell'app)
+  function onde(cx, cy, r, col) {
+    return ['', ' due'].map(function (c) { return '<circle class="punto-onda' + c + '" cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + col + '" opacity=".18"/>'; }).join('');
+  }
+
   function disegna() {
     var W = Math.max(640, Math.round(g.clientWidth || 640)), H = 380, X0 = 8, X1 = W - 104, Y0 = 20, Y1 = 320;
     var a0 = +S.anni[0], a1 = +S.anni[S.anni.length - 1], t0 = Date.UTC(a0, 0, 1), t1 = Date.UTC(a1, 11, 31);
@@ -4757,6 +4793,7 @@ dash.onData(() => {
     for (var a = a0; a <= a1; a++) svg += '<text x="' + X(a + '-07-01').toFixed(1) + '" y="' + (Y1 + 30) + '" class="sm" text-anchor="middle">' + a + '</text>';
     var n = S.d.length - 1, xe = X(S.d[n]).toFixed(1);
     svg += '<path d="' + path(S.c) + '" class="l-con"/><path d="' + path(S.u) + '" class="l-senza"/>' +
+      onde(xe, Y(S.c[n]).toFixed(1), 10, '#0f7a47') + onde(xe, Y(S.u[n]).toFixed(1), 11, '#e3b23c') +
       '<circle cx="' + xe + '" cy="' + Y(S.u[n]).toFixed(1) + '" r="7" class="p-senza"/>' +
       '<circle cx="' + xe + '" cy="' + Y(S.c[n]).toFixed(1) + '" r="6" class="p-con"/>';
     g.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
