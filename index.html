@@ -1794,7 +1794,7 @@ body.buio:not(.pub) .come mark { color: #f2f5ff; background: linear-gradient(tra
 .stima-num span { display: block; font-size: 12.5px; color: var(--grigio, #44564b); }
 .stima-num b { font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 26px; }
 .v-reale { color: #0f7a47; } .v-proj { color: #c48a12; } .v-fascia { color: #7d8f84; font-size: 20px !important; }
-.stima-graf { width: 100%; max-width: 720px; height: auto; display: block; margin: 4px 0 2px; overflow: visible; }
+.stima-graf { width: 100%; height: auto; display: block; margin: 4px 0 2px; overflow: visible; }
 .stima-graf .sg { stroke: rgba(16,36,26,.09); stroke-width: 1.5; }
 .stima-graf .st, .stima-graf .sm { fill: #7d8f84; font: 500 15px var(--sans, Inter, sans-serif); }
 .s-fascia { fill: rgba(227,178,60,.2); stroke: none; }
@@ -4536,7 +4536,10 @@ dash.onData(() => {
     var vmax = Math.max.apply(null, vals), vmin = Math.min.apply(null, vals);
     var passo = (vmax - vmin) > 320 ? 100 : 50;
     var top = Math.ceil((vmax + 10) / passo) * passo, bot = vmin < -8 ? Math.floor(vmin / passo) * passo : 0;
-    var W = 640, H = 370, X0 = 8, X1 = 560, Ya = 24, Yb = 318;
+    // larghezza vera del grafico: sul computer si allarga a tutto il riquadro senza ingrandire le scritte
+    var g2 = sez.querySelector('.stima-graf');
+    var W = Math.max(640, Math.round(g2.clientWidth || 640)), H = 370, X0 = 8, X1 = W - 80, Ya = 24, Yb = 318;
+    g2.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
     function X(t) { return X0 + (X1 - X0) * t; }
     function Yv(v) { return Yb - (Yb - Ya) * (v - bot) / (top - bot); }
     function path(L) { return 'M' + L.map(function (p) { return X(p[0]).toFixed(1) + ',' + Yv(p[1]).toFixed(1); }).join(' L'); }
@@ -4561,7 +4564,6 @@ dash.onData(() => {
       '<circle cx="' + X(1).toFixed(1) + '" cy="' + yp.toFixed(1) + '" r="7" class="s-p-proj"/>' +
       '<text x="' + (xr - 12).toFixed(1) + '" y="' + (yr - 14).toFixed(1) + '" class="s-v s-v-reale" text-anchor="end">' + pct(R0 * 100) + '</text>' +
       '<text x="' + (X(1) + 2).toFixed(1) + '" y="' + (ytop - 14).toFixed(1) + '" class="s-v s-v-proj" text-anchor="end">≈ ' + pct(P * 100) + '</text>';
-    var g2 = sez.querySelector('.stima-graf');
     g2.innerHTML = svg;
     g2.setAttribute('aria-label', Y + ': ' + pct(R0 * 100) + ' fino a oggi, stima a fine anno circa ' + pct(P * 100));
     var lo = fascia[0].P * 100, hi = fascia[fascia.length - 1].P * 100;
@@ -4580,6 +4582,14 @@ dash.onData(() => {
       (fascia.length < proiez.length ? ', tolti il migliore e il peggiore.' : '.');
   }
   dash.onData(function () { try { disegna(); } catch (e) { console.error(e); } });
+  // se il riquadro cambia larghezza (o compare dopo essere stato nascosto) il grafico si ridisegna
+  if ('ResizeObserver' in window) {
+    var largo = 0, gr = sez.querySelector('.stima-graf');
+    new ResizeObserver(function () {
+      var w = Math.round(gr.clientWidth);
+      if (w && Math.abs(w - largo) > 4) { largo = w; ultimoDisegno = ''; try { disegna(); } catch (e) { console.error(e); } }
+    }).observe(gr);
+  }
   try { disegna(); } catch (e) { console.error(e); }
 })();
 </script>
