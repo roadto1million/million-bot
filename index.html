@@ -1785,6 +1785,36 @@ body.buio:not(.pub) .come mark { color: #f2f5ff; background: linear-gradient(tra
 .piede-ris svg { width: 12px; height: 12px; }
 .piede-ris:hover { text-decoration: underline; }
 </style>
+<style>
+/* 02/11/2026: sezione "Come potrebbe finire l'anno" (stima dalla forma media degli anni passati) */
+.stima2026 { margin: 22px 0; padding: 22px 22px 18px; background: var(--pannello, #fff); border: 1px solid var(--linea, #dfe9e2); border-radius: var(--raggio, 22px); box-shadow: var(--ombra, 0 10px 30px rgba(15,45,34,.08)); }
+.stima-etic { display: inline-block; padding: 5px 12px; border-radius: 999px; background: rgba(227,178,60,.14); border: 1px solid rgba(227,178,60,.5); color: #8a6410; font: 700 11.5px/1 var(--sans, Inter, sans-serif); letter-spacing: .06em; text-transform: uppercase; }
+.stima-tit { font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 24px; margin: 10px 0 12px; color: var(--inchiostro, #10241a); }
+.stima-num { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-bottom: 6px; }
+.stima-num span { display: block; font-size: 12.5px; color: var(--grigio, #44564b); }
+.stima-num b { font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 26px; }
+.v-reale { color: #0f7a47; } .v-proj { color: #c48a12; } .v-fascia { color: #7d8f84; font-size: 20px !important; }
+.stima-graf { width: 100%; max-width: 720px; height: auto; display: block; margin: 4px 0 2px; overflow: visible; }
+.stima-graf .sg { stroke: rgba(16,36,26,.09); stroke-width: 1.5; }
+.stima-graf .st, .stima-graf .sm { fill: #7d8f84; font: 500 15px var(--sans, Inter, sans-serif); }
+.s-fascia { fill: rgba(227,178,60,.2); stroke: none; }
+.s-medio { fill: none; stroke: #b7a273; stroke-width: 2.5; stroke-dasharray: 2 6; stroke-linecap: round; }
+.s-oggi { stroke: rgba(16,36,26,.28); stroke-width: 1.5; stroke-dasharray: 4 5; }
+.s-oggi-t { fill: #7d8f84; font: 600 14px var(--sans, Inter, sans-serif); }
+.s-reale { fill: none; stroke: #0f7a47; stroke-width: 4.5; stroke-linejoin: round; }
+.s-proj { fill: none; stroke: #e3b23c; stroke-width: 4.5; stroke-dasharray: 11 8; stroke-linecap: round; }
+.s-p-reale { fill: #0f7a47; } .s-p-proj { fill: #e3b23c; stroke: #fff; stroke-width: 2; }
+.s-v { font: 700 19px var(--serif, Fraunces, serif); } .s-v-reale { fill: #0f7a47; } .s-v-proj { fill: #c48a12; }
+.stima-leg { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--grigio, #44564b); margin: 6px 0 10px; }
+.stima-leg i { display: inline-block; width: 22px; height: 0; margin-right: 6px; vertical-align: middle; border-top: 4px solid; }
+.l-reale { border-color: #0f7a47 !important; } .l-proj { border-top: 4px dashed #e3b23c !important; } .l-medio { border-top: 3px dotted #b7a273 !important; }
+.l-fascia { height: 10px !important; border: 0 !important; background: rgba(227,178,60,.3); border-radius: 3px; }
+.stima-txt { max-width: 72ch; font-size: 14.5px; line-height: 1.55; color: var(--grigio, #44564b); margin: 0 0 8px; }
+.stima-txt strong { color: var(--inchiostro, #10241a); }
+.stima-nota { font-size: 12.5px; color: #7d8f84; margin: 0; }
+body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
+.stima-attesa { font-size: 14.5px; color: var(--grigio, #44564b); margin: 6px 0 0; }
+</style>
 </head>
 <body class="pub">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -2291,6 +2321,27 @@ body.buio:not(.pub) .come mark { color: #f2f5ff; background: linear-gradient(tra
     <p class="solo-priv" data-riservato="massimo"></p>
     <p>I risultati passati, e ancora di più quelli di un backtest, non garantiscono risultati futuri. Il trading con leva può far perdere tutto il capitale. Questa pagina non è un consiglio di investimento.</p>
   </details>
+  <section class="stima2026" id="stima2026" aria-label="Come potrebbe finire l'anno" data-robot-umore="curioso" data-robot="Se il resto dell'anno va come la media, <b>ecco dove arrivo</b>. Ma è solo una stima!">
+    <span class="stima-etic">Stima, non previsione</span>
+    <h2 class="stima-tit">Come potrebbe finire l'anno</h2>
+    <div class="stima-corpo">
+      <div class="stima-num">
+        <div><span>Oggi</span><b class="v-reale">—</b></div>
+        <div><span>Stima a fine anno</span><b class="v-proj">—</b></div>
+        <div><span>Fascia</span><b class="v-fascia">—</b></div>
+      </div>
+      <svg class="stima-graf" viewBox="0 0 640 370" role="img" aria-label="Stima a fine anno"></svg>
+      <div class="stima-leg">
+        <span><i class="l-reale"></i><span class="leg-anno">fino a oggi</span></span>
+        <span><i class="l-proj"></i>stima fino a fine anno</span>
+        <span><i class="l-medio"></i><span class="leg-medio">anno medio</span></span>
+        <span><i class="l-fascia"></i><span class="leg-fascia">fascia</span></span>
+      </div>
+      <p class="stima-txt"></p>
+    </div>
+    <p class="stima-attesa" hidden></p>
+    <p class="stima-nota">È una stima sul backtest, non una previsione: i risultati passati non garantiscono quelli futuri.</p>
+  </section>
 </div>
 
 </div>
@@ -3788,7 +3839,7 @@ dash.calc('strategie', {
     window.PUB = true; body.classList.add('pub');
     $('#v-login').hidden = true; $('#pub').hidden = false;
     $('#posto-pub').append(blocco);
-    $('#calcolo').after($('#conto-demo'));     // il conto demo dopo i trade dell'anno e il loro "Come è calcolato"
+    $('#calcolo').after($('#conto-demo')); { const st = $('#stima2026'); if (st) $('#calcolo').after(st); }   // 02/11/2026: la stima dell'anno subito dopo "Come è calcolato"     // il conto demo dopo i trade dell'anno e il loro "Come è calcolato"
   }
   async function entra(bytes, salva) {
     CHIAVE = await crypto.subtle.importKey('raw', bytes, 'AES-GCM', false, ['decrypt']);
@@ -4365,6 +4416,171 @@ dash.onData(() => {
   const t = document.createElement('span'); t.textContent = 'Anteprima tema: ' + k.map((x) => NOMI[x] + ' «' + q.get(x) + '»').join(', ');
   const a = document.createElement('a'); a.href = location.pathname; a.textContent = 'Torna al sito normale';
   d.append(t, a); document.body.append(d);
+})();
+</script>
+<script>
+(function () {
+  // 02/11/2026: "Come potrebbe finire l'anno" — stima a fine anno dalla forma media degli anni passati.
+  // Per ogni anno passato: quanta parte del risultato finale (in logaritmo) aveva fatto a ogni data; media delle forme
+  // (media mobile di 21 giorni); l'anno in corso continua dal punto di oggi seguendo la forma media.
+  var sez = document.getElementById('stima2026');
+  if (!sez || typeof dash === 'undefined') return;
+  var MESI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+  var DAY = 86400000, NG = 366;
+  var G = []; for (var g = 0; g < NG; g++) G.push(g / (NG - 1));
+  function interp(x, xs, ys) {
+    if (x <= xs[0]) return ys[0];
+    if (x >= xs[xs.length - 1]) return ys[ys.length - 1];
+    var lo = 0, hi = xs.length - 1;
+    while (hi - lo > 1) { var m = (lo + hi) >> 1; if (xs[m] <= x) lo = m; else hi = m; }
+    var f = (x - xs[lo]) / (xs[hi] - xs[lo]);
+    return ys[lo] + f * (ys[hi] - ys[lo]);
+  }
+  function liscia(f) {
+    var k = 21, h = 10, n = f.length, out = new Array(n);
+    for (var i = 0; i < n; i++) {
+      var s = 0;
+      for (var j = i - h; j <= i + h; j++) s += f[Math.min(n - 1, Math.max(0, j))];
+      out[i] = s / k;
+    }
+    out[0] = 0; out[n - 1] = 1;
+    return out;
+  }
+  function pct(v) { return (v >= 0 ? '+' : '−') + Math.abs(Math.round(v)) + '%'; }
+  function giorniAnno(y) { return Math.round((Date.UTC(y + 1, 0, 1) - Date.UTC(y, 0, 1)) / DAY); }
+  var ultimoDisegno = '';
+
+  function disegna() {
+    var T = dash.data('trade');
+    if (T.status !== 'ok' || !T.data || !T.data.length) return;
+    var rows = T.data.filter(function (r) { return r && r.chiusura && r.saldo != null && isFinite(Number(r.saldo)); }).slice();
+    if (rows.length < 20) return;
+    rows.sort(function (a, b) { return a.chiusura < b.chiusura ? -1 : a.chiusura > b.chiusura ? 1 : Number(a.id) - Number(b.id); });
+    var chiave = rows.length + '|' + rows[rows.length - 1].chiusura + '|' + rows[rows.length - 1].saldo + '|' + sez.clientWidth;
+    if (chiave === ultimoDisegno) return;
+    ultimoDisegno = chiave;
+    // saldo a fine giornata (UTC del giorno scritto nella data)
+    var giorno = {}, giorni = [];
+    rows.forEach(function (r) {
+      var d = r.chiusura.slice(0, 10);
+      if (!(d in giorno)) giorni.push(d);
+      giorno[d] = Number(r.saldo);
+    });
+    var inizio = Number(rows[0].saldo) - Number(rows[0].euro || 0);
+    if (!(inizio > 0)) inizio = 1000;
+    var y0 = Number(giorni[0].slice(0, 4)), ultimo = giorni[giorni.length - 1];
+    var oggiD = new Date(), oggi = new Date(Date.UTC(oggiD.getFullYear(), oggiD.getMonth(), oggiD.getDate()));
+    var ultimoD = new Date(ultimo + 'T00:00:00Z');
+    // giorno di riferimento: oggi, se i dati sono aggiornati; altrimenti l'ultimo dato
+    var rif = (oggi - ultimoD) / DAY <= 10 && oggi >= ultimoD ? oggi : ultimoD;
+    var Y = rif.getUTCFullYear();
+    function percorso(y, finoA) {
+      // rendimento dall'inizio dell'anno, giorno per giorno (fino all'indice finoA compreso)
+      var n = giorniAnno(y), out = [], saldo = null;
+      for (var k = giorni.length - 1; k >= 0; k--) if (giorni[k] < y + '-01-01') { saldo = giorno[giorni[k]]; break; }
+      var partenza = saldo === null ? inizio : saldo, cur = partenza;
+      var idx = 0;
+      while (idx < giorni.length && giorni[idx] < y + '-01-01') idx++;
+      for (var i = 0; i < n && i <= finoA; i++) {
+        var ds = new Date(Date.UTC(y, 0, 1) + i * DAY).toISOString().slice(0, 10);
+        while (idx < giorni.length && giorni[idx] <= ds) { cur = giorno[giorni[idx]]; idx++; }
+        out.push(cur / partenza - 1);
+      }
+      return out;
+    }
+    // forme degli anni passati (solo anni completi e chiusi in positivo)
+    var forme = {}, anniOk = [];
+    for (var y = y0; y < Y; y++) {
+      var r = percorso(y, 400);
+      var fine = r[r.length - 1];
+      if (!(fine > 0)) continue;
+      var xs = r.map(function (_, i) { return i / (r.length - 1); });
+      var f = r.map(function (v) { return Math.log1p(Math.max(v, -0.99)) / Math.log1p(fine); });
+      forme[y] = liscia(G.map(function (t) { return interp(t, xs, f); }));
+      anniOk.push(y);
+    }
+    var nY = giorniAnno(Y), d0 = Math.round((rif - Date.UTC(Y, 0, 1)) / DAY);
+    var att = percorso(Y, d0), t0 = d0 / (nY - 1), R0 = att.length ? att[att.length - 1] : 0;
+    var fbar = G.map(function (_, i) { var s = 0; anniOk.forEach(function (y) { s += forme[y][i]; }); return s / anniOk.length; });
+    var f0 = interp(t0, G, fbar);
+    var tit = sez.querySelector('.stima-tit');
+    tit.textContent = 'Come potrebbe finire il ' + Y;
+    sez.setAttribute('aria-label', 'Come potrebbe finire il ' + Y);
+    var corpo = sez.querySelector('.stima-corpo'), attesa = sez.querySelector('.stima-attesa');
+    if (anniOk.length < 2 || !(f0 >= 0.2) || !(1 + R0 > 0)) {
+      corpo.hidden = true; attesa.hidden = false;
+      attesa.textContent = 'La stima del ' + Y + ' comparirà più avanti nell’anno, quando ci saranno abbastanza trade per confrontarlo con gli anni passati.';
+      return;
+    }
+    corpo.hidden = false; attesa.hidden = true;
+    var P = Math.pow(1 + R0, 1 / f0) - 1;
+    var proiez = anniOk.map(function (y) {
+      var fy = interp(t0, G, forme[y]);
+      return { y: y, fy: fy, P: fy >= 0.1 ? Math.pow(1 + R0, 1 / fy) - 1 : null };
+    }).filter(function (o) { return o.P !== null; }).sort(function (a, b) { return a.P - b.P; });
+    var fascia = proiez.length >= 4 ? proiez.slice(1, -1) : proiez;
+    // curve in %
+    var medio = G.map(function (t) { return [t, (Math.pow(1 + P, interp(t, G, fbar)) - 1) * 100]; });
+    var reale = att.map(function (v, i) { return [i / (nY - 1), v * 100]; });
+    var futuro = G.filter(function (t) { return t >= t0; });
+    if (!futuro.length || futuro[0] > t0) futuro.unshift(t0);
+    var stimaC = futuro.map(function (t) { return [t, (Math.pow(1 + P, interp(t, G, fbar)) - 1) * 100]; });
+    var banda = futuro.map(function (t) {
+      var v = fascia.map(function (o) { return ((1 + R0) * Math.pow(1 + o.P, interp(t, G, forme[o.y]) - o.fy) - 1) * 100; });
+      return [t, Math.min.apply(null, v), Math.max.apply(null, v)];
+    });
+    // scala
+    var vals = [P * 100, R0 * 100, 0];
+    reale.forEach(function (p) { vals.push(p[1]); });
+    banda.forEach(function (b) { vals.push(b[1], b[2]); });
+    var vmax = Math.max.apply(null, vals), vmin = Math.min.apply(null, vals);
+    var passo = (vmax - vmin) > 320 ? 100 : 50;
+    var top = Math.ceil((vmax + 10) / passo) * passo, bot = vmin < -8 ? Math.floor(vmin / passo) * passo : 0;
+    var W = 640, H = 370, X0 = 8, X1 = 560, Ya = 24, Yb = 318;
+    function X(t) { return X0 + (X1 - X0) * t; }
+    function Yv(v) { return Yb - (Yb - Ya) * (v - bot) / (top - bot); }
+    function path(L) { return 'M' + L.map(function (p) { return X(p[0]).toFixed(1) + ',' + Yv(p[1]).toFixed(1); }).join(' L'); }
+    var svg = '';
+    for (var v = bot; v <= top; v += passo) {
+      svg += '<line x1="' + X0 + '" x2="' + X1 + '" y1="' + Yv(v).toFixed(1) + '" y2="' + Yv(v).toFixed(1) + '" class="sg"/>' +
+        '<text x="' + (X1 + 10) + '" y="' + (Yv(v) + 5).toFixed(1) + '" class="st">' + (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v) + '%</text>';
+    }
+    'GFMAMGLASOND'.split('').forEach(function (m, i) {
+      svg += '<text x="' + X((i + 0.5) / 12).toFixed(1) + '" y="' + (Yb + 30) + '" class="sm" text-anchor="middle">' + m + '</text>';
+    });
+    var poly = 'M' + banda.map(function (b) { return X(b[0]).toFixed(1) + ',' + Yv(b[2]).toFixed(1); }).join(' L') + ' L' +
+      banda.slice().reverse().map(function (b) { return X(b[0]).toFixed(1) + ',' + Yv(b[1]).toFixed(1); }).join(' L') + ' Z';
+    var xr = X(t0), yr = Yv(R0 * 100), yp = Yv(P * 100), ytop = Math.min(yp, Yv(banda[banda.length - 1][2]));
+    svg += '<path d="' + poly + '" class="s-fascia"/>' +
+      '<path d="' + path(medio) + '" class="s-medio"/>' +
+      '<line x1="' + xr.toFixed(1) + '" x2="' + xr.toFixed(1) + '" y1="' + (Ya - 6) + '" y2="' + Yb + '" class="s-oggi"/>' +
+      '<text x="' + (xr - 8).toFixed(1) + '" y="' + (Ya + 4) + '" class="s-oggi-t" text-anchor="end">oggi</text>' +
+      (reale.length > 1 ? '<path d="' + path(reale) + '" class="s-reale"/>' : '') +
+      '<path d="' + path(stimaC) + '" class="s-proj"/>' +
+      '<circle cx="' + xr.toFixed(1) + '" cy="' + yr.toFixed(1) + '" r="7" class="s-p-reale"/>' +
+      '<circle cx="' + X(1).toFixed(1) + '" cy="' + yp.toFixed(1) + '" r="7" class="s-p-proj"/>' +
+      '<text x="' + (xr - 12).toFixed(1) + '" y="' + (yr - 14).toFixed(1) + '" class="s-v s-v-reale" text-anchor="end">' + pct(R0 * 100) + '</text>' +
+      '<text x="' + (X(1) + 2).toFixed(1) + '" y="' + (ytop - 14).toFixed(1) + '" class="s-v s-v-proj" text-anchor="end">≈ ' + pct(P * 100) + '</text>';
+    var g2 = sez.querySelector('.stima-graf');
+    g2.innerHTML = svg;
+    g2.setAttribute('aria-label', Y + ': ' + pct(R0 * 100) + ' fino a oggi, stima a fine anno circa ' + pct(P * 100));
+    var lo = fascia[0].P * 100, hi = fascia[fascia.length - 1].P * 100;
+    sez.querySelector('.v-reale').textContent = pct(R0 * 100);
+    sez.querySelector('.v-proj').textContent = '≈ ' + pct(P * 100);
+    sez.querySelector('.v-fascia').textContent = pct(lo) + ' / ' + pct(hi);
+    var a1 = anniOk[0], a2 = anniOk[anniOk.length - 1];
+    sez.querySelector('.leg-anno').textContent = Y + ' fino a oggi';
+    sez.querySelector('.leg-medio').textContent = 'anno medio ' + a1 + '–' + a2;
+    sez.querySelector('.leg-fascia').textContent = 'fascia: ' + fascia.length + ' anni su ' + anniOk.length;
+    var data = rif.getUTCDate() + ' ' + MESI[rif.getUTCMonth()];
+    var p = sez.querySelector('.stima-txt');
+    p.innerHTML = 'In media, al ' + data + ' gli anni dal ' + a1 + ' al ' + a2 + ' avevano già fatto il ' + Math.round(f0 * 100) +
+      '% del loro risultato. Il ' + Y + ' è a <strong>' + pct(R0 * 100) + '</strong>: se gli ultimi mesi andassero come la media, chiuderebbe intorno a <strong>' +
+      pct(P * 100) + '</strong>. La fascia mostra dove sarebbe arrivato seguendo ciascuno degli anni passati' +
+      (fascia.length < proiez.length ? ', tolti il migliore e il peggiore.' : '.');
+  }
+  dash.onData(function () { try { disegna(); } catch (e) { console.error(e); } });
+  try { disegna(); } catch (e) { console.error(e); }
 })();
 </script>
 </body>
