@@ -120,13 +120,13 @@ body.pub .solo-priv, body:not(.pub) .solo-pub, body:not(.con-j) .modo-j { displa
 .fatti li { border: 1px solid var(--linea-forte); border-radius: 999px; padding: 4px 12px; font-size: 14px; color: var(--grigio); }
 @media (max-width: 800px) { .chi { grid-template-columns: 1fr; } .chi img { max-width: 180px; } }
 
-.faq { display: grid; gap: 10px; max-width: 860px; }
+.faq { display: grid; gap: 10px; }   /* 02/11/2026: larghe come il resto della pagina (con 860 px sul computer restava spazio vuoto a destra) */
 .faq details { background: var(--pannello); border: 1px solid var(--linea); border-radius: 14px; padding: 0 20px; }
 .faq summary { cursor: pointer; list-style: none; padding: 18px 28px 18px 0; font-weight: 600; position: relative; }
 .faq summary::-webkit-details-marker { display: none; }
 .faq summary::after { content: "+"; position: absolute; right: 0; top: 14px; font-size: 22px; color: var(--oro); }
 .faq details[open] summary::after { content: "−"; }
-.faq details p { margin: 0 0 18px; color: var(--grigio); }
+.faq details p { margin: 0 0 18px; color: var(--grigio); max-width: 72ch; }
 
 .finale { margin-top: 80px; text-align: center; background: radial-gradient(90% 120% at 50% 0%, rgba(15, 122, 71, .16), transparent 65%), var(--pannello); border: 1px solid var(--linea); border-radius: 28px; padding: 56px clamp(20px, 5vw, 64px); }
 .finale h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(28px, 3.6vw, 42px); margin: 0 0 12px; }
