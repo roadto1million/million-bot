@@ -4776,7 +4776,7 @@ dash.onData(() => {
     });
     var poly = 'M' + banda.map(function (b) { return X(b[0]).toFixed(1) + ',' + Yv(b[2]).toFixed(1); }).join(' L') + ' L' +
       banda.slice().reverse().map(function (b) { return X(b[0]).toFixed(1) + ',' + Yv(b[1]).toFixed(1); }).join(' L') + ' Z';
-    var xr = X(t0), yr = Yv(R0 * 100), yp = Yv(P * 100), ytop = Math.min(yp, Yv(banda[banda.length - 1][2]));
+    var xr = X(t0), yr = Yv(R0 * 100), yp = Yv(P * 100);
     svg += '<path d="' + poly + '" class="s-fascia"/>' +
       '<path d="' + path(medio) + '" class="s-medio"/>' +
       '<line x1="' + xr.toFixed(1) + '" x2="' + xr.toFixed(1) + '" y1="' + (Ya - 6) + '" y2="' + Yb + '" class="s-oggi"/>' +
@@ -4787,8 +4787,51 @@ dash.onData(() => {
       '<circle cx="' + xr.toFixed(1) + '" cy="' + yr.toFixed(1) + '" r="7" class="s-p-reale"/>' +
       '<circle cx="' + X(1).toFixed(1) + '" cy="' + yp.toFixed(1) + '" r="7" class="s-p-proj"/>' +
       '<text x="' + (xr - 12).toFixed(1) + '" y="' + (yr - 14).toFixed(1) + '" class="s-v s-v-reale" text-anchor="end">' + pct(R0 * 100) + '</text>' +
-      '<text x="' + (X(1) + 2).toFixed(1) + '" y="' + (ytop - 14).toFixed(1) + '" class="s-v s-v-proj" text-anchor="end">≈ ' + pct(P * 100) + '</text>';
+      '<text x="' + (X(1) + 6).toFixed(1) + '" y="' + (yp - 18).toFixed(1) + '" class="s-v s-v-proj" text-anchor="end">≈ ' + pct(P * 100) + '</text>';
     g2.innerHTML = svg;
+    // 02/11/2026: la stima a fine anno sta accanto al punto giallo (prima stava in alto, sopra la fascia, lontano dal punto).
+    // Di solito va sopra il punto; se lì tocca una linea, un punto o un'altra scritta (a dicembre il punto di oggi si avvicina)
+    // prova a sinistra, sotto, poi più in alto o più in basso. La riga tratteggiata di oggi si evita, se si può.
+    var tStima = g2.querySelector('.s-v-proj');
+    var vicino = function () {
+      try {
+        if (!tStima.isConnected) return;                    // il grafico è stato ridisegnato nel frattempo
+        var bp = tStima.getBBox();
+        if (!bp.width) return;                              // grafico nascosto: si sistema quando ricompare
+        var w = bp.width, h = bp.height, su = Number(tStima.getAttribute('y')) - bp.y, xe = X(1);
+        var scatole = [[xr - 9, yr - 9, xr + 9, yr + 9], [xe - 9, yp - 9, xe + 9, yp + 9]];
+        [].forEach.call(g2.querySelectorAll('text'), function (t) {
+          if (t === tStima) return;
+          var b = t.getBBox();
+          scatole.push([b.x - 3, b.y - 2, b.x + b.width + 3, b.y + b.height + 2]);
+        });
+        var punti = [];
+        [stimaC, reale, medio].forEach(function (L) { L.forEach(function (p) { punti.push([X(p[0]), Yv(p[1])]); }); });
+        var prova = function (x, yb) {    // 0: libero; 1: taglia la riga di oggi; 2: tocca qualcosa o esce dal grafico
+          var a = x - w, b = yb - su, c = x, d = b + h, i;
+          if (b < 2 || d > Yb - 2 || a < X0) return 2;
+          for (i = 0; i < scatole.length; i++) { var s = scatole[i]; if (a < s[2] && c > s[0] && b < s[3] && d > s[1]) return 2; }
+          for (i = 0; i < punti.length; i++) { var p = punti[i]; if (p[0] > a - 5 && p[0] < c + 5 && p[1] > b - 5 && p[1] < d + 5) return 2; }
+          return xr > a - 4 && xr < c + 4 ? 1 : 0;
+        };
+        var posti = [], k, dy;
+        for (k = 0; k <= 6; k++) {          // sopra, in alto a sinistra, sotto, in basso a sinistra; poi sempre più lontano
+          dy = k * (h + 2);
+          posti.push([xe + 6, yp - 18 - dy, 0], [xe - 12, yp - 14 - dy, 0], [xe + 6, yp + 18 + su + dy, 8], [xe - 12, yp + 14 + su + dy, 8]);
+        }
+        posti.push([xe - 14, yp + su - h / 2, 0]);           // a sinistra, alla stessa altezza
+        var meglio = null, costo = 1e9;
+        posti.forEach(function (q) {        // vince il posto libero più vicino al punto (sotto conta un po' di più; tagliare la riga di oggi anche)
+          var v = prova(q[0], q[1]);
+          if (v === 2) return;
+          var cx = q[0] - w / 2 - xe, cy = q[1] - su + h / 2 - yp, c = Math.sqrt(cx * cx + cy * cy) + q[2] + (v ? 25 : 0);
+          if (c < costo) { costo = c; meglio = q; }
+        });
+        if (meglio) { tStima.setAttribute('x', meglio[0].toFixed(1)); tStima.setAttribute('y', meglio[1].toFixed(1)); }
+      } catch (e) { /* resta sopra il punto */ }
+    };
+    vicino();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(vicino);   // con il carattere vero la scritta cambia larghezza
     var finoA = fresco ? 'fino a oggi' : 'fino ' + al(rif);
     g2.setAttribute('aria-label', Y + ': ' + pct(R0 * 100) + ' ' + finoA + ', stima a fine anno circa ' + pct(P * 100));
     var lo = fascia[0].P * 100, hi = fascia[fascia.length - 1].P * 100;
