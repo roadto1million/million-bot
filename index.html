@@ -2224,6 +2224,10 @@ body.m-stelle .compagno:not(.gesto) .r-braccio-d, body.m-stelle .guida .r-bracci
 .piede .priv p { margin: 6px 0 0; max-width: 68ch; line-height: 1.55; }
 body.buio .piede .priv summary::after { color: #6ee7a8; }
 </style>
+<style>
+/* 03/11/2026 (v203): online l'area riservata ha solo il Tema del sito; l'area completa è solo sul portatile */
+body.solo-tema .lato .voce[data-vista]:not([data-vista="tema"]), body.solo-tema #lato-stato { display: none !important; }
+</style>
 </head>
 <body class="pub">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -2852,7 +2856,9 @@ body.buio .piede .priv summary::after { color: #6ee7a8; }
 // ------------------------------------------------------------------ dati: ramo "dati" del repository
 window.PUB = true;
 const QS = new URLSearchParams(location.search);
-const BASE = QS.get('base') || `https://raw.githubusercontent.com/${location.hostname.split('.')[0]}/${location.pathname.split('/').filter(Boolean)[0] || ''}/dati/`;
+// 03/11/2026 (v203): l'area riservata completa c'è solo sul portatile (http://127.0.0.1:8777/, la serve il bot): lì i dati arrivano dalla stessa cartella
+window.MB_LOCALE = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
+const BASE = QS.get('base') || (window.MB_LOCALE ? location.origin + '/' : `https://raw.githubusercontent.com/${location.hostname.split('.')[0]}/${location.pathname.split('/').filter(Boolean)[0] || ''}/dati/`);
 const prendi = async (nome) => { const r = await fetch(BASE + nome + '?t=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }); if (!r.ok) throw new Error(nome + ' ' + r.status); return r; };
 const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
 let CHIAVE = null;
@@ -3614,6 +3620,7 @@ dash.calc('strategie', {
   const body = document.body, blocco = $('#bt-blocco');
   const QS2 = new URLSearchParams(location.search);
   let P = null, D = null, L = null;
+  let soloTema = false;   // 03/11/2026 (v203): online l'area riservata ha solo il Tema del sito (i dati del bot restano sul portatile)
   let vista = lsGet('vista') || 'panoramica';
   const TITOLI = { panoramica: 'Panoramica', trade: 'Trade', strategie: 'Strategie', backtest: 'Backtest', sistema: 'Sistema', tema: 'Tema del sito' };
 
@@ -4337,13 +4344,17 @@ dash.calc('strategie', {
   ];
   const BOT_TG = 'https://t.me/primo26xbot?start=';
   function vistaTema(box) {
-    const ora = (D && D.tema) || '';
+    const ora = ((D || P) || {}).tema || '';
     const nome = (k) => { for (const [, L] of TEMI) for (const [c, n] of L) if (c === k) return n; return k; };
     const c0 = card('Tema del sito', 'Di solito il sito sceglie da solo: feste nei loro giorni e meteo vero. Qui puoi vedere ogni tema o metterlo sul sito per tutti.');
     const r = el('p', 'bt-take'); r.append('Adesso sul sito: ', el('span', 'tema-ora', ora ? nome(ora) + ' (scelto da te)' : 'automatico (feste e meteo veri)'));
     c0.append(r);
     c0.append(el('p', 'bt-sub', '«Guarda» apre il sito con quel tema solo per te. «Metti a tutti» apre Telegram: premi Avvia (o invia il messaggio) e il bot cambia il sito per tutti in pochi secondi. Puoi anche scrivere al bot /tema natale, /tema neve, /tema nessuno, /tema auto.'));
     box.append(c0);
+    if (soloTema) {   // v203: dove sono finiti i dati del bot
+      const cn = card('Dati del bot', 'Per sicurezza trade, strategie, backtest e sistema non sono più su internet: li vedi solo sul portatile, con APRI_AREA_RISERVATA o dal link nella dashboard, mentre il bot è acceso. Da qui puoi solo cambiare il tema del sito.');
+      cn.style.marginTop = '16px'; box.append(cn);
+    }
     for (const [gruppo, L] of TEMI) {
       if (gruppo === 'Meteo di giorno' || gruppo === 'Notte') continue;   // 02/11/2026: gruppi tolti dall'area riservata
       const cg = card(gruppo); cg.style.marginTop = '16px';
@@ -4363,6 +4374,7 @@ dash.calc('strategie', {
   const VISTE = { panoramica: vistaPanoramica, trade: vistaTrade, strategie: vistaStrategie, sistema: vistaSistema, tema: vistaTema };
 
   function disegnaVista() {
+    if (soloTema) { const box = $('.vista[data-v="tema"]'); box.replaceChildren(); vistaTema(box); return; }
     if (window.PUB) return;
     const st = statoBot();
     const ls = $('#lato-stato'); ls.replaceChildren(el('span', 'punto' + (st.cls ? ' fermo' : '')), st.txt + (L ? ' · ' + oraIt(L.aggiornato, false) : ''));
@@ -4375,6 +4387,7 @@ dash.calc('strategie', {
     window.scrollTo(0, top);
   }
   function mostraVista(v) {
+    if (soloTema) v = 'tema';   // v203: online c'è solo il Tema
     if (!TITOLI[v]) v = 'panoramica';
     const cambia = v !== vista;
     vista = v; lsSet('vista', v);
@@ -4401,7 +4414,25 @@ dash.calc('strategie', {
     $('#posto-pub').append(blocco);
     $('#calcolo').after($('#conto-demo')); { const st = $('#stima2026'); if (st) $('#calcolo').after(st); }   // 02/11/2026: la stima dell'anno subito dopo "Come è calcolato"     // il conto demo dopo i trade dell'anno e il loro "Come è calcolato"
   }
+  // 03/11/2026 (v203, Samuel: paura degli hacker): online la password apre solo il Tema del sito; si controlla con sale.json,
+  // perché i file cifrati con i dati del bot non sono più su internet. Sul portatile (MB_LOCALE) si entra nell'area completa come prima.
+  async function chiaveGiusta(bytes) {
+    const s = await (await prendi('sale.json')).json();
+    const h = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))).map((x) => x.toString(16).padStart(2, '0')).join('');
+    return h.slice(0, 16) === s.verifica;
+  }
+  async function entraTema(bytes, salva) {
+    if (!(await chiaveGiusta(bytes))) throw new Error('chiave non valida');
+    if (salva) lsSet('k', btoa(String.fromCharCode(...bytes)));
+    if (QS2.has('pub')) { QS2.delete('pub'); history.replaceState(null, '', location.pathname + (QS2.toString() ? '?' + QS2 : '')); }
+    soloTema = true; body.classList.remove('pub'); body.classList.add('solo-tema');
+    $('#v-login').hidden = true; $('#pub').hidden = true;
+    $('#vista-agg').textContent = '';
+    vista = null; mostraVista('tema');
+    window.scrollTo(0, 0);
+  }
   async function entra(bytes, salva) {
+    if (!window.MB_LOCALE) return entraTema(bytes, salva);
     CHIAVE = await crypto.subtle.importKey('raw', bytes, 'AES-GCM', false, ['decrypt']);
     D = await decifra('live.enc');               // se la chiave non è più valida qui fallisce
     if (salva) lsSet('k', btoa(String.fromCharCode(...bytes)));
@@ -4672,7 +4703,7 @@ dash.calc('strategie', {
   });
   (async () => {
     const k = lsGet('k');
-    const auto = k && !QS2.has('pub');
+    const auto = k && !QS2.has('pub') && window.MB_LOCALE;   // v203: online si entra solo col pulsante (c'è solo il Tema)
     modoPubblico();
     if (auto) $('#pub').hidden = true;           // evita di mostrare la pagina pubblica per un attimo
     caricaBacktest();
