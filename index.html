@@ -4088,7 +4088,15 @@ dash.calc('strategie', {
       window.scrollTo({ top: Math.max(0, scrollY + pan.getBoundingClientRect().top - (sc.offsetHeight + 8 + 14)), behavior: 'smooth' });
     }));
   }
-  $$('.scheda').forEach((b) => b.addEventListener('click', () => mostraPannello(b.dataset.pannello)));
+  $$('.scheda').forEach((b) => b.addEventListener('click', () => {
+    mostraPannello(b.dataset.pannello);
+    // 03/11/2026 (v202): se si era scesi in basso, si torna all'inizio della sezione scelta (Samuel); se si è più in alto, non si muove
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const sc = $('#schede'), pan = $('.pannello[data-p="' + b.dataset.pannello + '"]'); if (!sc || !pan) return;
+      const y = Math.max(0, scrollY + pan.getBoundingClientRect().top - (sc.offsetHeight + 8 + 14));
+      if (scrollY > y + 2) window.scrollTo({ top: y, behavior: 'smooth' });
+    }));
+  }));
   $$('[data-vai]').forEach((b) => b.addEventListener('click', () => vai(b.dataset.vai)));
   // "Sopra ogni media" / "Sopra ogni crollo": aprono "Perché è diverso" e scorrono al loro riquadro
   $$('[data-vai-a]').forEach((b) => b.addEventListener('click', (ev) => {
