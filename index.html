@@ -1789,10 +1789,30 @@ body.buio:not(.pub) .come mark { color: #f2f5ff; background: linear-gradient(tra
 /* 02/11/2026: sezione "Come potrebbe finire l'anno" (stima dalla forma media degli anni passati) */
 .stima2026 { margin: 22px 0; padding: 22px 22px 18px; background: var(--pannello, #fff); border: 1px solid var(--linea, #dfe9e2); border-radius: var(--raggio, 22px); box-shadow: var(--ombra, 0 10px 30px rgba(15,45,34,.08)); }
 .stima-tit { font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 24px; margin: 2px 0 12px; color: var(--inchiostro, #10241a); }
-.stima-num { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-bottom: 6px; }
-.stima-num span { display: block; font-size: 12.5px; color: var(--grigio, #44564b); }
-.stima-num b { font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 26px; }
-.v-reale { color: #0f7a47; } .v-proj { color: #c48a12; } .v-fascia { color: #7d8f84; font-size: 20px !important; }
+/* 03/11/2026 (Samuel): stima anche senza il limite di lotti — due schede (con / senza) con oggi, fine anno e fascia;
+   il grafico segue la scheda scelta (si tocca) */
+.stima-num { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 0 10px; }
+.stima-sc { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 6px 24px; margin: 0; padding: 12px 15px; border: 1px solid var(--linea, #dfe9e2);
+  border-radius: 16px; background: var(--pannello-2, #f6faf7); color: inherit; font: inherit; text-align: left; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; transition: border-color .2s, box-shadow .2s, background-color .2s; }
+.stima-sc:hover { border-color: #b4c7bb; }
+.stima-sc.attivo { background: #fff; border-color: #1f4d3a; box-shadow: inset 0 0 0 1px #1f4d3a, 0 6px 16px rgba(15,45,34,.08); }
+.stima-sc[disabled] { cursor: default; opacity: .55; }
+.sc-tit { flex: 1 0 100%; display: flex; align-items: center; gap: 8px; font: 700 13px/1.25 var(--sans, Inter, sans-serif); color: var(--inchiostro, #10241a); }
+.sc-tit::before { content: ''; flex: none; box-sizing: border-box; width: 14px; height: 14px; border-radius: 50%; border: 2px solid #9fb3a7; background: #fff; }
+.stima-sc.attivo .sc-tit::before { border: 4px solid #1f4d3a; }
+.sc-n span { display: block; font-size: 12.5px; color: var(--grigio, #44564b); }
+.sc-n b { display: inline-block; font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 26px; line-height: 1.15; }
+.sc-f { flex: 1 0 100%; font-size: 12.5px; color: #7d8f84; }
+.sc-f .v-fascia { font-weight: 600; color: var(--grigio, #44564b); white-space: nowrap; }
+.v-reale { color: #0f7a47; } .v-proj { color: #c48a12; }
+@media (max-width: 560px) {
+  .stima-num { gap: 8px; }
+  .stima-sc { padding: 10px 11px 11px; gap: 4px 12px; }
+  .sc-tit { font-size: 12.5px; gap: 6px; }
+  .sc-tit::before { width: 13px; height: 13px; }
+  .sc-n b { font-size: 22px; }
+}
 .stima-graf { width: 100%; height: auto; display: block; margin: 4px 0 2px; overflow: visible; }
 .stima-graf .sg { stroke: rgba(16,36,26,.09); stroke-width: 1.5; }
 .stima-graf .st, .stima-graf .sm { fill: #7d8f84; font: 500 15px var(--sans, Inter, sans-serif); }
@@ -2544,10 +2564,19 @@ body.pub .testata .menu .menu-piu-b[aria-expanded="true"] { color: #f6d680; }
   <section class="stima2026" id="stima2026" aria-label="Come potrebbe finire l'anno" data-robot-umore="curioso" data-robot="Se il resto dell'anno va come la media, <b>ecco dove arrivo</b>. Ma è solo una stima!">
     <h2 class="stima-tit">Come potrebbe finire l'anno</h2>
     <div class="stima-corpo">
-      <div class="stima-num">
-        <div><span class="lab-reale">Oggi</span><b class="v-reale">—</b></div>
-        <div><span>Stima a fine anno</span><b class="v-proj">—</b></div>
-        <div><span>Fascia</span><b class="v-fascia">—</b></div>
+      <div class="stima-num" role="tablist" aria-label="Stima con e senza il limite di lotti">
+        <button type="button" class="stima-sc attivo" data-modo="con" role="tab" aria-selected="true">
+          <span class="sc-tit">Con il limite di lotti</span>
+          <span class="sc-n"><span class="lab-reale">Oggi</span><b class="v-reale">—</b></span>
+          <span class="sc-n"><span>Fine anno</span><b class="v-proj">—</b></span>
+          <span class="sc-f">fascia <span class="v-fascia">—</span></span>
+        </button>
+        <button type="button" class="stima-sc" data-modo="senza" role="tab" aria-selected="false">
+          <span class="sc-tit">Senza limite di lotti</span>
+          <span class="sc-n"><span class="lab-reale">Oggi</span><b class="v-reale">—</b></span>
+          <span class="sc-n"><span>Fine anno</span><b class="v-proj">—</b></span>
+          <span class="sc-f">fascia <span class="v-fascia">—</span></span>
+        </button>
       </div>
       <svg class="stima-graf" viewBox="0 0 640 370" role="img" aria-label="Stima a fine anno"></svg>
       <div class="stima-leg">
@@ -4680,6 +4709,12 @@ dash.onData(() => {
   // Per ogni anno passato: quanta parte del risultato finale (in logaritmo) aveva fatto a ogni data; media delle forme
   // (media mobile di 21 giorni); l'anno in corso continua dal punto di oggi seguendo la forma media.
   // 02/11/2026: se i dati sono fermi da più di 10 giorni, al posto di "oggi" compare la data dell'ultimo dato.
+  // 03/11/2026 (Samuel: "la previsione l'abbiamo messa solo con il limite dei lotti"): due schede in alto, "Con il limite" e
+  // "Senza limite di lotti", ognuna con oggi, fine anno e fascia; il grafico, la legenda e la frase seguono la scheda scelta
+  // (si tocca). Con il limite: saldo dei trade come prima (numeri invariati). Senza limite: la stessa serie della sezione
+  // "E se non ci fosse il limite di lotti?" (window.mbSenzaLimite, con i trade nuovi del bot), stesso metodo.
+  // 03/11/2026: la frase della fascia spiega perché gli anni sono quelli (2021 e 2022 e non il peggiore e il migliore come anno intero): la fascia segue come sono
+  // andati gli ULTIMI MESI di ogni anno passato, non il risultato dell'anno intero (Samuel: "non sono il 2020 e il 2024?").
   var sez = document.getElementById('stima2026');
   if (!sez || typeof dash === 'undefined') return;
   var MESI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
@@ -4714,18 +4749,15 @@ dash.onData(() => {
   function onde(cx, cy, r, col) {
     return ['', ' due'].map(function (c) { return '<circle class="punto-onda' + c + '" cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + col + '" opacity=".18"/>'; }).join('');
   }
-  var ultimoDisegno = '';
+  var ultimoDisegno = '', modo = 'con';
 
-  function disegna() {
+  // ---------------------------------------------------------------- le due serie del conto (saldo a fine giornata)
+  function serieCon() {        // con il limite: i trade del sito, come prima
     var T = dash.data('trade');
-    if (T.status !== 'ok' || !T.data || !T.data.length) return;
+    if (T.status !== 'ok' || !T.data || !T.data.length) return null;
     var rows = T.data.filter(function (r) { return r && r.chiusura && r.saldo != null && isFinite(Number(r.saldo)); }).slice();
-    if (rows.length < 20) return;
+    if (rows.length < 20) return null;
     rows.sort(function (a, b) { return a.chiusura < b.chiusura ? -1 : a.chiusura > b.chiusura ? 1 : Number(a.id) - Number(b.id); });
-    var chiave = rows.length + '|' + rows[rows.length - 1].chiusura + '|' + rows[rows.length - 1].saldo + '|' + sez.clientWidth;
-    if (chiave === ultimoDisegno) return;
-    ultimoDisegno = chiave;
-    // saldo a fine giornata (UTC del giorno scritto nella data)
     var giorno = {}, giorni = [];
     rows.forEach(function (r) {
       var d = r.chiusura.slice(0, 10);
@@ -4734,13 +4766,37 @@ dash.onData(() => {
     });
     var inizio = Number(rows[0].saldo) - Number(rows[0].euro || 0);
     if (!(inizio > 0)) inizio = 1000;
+    return { giorno: giorno, giorni: giorni, inizio: inizio, chiave: rows.length + '|' + rows[rows.length - 1].chiusura + '|' + rows[rows.length - 1].saldo };
+  }
+  function serieSenza() {      // senza limite: dalla sezione "E se non ci fosse il limite di lotti?" (1 = 1.000 € del 1° gennaio 2020)
+    var L = window.mbSenzaLimite;
+    if (!L || !L.d || !L.u || L.d.length < 20) return null;
+    var punti = [];
+    for (var i = 0; i < L.d.length; i++) punti.push([String(L.d[i]).slice(0, 10), Number(L.u[i]), 0]);
+    // la fine di ogni anno già chiuso con il valore esatto (i punti della sezione sono uno ogni qualche giorno): così la percentuale
+    // dell'anno in corso è la stessa delle schede "Gli anni in cui il limite ha pesato"
+    var anni = L.fine ? Object.keys(L.fine).sort() : [];
+    anni.slice(0, -1).forEach(function (y) { var f = L.fine[y]; if (f && Number(f[1]) > 0) punti.push([y + '-12-31', Number(f[1]), 1]); });
+    punti.sort(function (a, b) { return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : a[2] - b[2]; });
+    var giorno = {}, giorni = [];
+    punti.forEach(function (p) {
+      if (!(p[1] > 0)) return;
+      if (!(p[0] in giorno)) giorni.push(p[0]);
+      giorno[p[0]] = p[1];
+    });
+    if (giorni.length < 20) return null;
+    return { giorno: giorno, giorni: giorni, inizio: Number(L.u[0]) > 0 ? Number(L.u[0]) : 1, chiave: String(L.chiave) };
+  }
+
+  // ---------------------------------------------------------------- stima di una serie (metodo del 02/11, invariato)
+  function calcola(s) {
+    var giorno = s.giorno, giorni = s.giorni, inizio = s.inizio;
     var y0 = Number(giorni[0].slice(0, 4)), ultimo = giorni[giorni.length - 1];
     var oggiD = new Date(), oggi = new Date(Date.UTC(oggiD.getFullYear(), oggiD.getMonth(), oggiD.getDate()));
     var ultimoD = new Date(ultimo + 'T00:00:00Z');
     // giorno di riferimento: oggi, se i dati sono aggiornati; altrimenti l'ultimo dato (e al posto di "oggi" si scrive la data)
     var fresco = (oggi - ultimoD) / DAY <= 10 && oggi >= ultimoD;
     var rif = fresco ? oggi : ultimoD;
-    var quando = fresco ? 'oggi' : rif.getUTCDate() + ' ' + BREVI[rif.getUTCMonth()];
     var Y = rif.getUTCFullYear();
     function percorso(y, finoA) {
       // rendimento dall'inizio dell'anno, giorno per giorno (fino all'indice finoA compreso)
@@ -4769,24 +4825,52 @@ dash.onData(() => {
     }
     var nY = giorniAnno(Y), d0 = Math.round((rif - Date.UTC(Y, 0, 1)) / DAY);
     var att = percorso(Y, d0), t0 = d0 / (nY - 1), R0 = att.length ? att[att.length - 1] : 0;
-    var fbar = G.map(function (_, i) { var s = 0; anniOk.forEach(function (y) { s += forme[y][i]; }); return s / anniOk.length; });
+    var fbar = G.map(function (_, i) { var tot = 0; anniOk.forEach(function (y) { tot += forme[y][i]; }); return tot / anniOk.length; });
     var f0 = interp(t0, G, fbar);
-    var tit = sez.querySelector('.stima-tit');
-    tit.textContent = 'Come potrebbe finire il ' + Y;
-    sez.setAttribute('aria-label', 'Come potrebbe finire il ' + Y);
-    var corpo = sez.querySelector('.stima-corpo'), attesa = sez.querySelector('.stima-attesa');
-    if (anniOk.length < 2 || !(f0 >= 0.2) || !(1 + R0 > 0)) {
-      corpo.hidden = true; attesa.hidden = false;
-      attesa.textContent = 'La stima del ' + Y + ' comparirà più avanti nell’anno, quando ci saranno abbastanza trade per confrontarlo con gli anni passati.';
-      return;
-    }
-    corpo.hidden = false; attesa.hidden = true;
-    var P = Math.pow(1 + R0, 1 / f0) - 1;
-    var proiez = anniOk.map(function (y) {
+    var o = { y0: y0, Y: Y, rif: rif, fresco: fresco, forme: forme, anniOk: anniOk, nY: nY, t0: t0, att: att, R0: R0, fbar: fbar, f0: f0 };
+    o.ok = anniOk.length >= 2 && f0 >= 0.2 && 1 + R0 > 0;
+    if (!o.ok) return o;
+    o.P = Math.pow(1 + R0, 1 / f0) - 1;
+    o.fascia = anniOk.map(function (y) {
       var fy = interp(t0, G, forme[y]);
       return { y: y, fy: fy, P: fy >= 0.1 ? Math.pow(1 + R0, 1 / fy) - 1 : null };
-    }).filter(function (o) { return o.P !== null; }).sort(function (a, b) { return a.P - b.P; });
-    var fascia = proiez;   // 02/11/2026: tutti gli anni passati (prima si toglievano il migliore e il peggiore)
+    }).filter(function (q) { return q.P !== null; }).sort(function (a, b) { return a.P - b.P; });   // tutti gli anni passati (02/11/2026)
+    if (!o.fascia.length) o.ok = false;
+    return o;
+  }
+
+  // ---------------------------------------------------------------- schede in alto (oggi, fine anno, fascia di tutte e due)
+  var gruppo = sez.querySelector('.stima-num');
+  function conta(el, v, fmt, durata) {
+    if (!el) return;
+    if (typeof window.mbConta === 'function') window.mbConta(el, v, fmt, durata, 0, gruppo);
+    else el.textContent = fmt(v);
+  }
+  function schede(rc, rs) {
+    [['con', rc], ['senza', rs]].forEach(function (x) {
+      var b = sez.querySelector('.stima-sc[data-modo="' + x[0] + '"]'), r = x[1];
+      if (!b) return;
+      var scelta = x[0] === modo;
+      b.classList.toggle('attivo', scelta);
+      b.setAttribute('aria-selected', scelta ? 'true' : 'false');
+      b.disabled = !r;
+      if (!r) return;
+      var lab = b.querySelector('.lab-reale');
+      if (lab) lab.textContent = r.fresco ? 'Oggi' : al(r.rif).charAt(0).toUpperCase() + al(r.rif).slice(1);
+      // oggi e stima a fine anno salgono quando arrivano sullo schermo, come gli altri numeri del sito (window.mbConta dell'app)
+      conta(b.querySelector('.v-reale'), r.R0 * 100, pct, 2500);
+      conta(b.querySelector('.v-proj'), r.P * 100, function (v) { return '≈ ' + pct(v); }, 3000);
+      b.querySelector('.v-fascia').textContent = pct(r.fascia[0].P * 100) + ' / ' + pct(r.fascia[r.fascia.length - 1].P * 100);
+      b.setAttribute('aria-label', (x[0] === 'con' ? 'Con il limite di lotti' : 'Senza limite di lotti') + ': ' + pct(r.R0 * 100) + ' ' +
+        (r.fresco ? 'oggi' : al(r.rif)) + ', stima a fine anno circa ' + pct(r.P * 100));
+    });
+  }
+
+  // ---------------------------------------------------------------- grafico e frase della serie scelta
+  function grafico(r, senza) {
+    var Y = r.Y, y0 = r.y0, rif = r.rif, fresco = r.fresco, forme = r.forme, anniOk = r.anniOk, nY = r.nY, t0 = r.t0,
+      att = r.att, R0 = r.R0, fbar = r.fbar, f0 = r.f0, P = r.P, fascia = r.fascia;
+    var quando = fresco ? 'oggi' : rif.getUTCDate() + ' ' + BREVI[rif.getUTCMonth()];
     // curve in %
     var medio = G.map(function (t) { return [t, (Math.pow(1 + P, interp(t, G, fbar)) - 1) * 100]; });
     var reale = att.map(function (v, i) { return [i / (nY - 1), v * 100]; });
@@ -4803,6 +4887,7 @@ dash.onData(() => {
     banda.forEach(function (b) { vals.push(b[1], b[2]); });
     var vmax = Math.max.apply(null, vals), vmin = Math.min.apply(null, vals);
     var passo = (vmax - vmin) > 320 ? 100 : 50;
+    if ((vmax - vmin) / passo > 9) passo = Math.ceil((vmax - vmin) / 8 / 100) * 100;   // senza limite: righe non troppo fitte
     var top = Math.ceil((vmax + 10) / passo) * passo, bot = vmin < -8 ? Math.floor(vmin / passo) * passo : 0;
     // larghezza vera del grafico: sul computer si allarga a tutto il riquadro senza ingrandire le scritte
     var g2 = sez.querySelector('.stima-graf');
@@ -4867,9 +4952,9 @@ dash.onData(() => {
         posti.push([xe - 14, yp + su - h / 2, 0]);           // a sinistra, alla stessa altezza
         var meglio = null, costo = 1e9;
         posti.forEach(function (q) {        // vince il posto libero più vicino al punto (sotto conta un po' di più; tagliare la riga di oggi anche)
-          var v = prova(q[0], q[1]);
-          if (v === 2) return;
-          var cx = q[0] - w / 2 - xe, cy = q[1] - su + h / 2 - yp, c = Math.sqrt(cx * cx + cy * cy) + q[2] + (v ? 25 : 0);
+          var v2 = prova(q[0], q[1]);
+          if (v2 === 2) return;
+          var cx = q[0] - w / 2 - xe, cy = q[1] - su + h / 2 - yp, c = Math.sqrt(cx * cx + cy * cy) + q[2] + (v2 ? 25 : 0);
           if (c < costo) { costo = c; meglio = q; }
         });
         if (meglio) { tStima.setAttribute('x', meglio[0].toFixed(1)); tStima.setAttribute('y', meglio[1].toFixed(1)); }
@@ -4878,30 +4963,62 @@ dash.onData(() => {
     vicino();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(vicino);   // con il carattere vero la scritta cambia larghezza
     var finoA = fresco ? 'fino a oggi' : 'fino ' + al(rif);
-    g2.setAttribute('aria-label', Y + ': ' + pct(R0 * 100) + ' ' + finoA + ', stima a fine anno circa ' + pct(P * 100));
-    var lo = fascia[0].P * 100, hi = fascia[fascia.length - 1].P * 100;
-    // oggi e stima a fine anno salgono quando arrivano sullo schermo, come gli altri numeri del sito (window.mbConta dell'app)
-    var gruppo = sez.querySelector('.stima-num');
-    function conta(el, v, fmt, durata) {
-      if (typeof window.mbConta === 'function') window.mbConta(el, v, fmt, durata, 0, gruppo);
-      else el.textContent = fmt(v);
-    }
-    conta(sez.querySelector('.v-reale'), R0 * 100, pct, 2500);
-    var lab = sez.querySelector('.lab-reale');
-    if (lab) lab.textContent = fresco ? 'Oggi' : al(rif).charAt(0).toUpperCase() + al(rif).slice(1);
-    conta(sez.querySelector('.v-proj'), P * 100, function (v) { return '≈ ' + pct(v); }, 3000);
-    sez.querySelector('.v-fascia').textContent = pct(lo) + ' / ' + pct(hi);
+    g2.setAttribute('aria-label', Y + (senza ? ' senza limite di lotti' : ' con il limite di lotti') + ': ' + pct(R0 * 100) + ' ' + finoA +
+      ', stima a fine anno circa ' + pct(P * 100));
     var a1 = anniOk[0], a2 = anniOk[anniOk.length - 1];
-    sez.querySelector('.leg-anno').textContent = Y + ' ' + finoA;
+    sez.querySelector('.leg-anno').textContent = Y + ' ' + finoA + (senza ? ' (senza limite)' : ' (con il limite)');
     sez.querySelector('.leg-medio').textContent = 'anno medio ' + a1 + '–' + a2;
     sez.querySelector('.leg-fascia').textContent = (fascia.length === anniOk.length && anniOk.length === Y - y0) ? 'fascia: tutti gli anni passati' : 'fascia: ' + fascia.length + ' anni passati';
     var p = sez.querySelector('.stima-txt');
-    p.innerHTML = 'In media, ' + al(rif) + ' gli anni dal ' + a1 + ' al ' + a2 + ' avevano già fatto il ' + Math.round(f0 * 100) +
-      '% del loro risultato. Il ' + Y + ' è a <strong>' + pct(R0 * 100) + '</strong>: se gli ultimi mesi andassero come la media, chiuderebbe intorno a <strong>' +
-      pct(P * 100) + '</strong>. La fascia mostra dove sarebbe arrivato seguendo ciascuno degli anni passati' +
-      (fascia.length > 1 ? ', dal peggiore (' + fascia[0].y + ') al migliore (' + fascia[fascia.length - 1].y + ').' : '.');
+    // articolo giusto davanti alla percentuale: "l'87%", "l'8%", "l'11%", "il 64%"
+    function quota(x) { var n = Math.round(x * 100); return (n === 1 || n === 8 || n === 11 || (n >= 80 && n < 90) ? 'l’' : 'il ') + n + '%'; }
+    // la fascia rifà lo stesso calcolo con ogni anno passato: il più basso è l'anno che a questa data aveva già fatto di più del suo
+    // risultato (o più di tutto, e poi era sceso), il più alto quello che ne aveva fatto di meno (03/11/2026, domanda di Samuel)
+    function giaFatto(o) { return o.fy > 1.005 ? 'aveva già fatto più del suo risultato finale e poi era sceso' : 'ne aveva già fatto ' + quota(o.fy); }
+    var basso = fascia[0], altoF = fascia[fascia.length - 1];
+    p.innerHTML = 'In media, ' + al(rif) + ' gli anni dal ' + a1 + ' al ' + a2 + ' avevano già fatto ' + quota(f0) +
+      ' del loro risultato. ' + (senza ? 'Senza limite di lotti' : 'Con il limite') + ' il ' + Y + ' è a <strong>' + pct(R0 * 100) +
+      '</strong>: se gli ultimi mesi andassero come la media, chiuderebbe intorno a <strong>' + pct(P * 100) + '</strong>. ' +
+      (fascia.length > 1 ? 'La fascia rifà lo stesso calcolo con ciascuno degli anni passati: va dal ' + basso.y + ', che ' + al(rif) + ' ' +
+        giaFatto(basso) + ', al ' + altoF.y + ', che ' + (altoF.fy > 1.005 ? giaFatto(altoF) : 'ne aveva fatto solo ' + quota(altoF.fy)) + '.'
+        : 'La fascia rifà lo stesso calcolo con l’anno passato.');
   }
+
+  function disegna() {
+    var sc = serieCon();
+    if (!sc) return;
+    var ss = serieSenza();
+    var chiave = sc.chiave + '|' + (ss ? ss.chiave : '-') + '|' + modo + '|' + sez.clientWidth;
+    if (chiave === ultimoDisegno) return;
+    ultimoDisegno = chiave;
+    var rc = calcola(sc), rs = ss ? calcola(ss) : null, Y = rc.Y;
+    var tit = sez.querySelector('.stima-tit');
+    tit.textContent = 'Come potrebbe finire il ' + Y;
+    sez.setAttribute('aria-label', 'Come potrebbe finire il ' + Y);
+    var corpo = sez.querySelector('.stima-corpo'), attesa = sez.querySelector('.stima-attesa');
+    if (!rc.ok) {
+      corpo.hidden = true; attesa.hidden = false;
+      attesa.textContent = 'La stima del ' + Y + ' comparirà più avanti nell’anno, quando ci saranno abbastanza trade per confrontarlo con gli anni passati.';
+      return;
+    }
+    corpo.hidden = false; attesa.hidden = true;
+    if (!(rs && rs.ok && rs.Y === Y)) rs = null;
+    if (!rs && modo === 'senza') modo = 'con';
+    schede(rc, rs);
+    grafico(modo === 'senza' ? rs : rc, modo === 'senza');
+  }
+  // tocco su una scheda: il grafico passa a quella serie
+  [].forEach.call(sez.querySelectorAll('.stima-sc'), function (b) {
+    b.addEventListener('click', function () {
+      var m = b.getAttribute('data-modo');
+      if (m === modo || b.disabled) return;
+      modo = m; ultimoDisegno = '';
+      try { disegna(); } catch (e) { console.error(e); }
+    });
+  });
   dash.onData(function () { try { disegna(); } catch (e) { console.error(e); } });
+  // la serie senza limite arriva dalla sezione "E se non ci fosse il limite di lotti?" (anche quando cambia)
+  document.addEventListener('mb-senzalimite', function () { try { disegna(); } catch (e) { console.error(e); } });
   // se il riquadro cambia larghezza (o compare dopo essere stato nascosto) il grafico si ridisegna
   if ('ResizeObserver' in window) {
     var largo = 0, gr = sez.querySelector('.stima-graf');
@@ -5101,6 +5218,12 @@ dash.onData(() => {
 
   function aggiorna() {
     S = prepara();
+    // 03/11/2026: la stessa serie senza limite serve alla stima di fine anno ("Come potrebbe finire l'anno"): la si rende
+    // disponibile e si avvisa quando cambia (trade nuovi, Solo Bitcoin / Bitcoin + Giappone 225)
+    if (!window.mbSenzaLimite || window.mbSenzaLimite.chiave !== S.chiave) {
+      window.mbSenzaLimite = { d: S.d, u: S.u, fine: S.fine, chiave: S.chiave };
+      try { document.dispatchEvent(new Event('mb-senzalimite')); } catch (e) { /* browser vecchi: la stima segue i dati */ }
+    }
     var chiave = S.chiave + '|' + Math.round(g.clientWidth);
     if (chiave === chiaveDis) return;
     chiaveDis = chiave;
