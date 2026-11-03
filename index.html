@@ -2757,7 +2757,8 @@ dash.calc('strategie', {
     if (bm && !box.classList.contains('aperto')) bm.click();
     const b = box.querySelector(`.bt-mesi-scelta button[data-m="${m}"]`);
     if (b) b.click();
-    requestAnimationFrame(() => { const v = box.querySelector('.bt-mese-vista') || box; v.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    requestAnimationFrame(() => { const v = box.querySelector('.bt-mese-vista') || box, sc = document.getElementById('schede');   // 03/11/2026: subito sotto la barra delle schede
+      window.scrollTo({ top: Math.max(0, scrollY + v.getBoundingClientRect().top - ((sc ? sc.offsetHeight + 8 : 0) + 14)), behavior: 'smooth' }); });
   }
   const ORDINE = { indexOf: (n) => ((window.RISERVATO || {}).ordine || []).indexOf(n) };   // nomi delle strategie solo nei dati cifrati (riservato.enc)
   const nf = (d) => new Intl.NumberFormat('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: 'always' });
@@ -3816,7 +3817,11 @@ dash.calc('strategie', {
   // "Conto demo" nella barra in alto (computer): porta alla sezione del conto demo
   $$('[data-demo]').forEach((b) => b.addEventListener('click', () => {
     mostraPannello('risultati');
-    requestAnimationFrame(() => $('#conto-demo').scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    // 03/11/2026 (Samuel): come le altre voci, l'inizio della sezione subito sotto la barra delle schede (prima finiva 150 px più giù)
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const t = $('#conto-demo'), sc = $('#schede'); if (!t) return;
+      window.scrollTo({ top: Math.max(0, scrollY + t.getBoundingClientRect().top - ((sc ? sc.offsetHeight + 8 : 0) + 14)), behavior: 'smooth' });
+    }));
   }));
   if (!$('#b-myfxbook').getAttribute('href')) { $('#b-myfxbook').hidden = true; $('#myfxbook-presto').hidden = false; }
   let pannello = 'risultati';
@@ -3895,14 +3900,14 @@ dash.calc('strategie', {
     const pa = dash.params().anno;
     if (pa == null || pa === 'tutti') { $$('#mesi .bt-anno-det[open]').forEach((d) => { d.open = false; }); bAnni.hidden = true; }   // Complessivo: chiude l'anno aperto
     else $('#mesi-indietro').click();                                                                                                 // anno scelto: torna al Complessivo
-    requestAnimationFrame(() => $('.sez-mesi').scrollIntoView({ block: 'start', behavior: 'smooth' }));
+    requestAnimationFrame(() => { const t = $('.sez-mesi'), sc = $('#schede'); if (t) window.scrollTo({ top: Math.max(0, scrollY + t.getBoundingClientRect().top - ((sc ? sc.offsetHeight + 8 : 0) + 14)), behavior: 'smooth' }); });   // 03/11/2026: subito sotto la barra delle schede
   });
   bMesi.addEventListener('click', () => {
     const ap = !$('#mesi').classList.contains('aperto');
     $('#mesi').classList.toggle('aperto', ap); bMesi.setAttribute('aria-expanded', String(ap));
     const pa = dash.params().anno;
     bMesi.textContent = ap ? 'Nascondi i trade' : (pa == null || pa === 'tutti' ? 'Mostra tutti i trade' : 'Mostra tutti i trade dell’anno');
-    if (!ap) $('.sez-mesi').scrollIntoView({ block: 'start' });
+    if (!ap) { const t = $('.sez-mesi'), sc = $('#schede'); if (t) window.scrollTo({ top: Math.max(0, scrollY + t.getBoundingClientRect().top - ((sc ? sc.offsetHeight + 8 : 0) + 14)), behavior: 'smooth' }); }   // 03/11/2026: subito sotto la barra delle schede
   });
 
   // ================================================================== area riservata
