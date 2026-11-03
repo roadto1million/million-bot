@@ -1916,7 +1916,7 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
 .nota-limite { margin-top: 4px; }
 .link-sl { background: none; border: 0; padding: 0; font: inherit; color: #a7801d; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
 body.pub.buio .link-sl { color: #f4d27a; }
-.barre-sl { display: flex; justify-content: flex-end; margin: 2px 0 8px; }
+.barre-sl { display: flex; justify-content: flex-end; margin: 4px 0 0; }   /* 03/11/2026: sotto il grafico (Samuel) */
 .b-sl { background: rgba(227,178,60,.12); border: 1px solid rgba(227,178,60,.55); color: #8a6a14; font: 600 13px var(--sans, Inter, sans-serif); padding: 6px 12px; border-radius: 999px; cursor: pointer; }
 .b-sl:hover { background: rgba(227,178,60,.22); }
 </style>
@@ -2591,8 +2591,8 @@ body.m-stelle .compagno:not(.gesto) .r-braccio-d, body.m-stelle .guida .r-bracci
       <p class="mg-fonte solo-pub">Backtest dal 2020, con i trade del conto demo dal 26 ottobre 2026.</p>
       <p class="bt-sub solo-pub">Ogni barra è un mese dell'anno scelto: sopra lo zero il mese ha chiuso in guadagno, sotto in perdita. Passa sopra una barra per i dettagli.</p>
       <p class="bt-sub solo-priv">In % del saldo (variazione nel mese, o nell'anno in Complessivo); passa sopra una barra per vedere anche gli R.</p>
-      <div class="barre-sl solo-pub"><button type="button" class="b-sl" data-vai-sez="senzalimiti">E senza il limite di lotti? →</button></div>
       <div class="bt-chart bt-small" id="barre" data-source="mesi"></div>
+      <div class="barre-sl solo-pub"><button type="button" class="b-sl" data-vai-sez="senzalimiti">E senza il limite di lotti? →</button></div>
     </section>
     <section class="bt-card solo-priv" id="per-strategia">
       <h3>Per strategia</h3>
