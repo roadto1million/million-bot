@@ -2108,6 +2108,10 @@ body.pub.buio .menu-tel .menu-gruppo[open] > summary { color: color-mix(in srgb,
 body.pub.buio .menu-tel button + button, body.pub.buio .menu-piu button + button, body.pub.buio .menu-tel .menu-gruppo, body.pub.buio .menu-tel .menu-gruppo + button { border-top-color: rgba(255, 255, 255, .07); }
 </style>
 <style>
+/* 03/11/2026 (v190): barra in alto senza riquadro (Samuel): logo, scritte e pulsanti stanno direttamente sullo sfondo del sito */
+body.pub .testata-in, body.pub.buio .testata-in { background: none !important; border-color: transparent !important; box-shadow: none !important; }
+</style>
+<style>
 /* 03/11/2026: a Carnevale il robottino tiene due palloncini: il braccio si muove appena, così non vanno sopra la testa */
 body.m-stelle .compagno:not(.gesto) .r-braccio-d, body.m-stelle .guida .r-braccio-d { animation: palloncini 3.2s ease-in-out infinite !important; }
 @keyframes palloncini { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-3deg); } }
