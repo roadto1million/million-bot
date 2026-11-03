@@ -4127,14 +4127,14 @@ dash.calc('strategie', {
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !mTel.hidden) { menuTel(false); bMenu.focus(); } });
   // "Il calo dipende da quanto rischi": backtest (dal 2020 al 22/10/2026, trade 1-1396) con tutti i rischi moltiplicati per lo stesso numero.
   // RS_BASE = per ogni moltiplicatore [saldo finale, picco, calo massimo] a fine backtest (si rifanno con ricerca/rischi_scala_base.py se il backtest cambia);
-  // poi si continua con i trade nuovi (id > RS_ULT) usando la stessa percentuale di rischio di ognuno, moltiplicata. Così arriva fino a oggi come i grafici.
+  // poi si continua con i trade nuovi (id > RS_ULT), ognuno col suo conto (v199): vedi sotto. Così arriva fino a oggi come i grafici.
   { const RS_BASE = {"0.25": [16878.28, 16878.28, 0.12358], "0.5": [204190.42, 204190.42, 0.22093], "1": [5368902.54, 5368902.54, 0.38175], "1.5": [9022318.05, 9022318.05, 0.53967], "2": [10033575.65, 10033575.65, 0.68157]}, RS_ULT = 1396;
     const bs = $$('.rs-b'); let rsF = '1';
     const eur = (v) => v >= 1e6 ? 'circa ' + num(v / 1e6, 1) + ' mln €' : 'circa ' + num(Math.round(v / 1000), 0) + ' mila €';
     function rsAggiorna() {
       if (!bs.length || modo !== 'j') return;
       const T = dash.data('trade'); if (T.status !== 'ok' || !T.data.length) return;
-      const righe = T.data.map((r) => ({ id: Number(r.id), c: String(r.chiusura), R: Number(r.R), euro: Number(r.euro), saldo: Number(r.saldo) }))
+      const righe = T.data.map((r) => ({ id: Number(r.id), c: String(r.chiusura), R: Number(r.R), euro: Number(r.euro), saldo: Number(r.saldo), fs: Number(r.fs) }))
         .sort((a, b) => (a.c < b.c ? -1 : a.c > b.c ? 1 : a.id - b.id));
       const fatti = {}; let ultimo = '';
       for (const k in RS_BASE) fatti[k] = { s: RS_BASE[k][0], p: RS_BASE[k][1], c: RS_BASE[k][2] };
@@ -4142,8 +4142,16 @@ dash.calc('strategie', {
         ultimo = r.c.slice(0, 10);
         if (r.id <= RS_ULT || i === 0) return;
         const prima = righe[i - 1].saldo; if (!r.R || !(prima > 0)) return;
-        const w = r.euro / (prima * r.R);                     // rischio di quel trade, in frazione del saldo
-        for (const k in fatti) { const x = fatti[k]; x.s *= Math.max(0, 1 + Number(k) * w * r.R); x.p = Math.max(x.p, x.s); x.c = Math.max(x.c, 1 - x.s / x.p); }
+        // 03/11/2026 (v199): ogni rischio ha il SUO conto. Il conto vero ("come i miei") è sopra i 5 milioni e lì il limite di 80 lotti
+        // taglia quasi ogni trade; un conto più piccolo (un quarto, metà) non lo tocca, quindi per lui conta il trade intero: pieno = risultato
+        // senza limite (fs = quanto il limite ha tolto, lo scrive il bot). Se invece il conto è così grande da toccare il limite, resta agli
+        // stessi lotti del conto vero, cioè agli stessi euro.
+        const g1 = r.euro / prima, fs = r.fs > 0 ? r.fs : 1, pieno = fs * (1 + g1) - 1, alLimite = Math.abs(fs - 1) > 1e-9;
+        for (const k in fatti) {
+          const x = fatti[k]; let g = Number(k) * pieno;
+          if (alLimite && Math.abs(g * x.s) > Math.abs(r.euro)) g = r.euro / x.s;
+          x.s *= Math.max(0, 1 + g); x.p = Math.max(x.p, x.s); x.c = Math.max(x.c, 1 - x.s / x.p);
+        }
       });
       const x = fatti[rsF]; if (!x) return;
       const pc = Math.round(x.c * 100);
