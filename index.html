@@ -5048,8 +5048,7 @@ dash.onData(() => {
       rc.querySelector('.sa-barra i').style.setProperty('--w', w(r.c));
       em.style.setProperty('--l', w(r.c));
       em.style.setProperty('--t', d > 0 ? ((Math.max(0, r.u) - Math.max(0, r.c)) / alto * 100).toFixed(2) + '%' : '0%');
-      el.querySelector('.sa-tolto').textContent = (d >= 0 ? 'il limite ha tolto ' : 'il limite ha evitato ') + it(Math.abs(d)) +
-        (Math.round(Math.abs(d)) === 1 ? ' punto' : ' punti');
+      el.querySelector('.sa-tolto').textContent = tolto(r.u, r.c);
       el.setAttribute('aria-label', r.y + ': ' + pct(r.u) + ' senza limite, ' + pct(r.c) + ' con il limite');
     });
     if (ug.length) {
@@ -5063,6 +5062,18 @@ dash.onData(() => {
     // 02/11/2026: la frase del robottino nomina da sola gli anni in cui il limite ha tolto qualcosa (prima "del 2025 e del 2026" scritti a mano)
     if (anniLim.length) sez.dataset.robot = 'Il calo ' + anniLim.map(function (y) { return 'del ' + y; }).join(', ').replace(/, (del \d+)$/, ' e $1') +
       ' non è colpa mia: <b>è il limite di lotti del broker</b>.';
+  }
+  // 03/11/2026 (Samuel: "94 punti? piuttosto metti la percentuale tolta"): quanto del guadagno dell'anno ha tolto il limite,
+  // cioè la parte a righe della barra verde (2025: +441% invece di +535% = il 18% del guadagno in meno)
+  function tolto(u, c) {
+    function q(x) {
+      var n = Math.round(x);
+      return n < 1 ? 'meno dell’1%' : (n === 1 || n === 8 || n === 11 || (n >= 80 && n < 90) ? 'l’' : 'il ') + it(n) + '%';
+    }
+    if (u > 0 && c >= 0 && c <= u) return 'il limite ha tolto ' + q((u - c) / u * 100) + ' del guadagno';
+    if (u > 0 && c < 0) return 'senza limite l’anno sarebbe stato in guadagno';
+    if (u < 0 && c > u) return 'il limite ha evitato ' + q((c - u) / -u * 100) + ' della perdita';
+    return 'con il limite è andata meglio';
   }
   // numeri delle schede: salgono insieme quando gli anni arrivano sullo schermo (senza il saltino finale)
   function contaAnno(el, v) {
