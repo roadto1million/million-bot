@@ -2227,6 +2227,13 @@ body.buio .piede .priv summary::after { color: #6ee7a8; }
 <style>
 /* 03/11/2026 (v203): online l'area riservata ha solo il Tema del sito; l'area completa è solo sul portatile */
 body.solo-tema .lato .voce[data-vista]:not([data-vista="tema"]), body.solo-tema #lato-stato { display: none !important; }
+/* 03/11/2026 (v204, Samuel: "tutte le cose che posso già vedere sul sito pubblico non voglio che compaiano nell'area privata") */
+body.priv-locale #andamento, body.priv-locale #anni, body.priv-locale #mesi-grafico, body.priv-locale #anno-numeri,
+body.priv-locale #senzalimiti, body.priv-locale #stima2026, body.priv-locale #calcolo > p:not(.solo-priv),
+body.priv-locale .lato .voce[data-vista="tema"] { display: none !important; }
+body.priv-locale .bt-grid { grid-template-columns: 1fr; }
+body.priv-locale .griglia-4.tre { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 1100px) { body.priv-locale .griglia-4.tre { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>
 </head>
 <body class="pub">
@@ -2857,7 +2864,7 @@ body.solo-tema .lato .voce[data-vista]:not([data-vista="tema"]), body.solo-tema 
 window.PUB = true;
 const QS = new URLSearchParams(location.search);
 // 03/11/2026 (v203): l'area riservata completa c'è solo sul portatile (http://127.0.0.1:8777/, la serve il bot): lì i dati arrivano dalla stessa cartella
-window.MB_LOCALE = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
+window.MB_LOCALE = /^(127\.0\.0\.1|localhost)$|\.ts\.net$/.test(location.hostname);   // v204: anche dal telefono con Tailscale (indirizzo privato .ts.net)
 const BASE = QS.get('base') || (window.MB_LOCALE ? location.origin + '/' : `https://raw.githubusercontent.com/${location.hostname.split('.')[0]}/${location.pathname.split('/').filter(Boolean)[0] || ''}/dati/`);
 const prendi = async (nome) => { const r = await fetch(BASE + nome + '?t=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }); if (!r.ok) throw new Error(nome + ' ' + r.status); return r; };
 const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
@@ -4226,8 +4233,9 @@ dash.calc('strategie', {
     const g = el('div', 'griglia-4');
     g.append(
       kpi('Saldo', eur(L.saldo), 'partito da ' + eur(L.saldo_inizio) + (L.inizio ? ' il ' + L.inizio : '')),
-      kpi('Rendimento', pctS(L.rendimento_pct, 2), 'calo massimo ' + num(L.calo_max_pct, 1) + '%', L.rendimento_pct > 0 ? 'pos' : L.rendimento_pct < 0 ? 'neg' : ''),
-      kpi('Trade chiusi', num(L.trade_chiusi), num(L.tp) + ' TP · ' + num(L.sl) + ' SL · ' + rS(L.R)),
+      // v204: rendimento e trade chiusi si vedono già sul sito pubblico (conto demo): qui calo massimo e risultato in R
+      kpi('Calo massimo', L.calo_max_pct ? '−' + num(L.calo_max_pct, 1) + '%' : '0%', 'dal punto più alto del saldo'),
+      kpi('Risultato in R', rS(L.R), 'somma dei trade chiusi', L.R > 0 ? 'pos' : L.R < 0 ? 'neg' : ''),
       kpi('Posizioni aperte', num(L.posizioni_aperte), 'al massimo ' + (D.pos_max ?? '—')));
     box.append(g);
     const g3 = el('div', 'griglia-3'); g3.style.marginTop = '16px';
@@ -4312,9 +4320,8 @@ dash.calc('strategie', {
   function vistaSistema(box) {
     if (!D) return nessunDato(box);
     const st = statoBot(), c = D.conto || {};
-    const g = el('div', 'griglia-4');
-    g.append(kpi('Bot', st.txt, 'ultimo segnale ' + oraIt(L.aggiornato), st.cls ? 'neg' : 'pos'),
-      kpi('Trading automatico', D.auto || '—', 'conto ' + (L.conto || '—') + ' XM'),
+    const g = el('div', 'griglia-4 tre');   // v204: niente "Bot attivo", c'è già sul sito pubblico
+    g.append(kpi('Trading automatico', D.auto || '—', 'conto ' + (L.conto || '—') + ' XM'),
       kpi('Conto XM', c.saldo != null ? eur(c.saldo) : '—', c.equity != null ? 'equity ' + eur(c.equity) + ' · ' + (c.valuta || '') : ''),
       kpi('Posizioni', num(L.posizioni_aperte) + ' / ' + (D.pos_max ?? '—'), 'aperte su XM / massimo insieme'));
     box.append(g);
@@ -4323,7 +4330,7 @@ dash.calc('strategie', {
     cp.append(el('p', 'bt-take', p.n ? `In media ${num(p.media, 1)} $, da ${num(p.min, 1)} a ${num(p.max, 1)} $ (variazione ${num(p.max - p.min, 1)} $, ${num(p.var_pct, 3)}%), ${num(p.n)} misure.` : 'Ancora nessuna misura.'));
     box.append(cp);
     const ci = card('Come si aggiorna questa pagina'); ci.style.marginTop = '16px';
-    ci.append(el('p', 'bt-sub', 'Il bot carica i dati cifrati ogni 5 minuti e subito quando apre o chiude un trade. La pagina li rilegge da sola ogni 2 minuti. Se il bot non manda dati per più di 20 minuti, qui compare "bot fermo".'));
+    ci.append(el('p', 'bt-sub', 'Il bot scrive i dati cifrati sul portatile ogni minuto e subito quando apre o chiude un trade; la pagina li rilegge da sola ogni 2 minuti. Si apre solo dal portatile e dai tuoi dispositivi con Tailscale, mai da internet. Se il bot non manda dati per più di 20 minuti, qui compare "bot fermo".'));
     box.append(ci);
   }
   // tema del sito: anteprima solo per te (si apre il sito con il tema) o per tutti (il bot lo mette sul sito, comando Telegram /tema)
@@ -4352,7 +4359,7 @@ dash.calc('strategie', {
     c0.append(el('p', 'bt-sub', '«Guarda» apre il sito con quel tema solo per te. «Metti a tutti» apre Telegram: premi Avvia (o invia il messaggio) e il bot cambia il sito per tutti in pochi secondi. Puoi anche scrivere al bot /tema natale, /tema neve, /tema nessuno, /tema auto.'));
     box.append(c0);
     if (soloTema) {   // v203: dove sono finiti i dati del bot
-      const cn = card('Dati del bot', 'Per sicurezza trade, strategie, backtest e sistema non sono più su internet: li vedi solo sul portatile, con APRI_AREA_RISERVATA o dal link nella dashboard, mentre il bot è acceso. Da qui puoi solo cambiare il tema del sito.');
+      const cn = card('Dati del bot', 'Per sicurezza trade, strategie, backtest e sistema non sono più su internet: li vedi solo sul portatile (APRI_AREA_RISERVATA o il link nella dashboard) o dal telefono con Tailscale, mentre il bot è acceso. Da qui puoi solo cambiare il tema del sito.');
       cn.style.marginTop = '16px'; box.append(cn);
     }
     for (const [gruppo, L] of TEMI) {
@@ -4388,6 +4395,7 @@ dash.calc('strategie', {
   }
   function mostraVista(v) {
     if (soloTema) v = 'tema';   // v203: online c'è solo il Tema
+    if (!soloTema && v === 'tema') v = 'panoramica';   // v204: il Tema c'è già nell'area riservata online, qui no
     if (!TITOLI[v]) v = 'panoramica';
     const cambia = v !== vista;
     vista = v; lsSet('vista', v);
@@ -4437,7 +4445,7 @@ dash.calc('strategie', {
     D = await decifra('live.enc');               // se la chiave non è più valida qui fallisce
     if (salva) lsSet('k', btoa(String.fromCharCode(...bytes)));
     if (QS2.has('pub')) { QS2.delete('pub'); history.replaceState(null, '', location.pathname + (QS2.toString() ? '?' + QS2 : '')); }
-    window.PUB = false; body.classList.remove('pub');
+    window.PUB = false; body.classList.remove('pub'); body.classList.add('priv-locale');   // v204: senza i doppioni del sito pubblico
     $('#v-login').hidden = true; $('#pub').hidden = true;
     $('#posto-priv').append(blocco);
     modo = lsGet('modo') === 'btc' ? 'btc' : 'j';
