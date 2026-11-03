@@ -1873,12 +1873,11 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
 .sa-c .sa-val b { font-size: 21px; color: #0f7a47; }
 .sa-barra { position: relative; display: block; height: 12px; border-radius: 999px; background: rgba(16,36,26,.07); overflow: hidden; }
 .sa-c .sa-barra { height: 9px; }
-.sa-barra i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 999px; background: #e3b23c; transition: width 1.6s cubic-bezier(.2,.7,.2,1); }
+.sa-barra i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 999px; background: #e3b23c; }
 .sa-c .sa-barra i { background: #0f7a47; }
-.sa-barra em { position: absolute; top: 0; bottom: 0; left: var(--l, 0); width: var(--t, 0); opacity: 0; border-radius: 0 999px 999px 0;
-  background: repeating-linear-gradient(-45deg, rgba(196,138,18,.55) 0 3px, rgba(227,178,60,.12) 3px 7px); transition: opacity .7s ease 1.3s; }
-.sl-anni.vista .sa-barra i { width: var(--w, 0); }
-.sl-anni.vista .sa-barra em { opacity: 1; }
+/* 03/11/2026: le barre seguono il numero che sale (larghezze scritte dallo script), niente animazione a parte */
+.sa-barra em { position: absolute; top: 0; bottom: 0; left: 0; width: 0; border-radius: 0 999px 999px 0;
+  background: repeating-linear-gradient(-45deg, rgba(196,138,18,.55) 0 3px, rgba(227,178,60,.12) 3px 7px); }
 .sa-uguali { margin-top: 12px; padding-top: 11px; border-top: 1px dashed var(--linea, #dfe9e2); }
 .sa-ug-t { margin: 0 0 7px; font-size: 13px; line-height: 1.45; color: var(--grigio, #44564b); }
 .sa-ug-t i { display: inline-block; width: 18px; height: 18px; margin-right: 7px; border-radius: 50%; background: rgba(15,122,71,.1); color: #0f7a47;
@@ -5160,15 +5159,13 @@ dash.onData(() => {
     }
     lim.forEach(function (r) {
       var el = box.querySelector('.sa-scheda[data-anno="' + r.y + '"]'); if (!el) return;
-      var alto = Math.max(r.u, r.c, 1e-9), d = r.u - r.c;
-      function w(v) { return (Math.max(0, v) / alto * 100).toFixed(2) + '%'; }
-      var rs = el.querySelector('.sa-s'), rc = el.querySelector('.sa-c'), em = rc.querySelector('.sa-barra em');
+      var rs = el.querySelector('.sa-s'), rc = el.querySelector('.sa-c');
+      // 03/11/2026 (Samuel: "le barre devono caricarsi insieme ai numeri"): le barre seguono il numero che si vede
+      el._alto = Math.max(r.u, r.c, 1e-9);
+      barreInsieme(el, rs, rc);
       contaAnno(rs.querySelector('.sa-val b'), r.u);
       contaAnno(rc.querySelector('.sa-val b'), r.c);
-      rs.querySelector('.sa-barra i').style.setProperty('--w', w(r.u));
-      rc.querySelector('.sa-barra i').style.setProperty('--w', w(r.c));
-      em.style.setProperty('--l', w(r.c));
-      em.style.setProperty('--t', d > 0 ? ((Math.max(0, r.u) - Math.max(0, r.c)) / alto * 100).toFixed(2) + '%' : '0%');
+      el._sync();
       el.querySelector('.sa-tolto').textContent = tolto(r.u, r.c);
       el.setAttribute('aria-label', r.y + ': ' + pct(r.u) + ' senza limite, ' + pct(r.c) + ' con il limite');
     });
@@ -5198,21 +5195,30 @@ dash.onData(() => {
     if (typeof window.mbConta === 'function') window.mbConta(el, v, pct, 2200, 0, sez.querySelector('.sl-anni'));
     else el.textContent = pct(v);
   }
-  // barre delle schede: crescono quando gli anni arrivano sullo schermo, come i numeri; se restano fuori 15 secondi ripartono da zero
-  (function () {
-    var box = sez.querySelector('.sl-anni'), t = null;
-    if (!box) return;
-    if (!('IntersectionObserver' in window)) { box.classList.add('vista'); return; }
-    new IntersectionObserver(function (L) {
-      L.forEach(function (x) { if (x.isIntersecting && x.intersectionRatio >= 0.55) { clearTimeout(t); box.classList.add('vista'); } });
-    }, { threshold: [0.55, 0.6] }).observe(box);
-    new IntersectionObserver(function (L) {
-      L.forEach(function (x) {
-        clearTimeout(t);
-        if (!x.isIntersecting) t = setTimeout(function () { box.classList.remove('vista'); }, 15000);
-      });
-    }, { threshold: 0 }).observe(box);
-  })();
+  // 03/11/2026 (Samuel: "la barra gialla e quella verde devono caricarsi insieme ai numeri"): le barre non hanno più
+  // un'animazione loro, seguono il numero che si vede mentre sale (e tornano a zero quando il numero riparte da zero);
+  // la parte a righe è sempre lo spazio tra la barra verde e la fine di quella gialla
+  function numeroVisto(b) {
+    var t = b.textContent || '', n = parseInt(t.replace(/[^0-9]/g, ''), 10);
+    return isFinite(n) ? (t.indexOf('−') >= 0 ? -n : n) : 0;
+  }
+  function barreInsieme(el, rs, rc) {
+    if (el._sync) return;
+    var bs = rs.querySelector('.sa-val b'), bc = rc.querySelector('.sa-val b');
+    var is = rs.querySelector('.sa-barra i'), ic = rc.querySelector('.sa-barra i'), em = rc.querySelector('.sa-barra em');
+    function q(v) { return Math.max(0, Math.min(100, v / (el._alto || 1) * 100)).toFixed(2) + '%'; }
+    el._sync = function () {
+      var u = Math.max(0, numeroVisto(bs)), c = Math.max(0, numeroVisto(bc));
+      is.style.width = q(u);
+      ic.style.width = q(c);
+      em.style.left = q(c);
+      em.style.width = q(Math.max(0, u - c));
+    };
+    if ('MutationObserver' in window) {
+      var mo = new MutationObserver(function () { el._sync(); });
+      [bs, bc].forEach(function (b) { mo.observe(b, { childList: true, characterData: true, subtree: true }); });
+    }
+  }
 
   // i due numeri principali salgono quando arrivano sullo schermo, come gli altri numeri del sito (window.mbConta dell'app)
   function conta(el, v, durata) {
