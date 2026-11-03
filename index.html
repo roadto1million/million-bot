@@ -4992,8 +4992,11 @@ dash.onData(() => {
     p.innerHTML = 'In media, ' + al(rif) + ' gli anni dal ' + a1 + ' al ' + a2 + ' avevano già fatto ' + quota(f0) +
       ' del loro risultato. ' + (senza ? 'Senza limite di lotti' : 'Con il limite') + ' il ' + Y + ' è a <strong>' + pct(R0 * 100) +
       '</strong>: se gli ultimi mesi andassero come la media, chiuderebbe intorno a <strong>' + pct(P * 100) + '</strong>. ' +
-      (fascia.length > 1 ? 'La fascia rifà lo stesso calcolo seguendo gli ultimi mesi di ciascuno degli anni passati: va dal ' + basso.y + ', che ' +
-        il(rif) + ' ' + strada(basso.y) + ', al ' + altoF.y + ', che ' + strada(altoF.y) + '.'
+      // 03/11/2026 (Samuel: "ciascuno degli anni passati, quindi tutti: perché poi dal 2021 al 2022?"): si dice che gli anni sono tutti,
+      // uno alla volta, e che quei due sono solo i bordi della fascia; gli altri stanno in mezzo
+      (fascia.length > 1 ? 'La fascia rifà lo stesso calcolo seguendo gli ultimi mesi di ciascuno dei ' + fascia.length + ' anni passati, uno alla volta: ' +
+        'il bordo più basso viene dal ' + basso.y + ', che ' + il(rif) + ' ' + strada(basso.y) + '; il più alto dal ' + altoF.y + ', che ' + strada(altoF.y) + '.' +
+        (fascia.length > 3 ? ' Gli altri ' + (fascia.length - 2) + ' anni stanno in mezzo.' : fascia.length === 3 ? ' L’altro anno sta in mezzo.' : '')
         : 'La fascia rifà lo stesso calcolo con l’anno passato.');
   }
 
