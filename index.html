@@ -4713,8 +4713,8 @@ dash.onData(() => {
   // "Senza limite di lotti", ognuna con oggi, fine anno e fascia; il grafico, la legenda e la frase seguono la scheda scelta
   // (si tocca). Con il limite: saldo dei trade come prima (numeri invariati). Senza limite: la stessa serie della sezione
   // "E se non ci fosse il limite di lotti?" (window.mbSenzaLimite, con i trade nuovi del bot), stesso metodo.
-  // 03/11/2026: la frase della fascia spiega perché gli anni sono quelli (2021 e 2022 e non il peggiore e il migliore come anno intero): la fascia segue come sono
-  // andati gli ULTIMI MESI di ogni anno passato, non il risultato dell'anno intero (Samuel: "non sono il 2020 e il 2024?").
+  // 03/11/2026: la frase della fascia spiega perché gli anni sono quelli (2021 e 2022 e non il peggiore e il migliore come anno intero): la fascia
+  // segue come sono andati gli ULTIMI MESI di ogni anno passato rispetto al resto dell'anno (Samuel: "non sono il 2020 e il 2024?"); con i numeri veri.
   var sez = document.getElementById('stima2026');
   if (!sez || typeof dash === 'undefined') return;
   var MESI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
@@ -4785,12 +4785,21 @@ dash.onData(() => {
       giorno[p[0]] = p[1];
     });
     if (giorni.length < 20) return null;
-    return { giorno: giorno, giorni: giorni, inizio: Number(L.u[0]) > 0 ? Number(L.u[0]) : 1, chiave: String(L.chiave) };
+    // anni in cui senza limite è andata esattamente come con il limite (prima che il conto arrivasse al limite): per quegli anni
+    // si usa il saldo vero giorno per giorno dei trade, così i numeri sono identici nelle due schede (03/11/2026)
+    var uguali = {}, prima = [1, 1];
+    anni.forEach(function (y) {
+      var f = L.fine[y]; if (!f) return;
+      var c = Number(f[0]) / prima[0], u = Number(f[1]) / prima[1];
+      if (c > 0 && Math.abs(u / c - 1) < 1e-7) uguali[y] = true;
+      prima = [Number(f[0]), Number(f[1])];
+    });
+    return { giorno: giorno, giorni: giorni, inizio: Number(L.u[0]) > 0 ? Number(L.u[0]) : 1, chiave: String(L.chiave), uguali: uguali };
   }
 
   // ---------------------------------------------------------------- stima di una serie (metodo del 02/11, invariato)
-  function calcola(s) {
-    var giorno = s.giorno, giorni = s.giorni, inizio = s.inizio;
+  function calcola(s, base) {     // base: serie con il limite, da usare negli anni uguali (solo per la serie senza limite)
+    var giorni = s.giorni;
     var y0 = Number(giorni[0].slice(0, 4)), ultimo = giorni[giorni.length - 1];
     var oggiD = new Date(), oggi = new Date(Date.UTC(oggiD.getFullYear(), oggiD.getMonth(), oggiD.getDate()));
     var ultimoD = new Date(ultimo + 'T00:00:00Z');
@@ -4800,6 +4809,7 @@ dash.onData(() => {
     var Y = rif.getUTCFullYear();
     function percorso(y, finoA) {
       // rendimento dall'inizio dell'anno, giorno per giorno (fino all'indice finoA compreso)
+      var q = base && s.uguali && s.uguali[y] ? base : s, giorno = q.giorno, giorni = q.giorni, inizio = q.inizio;
       var n = giorniAnno(y), out = [], saldo = null;
       for (var k = giorni.length - 1; k >= 0; k--) if (giorni[k] < y + '-01-01') { saldo = giorno[giorni[k]]; break; }
       var partenza = saldo === null ? inizio : saldo, cur = partenza;
@@ -4812,22 +4822,24 @@ dash.onData(() => {
       }
       return out;
     }
-    // forme degli anni passati (solo anni completi e chiusi in positivo)
-    var forme = {}, anniOk = [];
+    var nY = giorniAnno(Y), d0 = Math.round((rif - Date.UTC(Y, 0, 1)) / DAY);
+    // forme degli anni passati (solo anni completi e chiusi in positivo); per la frase anche i valori veri di ogni anno
+    // alla stessa data e a fine anno (03/11/2026: "il 2022 era a +98% e ha chiuso a +193%")
+    var forme = {}, anniOk = [], valori = {};
     for (var y = y0; y < Y; y++) {
       var r = percorso(y, 400);
       var fine = r[r.length - 1];
       if (!(fine > 0)) continue;
+      valori[y] = [r[Math.min(d0, r.length - 1)], fine];
       var xs = r.map(function (_, i) { return i / (r.length - 1); });
       var f = r.map(function (v) { return Math.log1p(Math.max(v, -0.99)) / Math.log1p(fine); });
       forme[y] = liscia(G.map(function (t) { return interp(t, xs, f); }));
       anniOk.push(y);
     }
-    var nY = giorniAnno(Y), d0 = Math.round((rif - Date.UTC(Y, 0, 1)) / DAY);
     var att = percorso(Y, d0), t0 = d0 / (nY - 1), R0 = att.length ? att[att.length - 1] : 0;
     var fbar = G.map(function (_, i) { var tot = 0; anniOk.forEach(function (y) { tot += forme[y][i]; }); return tot / anniOk.length; });
     var f0 = interp(t0, G, fbar);
-    var o = { y0: y0, Y: Y, rif: rif, fresco: fresco, forme: forme, anniOk: anniOk, nY: nY, t0: t0, att: att, R0: R0, fbar: fbar, f0: f0 };
+    var o = { y0: y0, Y: Y, rif: rif, fresco: fresco, forme: forme, anniOk: anniOk, valori: valori, nY: nY, t0: t0, att: att, R0: R0, fbar: fbar, f0: f0 };
     o.ok = anniOk.length >= 2 && f0 >= 0.2 && 1 + R0 > 0;
     if (!o.ok) return o;
     o.P = Math.pow(1 + R0, 1 / f0) - 1;
@@ -4868,7 +4880,7 @@ dash.onData(() => {
 
   // ---------------------------------------------------------------- grafico e frase della serie scelta
   function grafico(r, senza) {
-    var Y = r.Y, y0 = r.y0, rif = r.rif, fresco = r.fresco, forme = r.forme, anniOk = r.anniOk, nY = r.nY, t0 = r.t0,
+    var Y = r.Y, y0 = r.y0, rif = r.rif, fresco = r.fresco, forme = r.forme, anniOk = r.anniOk, valori = r.valori, nY = r.nY, t0 = r.t0,
       att = r.att, R0 = r.R0, fbar = r.fbar, f0 = r.f0, P = r.P, fascia = r.fascia;
     var quando = fresco ? 'oggi' : rif.getUTCDate() + ' ' + BREVI[rif.getUTCMonth()];
     // curve in %
@@ -4972,15 +4984,16 @@ dash.onData(() => {
     var p = sez.querySelector('.stima-txt');
     // articolo giusto davanti alla percentuale: "l'87%", "l'8%", "l'11%", "il 64%"
     function quota(x) { var n = Math.round(x * 100); return (n === 1 || n === 8 || n === 11 || (n >= 80 && n < 90) ? 'l’' : 'il ') + n + '%'; }
-    // la fascia rifà lo stesso calcolo con ogni anno passato: il più basso è l'anno che a questa data aveva già fatto di più del suo
-    // risultato (o più di tutto, e poi era sceso), il più alto quello che ne aveva fatto di meno (03/11/2026, domanda di Samuel)
-    function giaFatto(o) { return o.fy > 1.005 ? 'aveva già fatto più del suo risultato finale e poi era sceso' : 'ne aveva già fatto ' + quota(o.fy); }
+    // la fascia rifà lo stesso calcolo con ogni anno passato: in basso l'anno che dopo questa data è andato peggio rispetto al resto
+    // dell'anno, in alto quello che è andato meglio. Si scrivono i numeri veri, che si controllano a occhio (03/11/2026, Samuel)
+    function il(d) { var g = d.getUTCDate(); return (g === 8 || g === 11 ? 'l’' + g : 'il ' + (g === 1 ? '1º' : g)) + ' ' + MESI[d.getUTCMonth()]; }
+    function strada(y) { var v = valori[y]; return 'era a ' + pct(v[0] * 100) + ' e ha chiuso a ' + pct(v[1] * 100); }
     var basso = fascia[0], altoF = fascia[fascia.length - 1];
     p.innerHTML = 'In media, ' + al(rif) + ' gli anni dal ' + a1 + ' al ' + a2 + ' avevano già fatto ' + quota(f0) +
       ' del loro risultato. ' + (senza ? 'Senza limite di lotti' : 'Con il limite') + ' il ' + Y + ' è a <strong>' + pct(R0 * 100) +
       '</strong>: se gli ultimi mesi andassero come la media, chiuderebbe intorno a <strong>' + pct(P * 100) + '</strong>. ' +
-      (fascia.length > 1 ? 'La fascia rifà lo stesso calcolo con ciascuno degli anni passati: va dal ' + basso.y + ', che ' + al(rif) + ' ' +
-        giaFatto(basso) + ', al ' + altoF.y + ', che ' + (altoF.fy > 1.005 ? giaFatto(altoF) : 'ne aveva fatto solo ' + quota(altoF.fy)) + '.'
+      (fascia.length > 1 ? 'La fascia rifà lo stesso calcolo seguendo gli ultimi mesi di ciascuno degli anni passati: va dal ' + basso.y + ', che ' +
+        il(rif) + ' ' + strada(basso.y) + ', al ' + altoF.y + ', che ' + strada(altoF.y) + '.'
         : 'La fascia rifà lo stesso calcolo con l’anno passato.');
   }
 
@@ -4991,7 +5004,7 @@ dash.onData(() => {
     var chiave = sc.chiave + '|' + (ss ? ss.chiave : '-') + '|' + modo + '|' + sez.clientWidth;
     if (chiave === ultimoDisegno) return;
     ultimoDisegno = chiave;
-    var rc = calcola(sc), rs = ss ? calcola(ss) : null, Y = rc.Y;
+    var rc = calcola(sc), rs = ss ? calcola(ss, sc) : null, Y = rc.Y;
     var tit = sez.querySelector('.stima-tit');
     tit.textContent = 'Come potrebbe finire il ' + Y;
     sez.setAttribute('aria-label', 'Come potrebbe finire il ' + Y);
