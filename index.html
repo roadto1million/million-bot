@@ -5063,17 +5063,14 @@ dash.onData(() => {
     if (anniLim.length) sez.dataset.robot = 'Il calo ' + anniLim.map(function (y) { return 'del ' + y; }).join(', ').replace(/, (del \d+)$/, ' e $1') +
       ' non è colpa mia: <b>è il limite di lotti del broker</b>.';
   }
-  // 03/11/2026 (Samuel: "94 punti? piuttosto metti la percentuale tolta"): quanto del guadagno dell'anno ha tolto il limite,
-  // cioè la parte a righe della barra verde (2025: +441% invece di +535% = il 18% del guadagno in meno)
+  // 03/11/2026 (Samuel: "94 punti? piuttosto metti la percentuale tolta", poi "è più facile ragionare con il calcolo che ti ho
+  // fatto io", cioè 354 − 89): la differenza semplice tra le due percentuali della scheda, scritta con il %, calcolata sui numeri
+  // già arrotondati così la sottrazione torna sempre (2025: +535% − +441% -> "il limite ha tolto 94% di guadagno")
   function tolto(u, c) {
-    function q(x) {
-      var n = Math.round(x);
-      return n < 1 ? 'meno dell’1%' : (n === 1 || n === 8 || n === 11 || (n >= 80 && n < 90) ? 'l’' : 'il ') + it(n) + '%';
-    }
-    if (u > 0 && c >= 0 && c <= u) return 'il limite ha tolto ' + q((u - c) / u * 100) + ' del guadagno';
-    if (u > 0 && c < 0) return 'senza limite l’anno sarebbe stato in guadagno';
-    if (u < 0 && c > u) return 'il limite ha evitato ' + q((c - u) / -u * 100) + ' della perdita';
-    return 'con il limite è andata meglio';
+    function arr(v) { return (v < 0 ? -1 : 1) * Math.round(Math.abs(v)); }
+    var d = arr(u) - arr(c), x = (Math.abs(d) < 1 ? 'meno dell’1' : it(Math.abs(d))) + '%';
+    if (d >= 0) return 'il limite ha tolto ' + x + ' di guadagno';
+    return u < 0 ? 'il limite ha evitato ' + x + ' di perdita' : 'con il limite ' + x + ' in più';
   }
   // numeri delle schede: salgono insieme quando gli anni arrivano sullo schermo (senza il saltino finale)
   function contaAnno(el, v) {
