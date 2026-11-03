@@ -2217,6 +2217,18 @@ body.m-stelle .compagno:not(.gesto) .r-braccio-d, body.m-stelle .guida .r-bracci
   } catch (e) {}
 })();
 </script>
+<style>
+/* 03/11/2026 (v198): in fondo alla pagina, sotto l'avvertenza sui rischi, una riga sulla privacy: il sito non usa cookie né
+   statistiche (quindi niente banner); toccandola si apre la spiegazione. Il "+" come nelle domande frequenti. */
+.piede .priv { margin: -4px 0 16px; }
+.piede .priv summary { display: inline-flex; align-items: baseline; gap: 6px; cursor: pointer; list-style: none; font-weight: 600; }
+.piede .priv summary::-webkit-details-marker { display: none; }
+.piede .priv summary::after { content: "+"; color: var(--oro); font-weight: 700; }
+.piede .priv[open] summary::after { content: "\2212"; }
+.piede .priv summary:hover { text-decoration: underline; }
+.piede .priv p { margin: 6px 0 0; max-width: 68ch; line-height: 1.55; }
+body.buio .piede .priv summary::after { color: #6ee7a8; }
+</style>
 </head>
 <body class="pub">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -2626,6 +2638,7 @@ body.m-stelle .compagno:not(.gesto) .r-braccio-d, body.m-stelle .guida .r-bracci
 
     <footer class="piede">
       <div class="rischio">I CFD sono strumenti complessi con un alto rischio di perdere denaro a causa della leva: tra il 74% e l'89% dei conti al dettaglio perde denaro con i CFD. Risultati in gran parte da backtest; i risultati passati non garantiscono quelli futuri. Non è una consulenza finanziaria.</div>
+      <details class="priv"><summary>Privacy: niente cookie, niente tracciamento</summary><p>Qui non ci sono cookie, pubblicità o statistiche sulle visite: non raccolgo dati su chi visita il sito. Sul tuo dispositivo resta solo quello che serve al sito per funzionare: i messaggi del robottino che hai già letto (si cancellano quando chiudi la pagina) e, se entri nell'area riservata, l'accesso. Come per ogni sito, GitHub, che lo ospita, e Cloudflare, da cui arriva la libreria dei grafici, ricevono dati tecnici come l'indirizzo IP. Se apri i link a Myfxbook, Telegram, TikTok o Instagram valgono le regole di quei siti.</p></details>
       <div class="righe"><span>© <span class="anno-oggi">2026</span> Samuel · Million Bot · Road to 1 Million</span><span><a href="https://t.me/Samu7740" target="_blank" rel="noopener">Telegram</a> · <a href="https://www.tiktok.com/@roadto1million_btc" target="_blank" rel="noopener">TikTok</a> · <a href="https://www.instagram.com/roadto1million_btc/" target="_blank" rel="noopener">Instagram</a> · <button class="piede-ris" id="b-entra" type="button"><svg aria-hidden="true"><use href="#i-lucchetto"/></svg>Area riservata</button></span></div>
     </footer>
   </main>
