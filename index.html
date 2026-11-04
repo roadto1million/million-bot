@@ -2014,14 +2014,22 @@ body.pub .testata .menu .menu-piu-b[aria-expanded="true"] { color: #f6d680; }
 .cosbot-trade { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 12px; background: var(--pannello); border: 1px solid var(--linea); border-radius: var(--raggio); padding: 18px 24px; }
 .cosbot .cosbot-trade h3 { margin: 0; }
 .cosbot-trade p { margin: 0; color: #3c4e43; font-size: 14px; line-height: 1.5; }
-.ct-righello { position: relative; display: grid; grid-template-columns: 1fr 3fr; height: 48px; margin: 0; font: 600 12px/1 var(--sans); }
-.ct-righello::before { content: ""; position: absolute; left: 0; right: 0; top: 20px; height: 8px; border-radius: 999px; background: linear-gradient(90deg, #e0362c 0 25%, #1f9d5c 25% 100%); opacity: .9; }
-.ct-righello .ct-sl, .ct-righello .ct-tp { padding-top: 36px; white-space: nowrap; }
-.ct-righello .ct-sl { color: #b42a22; }
-.ct-righello .ct-tp { color: #0d6a3e; text-align: right; }
-.ct-righello b { font-family: var(--serif); font-size: 13px; }
-.ct-righello .ct-in { position: absolute; left: 25%; top: 0; transform: translateX(-50%); color: var(--inchiostro); white-space: nowrap; font-size: 11.5px; }
-.ct-righello .ct-in::after { content: ""; position: absolute; left: 50%; top: 14px; width: 3px; height: 19px; margin-left: -1.5px; border-radius: 2px; background: var(--inchiostro); }
+/* v233 (Samuel, 04/11/2026): "Come decide un bot" al posto di "Un trade, in pratica" */
+.cd-flusso { display: flex; flex-direction: column; align-items: center; }
+.cd-passo { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border-radius: 14px; background: #f1f8f3; border: 1px solid #d3e8da; font-size: 14px; color: #24382c; }
+.cd-ico { flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #0f7a47; color: #fff; }
+.cd-ico svg { width: 19px; height: 19px; }
+.cd-domanda { position: relative; margin-top: 22px; padding: 10px 16px; border-radius: 999px; background: #fff8e6; border: 1.5px solid #e3b23c; font-size: 14px; text-align: center; color: #3d2f0c; font-weight: 500; }
+.cd-domanda::before { content: ""; position: absolute; left: 50%; top: -23px; width: 2px; height: 22px; margin-left: -1px; background: repeating-linear-gradient(#9fbfaa 0 4px, transparent 4px 7px); }
+.cd-rami { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 26px; }
+.cd-rami::before { content: ""; position: absolute; left: 25%; right: 25%; top: -14px; height: 14px; border: 2px solid #9fbfaa; border-bottom: 0; border-radius: 10px 10px 0 0; }
+.cd-rami::after { content: ""; position: absolute; left: 50%; top: -26px; width: 2px; height: 12px; margin-left: -1px; background: #9fbfaa; }
+.cd-ramo { display: flex; flex-direction: column; gap: 3px; padding: 11px 12px 12px; border-radius: 14px; font-size: 13px; line-height: 1.35; }
+.cd-ramo em { font-style: normal; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.cd-ramo b { font-family: var(--serif); font-size: 18px; }
+.cd-si { background: #e6f5ec; border: 1px solid #a9d9bb; color: #0d5c37; }
+.cd-no { background: #f4f5f4; border: 1px solid #d9dedb; color: #4a5650; }
+.cd-no b::after { content: " ↻"; font-family: var(--sans); font-size: 15px; color: #8a978f; }
 @media (min-width: 861px) { .cosbot-vs { display: flex; flex-direction: column; } .cosbot-vs .vs-riga:not(.vs-testa) { flex: 1; align-content: center; } }   /* righe del confronto alte quanto la colonna accanto */
 @media (max-width: 600px) { .cosbot-trade { padding: 16px 18px; } }
 </style>
@@ -2652,9 +2660,16 @@ body.buio .rf-alone { animation-name: rf-alone-notte; }
       <div class="cosbot" data-robot-umore="fiero" data-robot="Io non ho paura e non ho fretta: <b>seguo le regole</b>, sempre.">
         <div class="cosbot-sx"><div class="cosbot-def"><h3>Cos'è un bot di trading?</h3><p>Un programma che <strong>compra e vende al posto tuo</strong> seguendo regole precise, decise prima. Legge i grafici, apre il trade, mette stop loss e take profit e lo chiude da solo, <strong>senza che tu stia davanti allo schermo</strong>.</p>
           <p class="cosbot-nota">Un bot non fa miracoli: <strong>è bravo quanto le sue regole</strong>. Per questo quelle di Million Bot sono provate anno per anno e i risultati sono tutti qui.</p></div>
-        <div class="cosbot-trade"><h3>Un trade, in pratica</h3>
-          <div class="ct-righello" aria-hidden="true"><span class="ct-sl"><i></i>Stop loss <b>−1</b></span><span class="ct-in">Entrata</span><span class="ct-tp"><i></i>Take profit <b>+3</b></span></div>
-          <p>Ogni trade si chiude da solo: <strong>−1</strong> se il prezzo tocca lo stop loss, <strong>+3</strong> se tocca il take profit (<strong>+5</strong> quando il trend è forte). Così basta chiuderne in guadagno <strong>1&nbsp;su&nbsp;4</strong> per non perdere: Million Bot, dal 2020, ne ha chiusi in guadagno il&nbsp;<strong class="ct-tp-pct">31,9%</strong>.</p></div></div>
+        <div class="cosbot-trade cd"><h3>Come decide un bot</h3>
+          <div class="cd-flusso">
+            <div class="cd-passo"><i class="cd-ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3.2" fill="currentColor"/></svg></i><span><b>Guarda il grafico</b>, di continuo, giorno e notte</span></div>
+            <div class="cd-domanda">Ci sono <b>tutte</b> le condizioni delle sue regole?</div>
+            <div class="cd-rami">
+              <div class="cd-ramo cd-si"><em>Sì</em><b>Entra</b><span>con stop loss e take profit, subito</span></div>
+              <div class="cd-ramo cd-no"><em>No</em><b>Aspetta</b><span>e riguarda il grafico, senza fretta</span></div>
+            </div>
+          </div>
+          <p>Sempre le stesse domande, sempre la stessa risposta: <strong>niente paura, niente fretta</strong>. Se manca anche una sola condizione, il trade non si apre.</p></div></div>
         <div class="cosbot-vs"><h3>A mano o con un bot?</h3>
           <div class="vs-riga vs-testa"><span class="vs-voce"></span><span class="vs-mano">A mano</span><span class="vs-bot">Con un bot</span></div>
           <div class="vs-riga"><span class="vs-voce">Emozioni</span><span class="vs-mano">Paura e avidità cambiano le scelte</span><span class="vs-bot">Segue le stesse regole, sempre</span></div><div class="vs-riga"><span class="vs-voce">Tempo</span><span class="vs-mano">Ore davanti ai grafici</span><span class="vs-bot">Lavora da solo, anche di notte</span></div><div class="vs-riga"><span class="vs-voce">Occasioni</span><span class="vs-mano">Perse mentre dormi o lavori</span><span class="vs-bot">Nessuna persa</span></div><div class="vs-riga"><span class="vs-voce">Disciplina</span><span class="vs-mano">Stop spostati, trade di “vendetta”</span><span class="vs-bot">Stop e rischio non si toccano</span></div><div class="vs-riga"><span class="vs-voce">Prove</span><span class="vs-mano">Non sai se il metodo funziona</span><span class="vs-bot">Regole provate su anni di prezzi veri</span></div>
@@ -6044,14 +6059,6 @@ dash.onData(() => {
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !l.hidden) { apri(false); b.focus(); } });
   addEventListener('resize', function () { if (!l.hidden) apri(false); });
 })();
-</script>
-<script>
-// 02/11/2026: "Un trade, in pratica": la % di trade chiusi in guadagno arriva dai dati del sito (backtest + trade nuovi del bot)
-if (typeof dash !== 'undefined') dash.onData(function () {
-  var T = dash.data('totale'), e = document.querySelector('.ct-tp-pct');
-  if (!e || T.status !== 'ok' || !T.data.length || !T.data[0].trade) return;
-  e.textContent = new Intl.NumberFormat('it-IT', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(T.data[0].tp / T.data[0].trade * 100) + '%';
-});
 </script>
 <script>
 // 02/11/2026: anno del piè di pagina e anni di trading di "Chi sono" si aggiornano da soli (dal 2019: "oltre 7 anni" nel 2026)
