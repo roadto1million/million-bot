@@ -1847,7 +1847,7 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
 .senzalimiti { margin: 22px 0; padding: 22px 22px 18px; background: var(--pannello, #fff); border: 1px solid var(--linea, #dfe9e2); border-radius: var(--raggio, 22px); box-shadow: var(--ombra, 0 10px 30px rgba(15,45,34,.08)); }
 .sl-etic { display: inline-block; padding: 5px 12px; border-radius: 999px; background: rgba(15,122,71,.1); border: 1px solid rgba(15,122,71,.4); color: #0f5f39; font: 700 11.5px/1 var(--sans, Inter, sans-serif); letter-spacing: .06em; text-transform: uppercase; }
 .sl-tit { font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 24px; margin: 0 0 8px; color: var(--inchiostro, #10241a); }
-.sl-tit { line-height: 1.2; text-wrap: balance; }   /* v221: "E con i limiti del broker?" sul telefono va su due righe */
+.sl-tit { line-height: 1.2; white-space: nowrap; font-size: min(24px, calc((100vw - 80px) * .082)); }   /* v222 (Samuel): "E con i limiti del broker?" sempre su una riga: sui telefoni stretti un po' più piccolo */
 .sl-lead { font-size: 14.5px; line-height: 1.55; color: var(--grigio, #44564b); margin: 0 0 12px; }
 .sl-num { display: flex; flex-wrap: wrap; gap: 8px 30px; margin-bottom: 6px; }
 .sl-num span { display: block; font-size: 12.5px; color: var(--grigio, #44564b); }
