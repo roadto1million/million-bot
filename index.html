@@ -2239,14 +2239,24 @@ body.pub.buio .hero-pub .conf-nota { color: #b4c0da; }
 .confronto .conf-lim:hover, .confronto .conf-lim:focus-visible { background: rgba(244, 210, 122, .16); }
 .conf-sl { margin: 14px 0 16px; }
 .conf-sl .conf-tit { grid-column: 1 / -1; position: relative; z-index: 1; margin: 0 0 2px; font: 700 11.5px/1.3 var(--sans); letter-spacing: .07em; text-transform: uppercase; color: #f4d27a; }
-/* v213: l'anno in corso si sta ancora caricando: colore pieno per la parte di anno già passata, il resto a righe che scorrono */
-button.anno-b.in-corso::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; left: calc(var(--fatto, .5) * 100%); pointer-events: none;
-  border-left: 1.5px dashed rgba(15, 122, 71, .6);
-  background-image: linear-gradient(-45deg, rgba(255, 255, 255, .8) 25%, rgba(255, 255, 255, .35) 25%, rgba(255, 255, 255, .35) 50%, rgba(255, 255, 255, .8) 50%, rgba(255, 255, 255, .8) 75%, rgba(255, 255, 255, .35) 75%);
-  background-size: 14px 14px; animation: carica-anno .9s linear infinite; }
+/* v213 -> v219 (Samuel: le righe non gli piacevano): l'anno in corso si riempie come una barra di caricamento. Parte d'anno già
+   passata: colore pieno, con una luce che la attraversa piano e una barretta verde in basso. Parte che manca: chiara, velata, senza
+   righe, con un bordo morbido che si illumina piano (niente linee sopra le cifre) */
+button.anno-b.in-corso::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: calc(var(--fatto, .5) * 100%); pointer-events: none;
+  background: linear-gradient(100deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, .5) 50%, rgba(255, 255, 255, 0) 70%) -125% 0 / 55% 100% no-repeat,
+    linear-gradient(90deg, #5fd39a, #17a362) 0 100% / 100% 3px no-repeat,
+    linear-gradient(90deg, rgba(31, 176, 107, 0), rgba(31, 176, 107, calc(.3 * var(--mb-bagliore)))) 100% 0 / 22px 100% no-repeat;
+  animation: anno-luce 3.2s cubic-bezier(.45, 0, .3, 1) infinite, anno-bagliore 1.6s ease-in-out infinite; }
+button.anno-b.in-corso::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; left: calc(var(--fatto, .5) * 100% - 12px); pointer-events: none;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .62) 12px, rgba(255, 255, 255, .74));
+  -webkit-backdrop-filter: saturate(.3); backdrop-filter: saturate(.3);
+  -webkit-mask: linear-gradient(90deg, transparent, #000 12px); mask: linear-gradient(90deg, transparent, #000 12px); }
 button.anno-b.in-corso > span, button.anno-b.in-corso > b { position: relative; z-index: 1; }
-@keyframes carica-anno { to { background-position: 14px 0; } }
-@media (prefers-reduced-motion: reduce) { button.anno-b.in-corso::after { animation: none; } }
+button.anno-b.in-corso .medaglia { z-index: 2; }
+@property --mb-bagliore { syntax: '<number>'; inherits: false; initial-value: .5; }
+@keyframes anno-luce { 0% { background-position: -125% 0, 0 100%, 100% 0; } 70%, 100% { background-position: 225% 0, 0 100%, 100% 0; } }
+@keyframes anno-bagliore { 0%, 100% { --mb-bagliore: .15; } 50% { --mb-bagliore: 1; } }
+@media (prefers-reduced-motion: reduce) { button.anno-b.in-corso::before { animation: none; } }
 /* v213: stima di fine anno sul telefono: "Oggi" e "Fine anno" sempre uno sotto l'altro (mentre i numeri salivano da 0
    passavano da una riga a due e la scheda andava a scatti) */
 @media (max-width: 640px) { .stima-sc .sc-n { flex: 1 0 100%; } }
