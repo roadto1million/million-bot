@@ -2207,8 +2207,23 @@ body.priv-locale .bt-grid { grid-template-columns: 1fr; }
 body.priv-locale .griglia-4.tre { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 1100px) { body.priv-locale .griglia-4.tre { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 /* 04/11/2026 (v212): percentuali senza il limite di lotti, euro con il limite */
-.confronto .c-nota { display: block; margin: 1px 0 1px; font-size: 11.5px; line-height: 1.3; color: #a9c7b6; white-space: nowrap; }
-.confronto .c-nota s { color: #e8d79c; font-weight: 600; text-decoration-thickness: 1.5px; }
+/* v213: pulsante in basso a sinistra nel riquadro in alto, e lo stesso riquadro con il limite nella sua sezione */
+.confronto .conf-lim { grid-column: 1 / -1; justify-self: start; align-self: start; position: relative; z-index: 1; margin-top: 4px; padding: 7px 13px;
+  border: 1px solid rgba(244, 210, 122, .5); border-radius: 999px; background: rgba(255, 255, 255, .07); color: #f4d27a; font: 600 13px/1.2 var(--sans); cursor: pointer; }
+.confronto .conf-lim:hover, .confronto .conf-lim:focus-visible { background: rgba(244, 210, 122, .16); }
+.conf-sl { margin: 14px 0 16px; }
+.conf-sl .conf-tit { grid-column: 1 / -1; position: relative; z-index: 1; margin: 0 0 2px; font: 700 11.5px/1.3 var(--sans); letter-spacing: .07em; text-transform: uppercase; color: #f4d27a; }
+/* v213: l'anno in corso si sta ancora caricando: colore pieno per la parte di anno già passata, il resto a righe che scorrono */
+button.anno-b.in-corso::after { content: ""; position: absolute; top: 0; bottom: 0; right: 0; left: calc(var(--fatto, .5) * 100%); pointer-events: none;
+  border-left: 1.5px dashed rgba(15, 122, 71, .6);
+  background-image: linear-gradient(-45deg, rgba(255, 255, 255, .8) 25%, rgba(255, 255, 255, .35) 25%, rgba(255, 255, 255, .35) 50%, rgba(255, 255, 255, .8) 50%, rgba(255, 255, 255, .8) 75%, rgba(255, 255, 255, .35) 75%);
+  background-size: 14px 14px; animation: carica-anno .9s linear infinite; }
+button.anno-b.in-corso > span, button.anno-b.in-corso > b { position: relative; z-index: 1; }
+@keyframes carica-anno { to { background-position: 14px 0; } }
+@media (prefers-reduced-motion: reduce) { button.anno-b.in-corso::after { animation: none; } }
+/* v213: stima di fine anno sul telefono: "Oggi" e "Fine anno" sempre uno sotto l'altro (mentre i numeri salivano da 0
+   passavano da una riga a due e la scheda andava a scatti) */
+@media (max-width: 640px) { .stima-sc .sc-n { flex: 1 0 100%; } }
 .vetrina-lim { margin: 8px 2px 0; font-size: 12.5px; line-height: 1.45; color: var(--grigio, #44564b); }
 .rs-fine .rs-pct { display: block; margin: 4px 0 0; font-size: 14px; font-weight: 600; color: var(--grigio, #44564b); }
 </style>
@@ -2364,9 +2379,10 @@ body.priv-locale .griglia-4.tre { grid-template-columns: repeat(3, minmax(0, 1fr
         <h1>Il bot che ha vinto<br><span class="chiave">ogni anno</span> dal<br class="a-capo-tel"> 2020.</h1>
         <p class="tris oro"><a class="tris-media" href="#medie" data-vai-a="medie">Sopra ogni media.</a> <a class="tris-crollo" href="#crolli" data-vai-a="crolli">Sopra ogni crollo.</a></p>
         <div class="confronto" data-robot-umore="fiero" data-robot="Io non mi vanto: <b>lascio parlare i numeri</b>.">
-          <div><span>Media annua</span><small class="c-nota">senza limite di lotti</small><b id="h-titolo-num">—</b></div>
-          <div><span>Capitale moltiplicato</span><small class="c-nota"><s id="h-c-senza">—</s> senza limite</small><b id="h-c-bot">—</b></div>
-          <div><span>Anni in positivo</span><small class="c-nota">con e senza limite</small><b id="h-anni">—</b></div>
+          <div><span>Media annua</span><b id="h-titolo-num">—</b></div>
+          <div><span>Capitale moltiplicato</span><b id="h-c-bot">—</b></div>
+          <div><span>Anni in positivo</span><b id="h-anni">—</b></div>
+          <button type="button" class="conf-lim" data-vai-sez="senzalimiti">E con il limite di lotti? →</button>
         </div>
         <p class="sotto"><mark>5 strategie su Bitcoin</mark> + <mark>1 sul Giappone 225</mark>, <mark>ottimizzate e ricontrollate</mark> anno per anno.</p>
         <div class="azioni">
@@ -2806,9 +2822,15 @@ body.priv-locale .griglia-4.tre { grid-template-columns: repeat(3, minmax(0, 1fr
   <section class="senzalimiti" id="senzalimiti" aria-label="Il bot con e senza il limite di lotti" data-robot-umore="fiero" data-robot="Il calo del 2024, del 2025 e del 2026 non è colpa mia: <b>è il limite di lotti del broker</b>.">
     <h2 class="sl-tit">E con il limite di lotti?</h2>
     <p class="sl-lead">XM (il broker, cioè la piattaforma dove il bot apre i trade) permette al massimo 80 lotti per ordine su Bitcoin: <span class="sl-da">da settembre 2023</span> il conto simulato li raggiunge e da lì rischia meno di quanto prevedono le regole. Le percentuali del sito sono senza quel limite, come per un conto che non arriva a 80 lotti: così il risultato non dipende da quanto è presente sul conto. Il saldo in euro invece ha il limite: qui le due cose a confronto.</p>
+    <div class="confronto conf-sl" role="group" aria-label="Con il limite di lotti del broker">
+      <p class="conf-tit">Con il limite di lotti del broker</p>
+      <div><span>Media annua</span><b id="sl-c-media">—</b></div>
+      <div><span>Capitale moltiplicato</span><b id="sl-c-molt">—</b></div>
+      <div><span>Anni in positivo</span><b id="sl-c-anni">—</b></div>
+    </div>
     <div class="sl-num">
-      <div><span>Dal 2020 senza limite (come le percentuali)</span><b class="n-senza">+5.169.953%</b></div>
-      <div><span>Con il limite (come il saldo)</span><b class="n-con">+719.513%</b></div>
+      <div><span>Dal 2020 senza limite (come le percentuali in alto)</span><b class="n-senza">+5.169.953%</b></div>
+      <div><span>Dal 2020 con il limite (come nel grafico in alto)</span><b class="n-con">+719.513%</b></div>
     </div>
     <svg class="sl-graf" viewBox="0 0 640 380" role="img" aria-label="Dal 2020: +5.169.953% senza limite di lotti, +719.513% con il limite"></svg>
     <div class="sl-leg"><span><i class="g-senza"></i>senza limite di lotti</span><span><i class="g-con"></i>con il limite di XM</span><span><i class="g-zona"></i>periodo con il limite</span></div>
@@ -4018,13 +4040,17 @@ dash.calc('strategie', {
     { const mb = $('#media-bot'); if (mb) { mb.textContent = '+' + num(media, 0) + '%'; mediaMercati(); candeleBot();
         $$('#medie-barre i[data-v]').forEach((i) => i.style.setProperty('--w', Math.max(0.012, Number(i.dataset.v) / media).toFixed(4))); } }
     conta($('#h-c-bot'), molt, (v) => '×' + num(v, 0), 3500, 1, riq);
-    conta($('#h-c-senza'), moltU, (v) => '×' + num(v, 0), 3500, 1, riq);
+    // v213: lo stesso riquadro con il limite di lotti, nella sezione "E con il limite di lotti?" (il pulsante del riquadro porta lì)
+    { const q = $('.conf-sl'); if (q) {
+        conta($('#sl-c-media'), (Math.pow(molt, 365.25 / giorni) - 1) * 100, (v) => '+' + num(v, 0) + '%', 3000, 0, q);
+        conta($('#sl-c-molt'), molt, (v) => '×' + num(v, 0), 3500, 1, q); } }
     conta($('#h-saldo'), t.saldo_finale, (v) => euroIntero(v), 4000, 1000);
     $('#h-calo').textContent = '−' + num(t.calo_max * 100, 0) + '%';
     if (A.status === 'ok') {
       const pos = A.data.filter((r) => r.rendimento > 0).length;
       const nA = A.data.length;
       conta($('#h-anni'), pos, (v) => Math.round(v) + ' su ' + nA, 2200, 0, riq);
+      { const q = $('.conf-sl'); if (q) conta($('#sl-c-anni'), A.data.filter((r) => (r.rendimento_con != null ? r.rendimento_con : r.rendimento) > 0).length, (v) => Math.round(v) + ' su ' + nA, 2200, 0, q); }   // v213
       // le caselle si creano una volta (per gli stessi anni) e poi si aggiornano: così il conteggio non si perde
       const box = $('#h-anni-lista'), kA = A.data.map((r) => r.anno).join(',');
       // "Sopra ogni crollo" (Perché è diverso): per ogni anno il calo più forte e come ha chiuso
@@ -4050,6 +4076,12 @@ dash.calc('strategie', {
         d.classList.toggle('negativo', r.rendimento < 0);
         const m = d.querySelector('.medaglia'); if (m) m.remove();
         if (pos >= 0) { const md = el('i', 'medaglia m' + (pos + 1), String(pos + 1)); md.setAttribute('aria-label', (pos + 1) + '° posto'); d.prepend(md); }
+        // v213 (Samuel): l'anno in corso deve ancora finire di caricarsi: --fatto = parte dell'anno già passata (ora italiana)
+        const oggiIt = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Rome' }), aOra = Number(oggiIt.slice(0, 4));
+        const inCorso = Number(r.anno) === aOra;
+        d.classList.toggle('in-corso', inCorso);
+        if (inCorso) { const g0 = Date.UTC(aOra, 0, 1), g1 = Date.UTC(aOra + 1, 0, 1), g = Date.UTC(aOra, +oggiIt.slice(5, 7) - 1, +oggiIt.slice(8, 10)) + 864e5;
+          d.style.setProperty('--fatto', Math.max(0.03, Math.min(1, (g - g0) / (g1 - g0))).toFixed(3)); }
       };
       if (box.dataset.k === kA) {
         A.data.forEach((r) => { const d = box.querySelector(`[data-anno="${r.anno}"]`), b = d && d.querySelector('b'); if (b) { colora(d, r); b.className = r.rendimento < 0 ? 'neg' : ''; conta(b, r.rendimento * 100, (v) => pctS(v, 0), durata(r)); } });
