@@ -1874,6 +1874,7 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
 .sa-anno { font: 600 22px/1 var(--serif, Fraunces, serif); color: var(--inchiostro, #10241a); }
 .sa-corso { margin-left: 8px; font: 700 10.5px/1 var(--sans, Inter, sans-serif); letter-spacing: .06em; text-transform: uppercase; color: #7d8f84; }
 .sa-tolto { font: 600 13px/1.3 var(--sans, Inter, sans-serif); color: #a7801d; }
+.sa-tolto .sa-tn { font-variant-numeric: tabular-nums; }   /* v225: il numero sale da 0 senza far ballare la frase */
 .sa-riga + .sa-riga { margin-top: 10px; }
 .sa-val { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 8px; margin-bottom: 6px; }
 .sa-val b { display: inline-block; font-family: var(--serif, Fraunces, serif); font-weight: 600; line-height: 1; }
@@ -5656,7 +5657,7 @@ dash.onData(() => {
       contaAnno(rs.querySelector('.sa-val b'), r.u);
       contaAnno(rc.querySelector('.sa-val b'), r.c);
       el._sync();
-      el.querySelector('.sa-tolto').textContent = tolto(r.u, r.c);
+      toltoConta(el.querySelector('.sa-tolto'), r.u, r.c);   // v225: il numero della frase sale come le percentuali sotto
       el.setAttribute('aria-label', r.y + ': ' + pct(r.u) + ' senza limite, ' + pct(r.c) + ' con il limite');
     });
     if (ug.length) {
@@ -5681,6 +5682,22 @@ dash.onData(() => {
     var d = arr(u) - arr(c), x = (Math.abs(d) < 1 ? 'meno dell’1' : it(Math.abs(d))) + '%';
     if (d >= 0) return 'il limite ha tolto ' + x + ' di guadagno';
     return u < 0 ? 'il limite ha evitato ' + x + ' di perdita' : 'con il limite ' + x + ' in più';
+  }
+  // v225 (Samuel): "il limite ha tolto 149% di guadagno": il numero sale da 0 insieme alle due percentuali della scheda
+  function toltoConta(box, u, c) {
+    function arr(v) { return (v < 0 ? -1 : 1) * Math.round(Math.abs(v)); }
+    var d = arr(u) - arr(c), a = Math.abs(d);
+    if (a < 1) { box._tipo = ''; box.textContent = tolto(u, c); return; }
+    var testa = d >= 0 ? 'il limite ha tolto ' : (u < 0 ? 'il limite ha evitato ' : 'con il limite '),
+      coda = d >= 0 ? ' di guadagno' : (u < 0 ? ' di perdita' : ' in più'), tipo = testa + '|' + coda;
+    if (box._tipo !== tipo) {
+      box._tipo = tipo; box.textContent = '';
+      var s = document.createElement('span'); s.className = 'sa-tn';
+      box.appendChild(document.createTextNode(testa)); box.appendChild(s); box.appendChild(document.createTextNode(coda));
+    }
+    var n = box.querySelector('.sa-tn'), f = function (v) { return it(Math.round(v)) + '%'; };
+    if (typeof window.mbConta === 'function') window.mbConta(n, a, f, 2200, 0, sez.querySelector('.sl-anni'));
+    else n.textContent = f(a);
   }
   // numeri delle schede: salgono insieme quando gli anni arrivano sullo schermo (senza il saltino finale)
   function contaAnno(el, v) {
