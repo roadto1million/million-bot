@@ -1847,6 +1847,7 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
 .senzalimiti { margin: 22px 0; padding: 22px 22px 18px; background: var(--pannello, #fff); border: 1px solid var(--linea, #dfe9e2); border-radius: var(--raggio, 22px); box-shadow: var(--ombra, 0 10px 30px rgba(15,45,34,.08)); }
 .sl-etic { display: inline-block; padding: 5px 12px; border-radius: 999px; background: rgba(15,122,71,.1); border: 1px solid rgba(15,122,71,.4); color: #0f5f39; font: 700 11.5px/1 var(--sans, Inter, sans-serif); letter-spacing: .06em; text-transform: uppercase; }
 .sl-tit { font-family: var(--serif, Fraunces, serif); font-weight: 600; font-size: 24px; margin: 0 0 8px; color: var(--inchiostro, #10241a); }
+.sl-tit { line-height: 1.2; text-wrap: balance; }   /* v221: "E con i limiti del broker?" sul telefono va su due righe */
 .sl-lead { font-size: 14.5px; line-height: 1.55; color: var(--grigio, #44564b); margin: 0 0 12px; }
 .sl-num { display: flex; flex-wrap: wrap; gap: 8px 30px; margin-bottom: 6px; }
 .sl-num span { display: block; font-size: 12.5px; color: var(--grigio, #44564b); }
@@ -2395,7 +2396,7 @@ button.anno-b.in-corso .medaglia { z-index: 2; }
       <button class="soc menu-apri" id="b-menu" type="button" aria-label="Apri il menu delle sezioni" aria-expanded="false" aria-controls="menu-tel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
     </div>
     <div class="menu-piu" id="menu-piu" aria-label="Approfondimenti" hidden>
-      <button type="button" data-vai-sez="senzalimiti">E con il limite di lotti?</button>
+      <button type="button" data-vai-sez="senzalimiti">E con i limiti del broker?</button>
       <button type="button" data-vai-sez="rischio-scelta">Il calo dipende da quanto rischi</button>
       <button type="button" data-vai-sez="stima2026">Come potrebbe finire l'anno</button>
       <button type="button" data-vai-sez="tasse">E con le tasse?</button>
@@ -2411,7 +2412,7 @@ button.anno-b.in-corso .medaglia { z-index: 2; }
       <button type="button" data-vai="domande">Domande</button>
       <details class="menu-gruppo">
         <summary>Approfondimenti</summary>
-        <button type="button" class="menu-sub" data-vai-sez="senzalimiti">E con il limite di lotti?</button>
+        <button type="button" class="menu-sub" data-vai-sez="senzalimiti">E con i limiti del broker?</button>
         <button type="button" class="menu-sub" data-vai-sez="rischio-scelta">Il calo dipende da quanto rischi</button>
         <button type="button" class="menu-sub" data-vai-sez="stima2026">Come potrebbe finire l'anno</button>
         <button type="button" class="menu-sub" data-vai-sez="tasse">E con le tasse?</button>
@@ -2830,7 +2831,7 @@ button.anno-b.in-corso .medaglia { z-index: 2; }
       <p class="bt-sub solo-pub">Ogni barra è un mese dell'anno scelto: sopra lo zero il mese ha chiuso in guadagno, sotto in perdita. Passa sopra una barra per i dettagli.</p>
       <p class="bt-sub solo-priv">In % del saldo (variazione nel mese, o nell'anno in Complessivo); passa sopra una barra per vedere anche gli R.</p>
       <div class="bt-chart bt-small" id="barre" data-source="mesi"></div>
-      <div class="barre-sl solo-pub"><button type="button" class="b-sl" data-vai-sez="senzalimiti">E con il limite di lotti? →</button></div>
+      <div class="barre-sl solo-pub"><button type="button" class="b-sl" data-vai-sez="senzalimiti">E con i limiti del broker? →</button></div>
     </section>
     <section class="bt-card solo-priv" id="per-strategia">
       <h3>Per strategia</h3>
@@ -2869,7 +2870,7 @@ button.anno-b.in-corso .medaglia { z-index: 2; }
   </header>
   <section class="bt-mesi" id="mesi"></section>
   <section class="senzalimiti" id="senzalimiti" aria-label="Il bot con e senza il limite di lotti" data-robot-umore="fiero" data-robot="Il calo del 2024, del 2025 e del 2026 non è colpa mia: <b>è il limite di lotti del broker</b>.">
-    <h2 class="sl-tit">E con il limite di lotti?</h2>
+    <h2 class="sl-tit">E con i limiti del broker?</h2>
     <p class="sl-lead">XM (il broker, cioè la piattaforma dove il bot apre i trade) permette al massimo 80 lotti per ordine su Bitcoin: <span class="sl-da">da settembre 2023</span> il conto simulato li raggiunge e da lì rischia meno di quanto prevedono le regole. Le percentuali del sito sono senza quel limite, come per un conto che non arriva a 80 lotti: così il risultato non dipende da quanto è presente sul conto. Il saldo in euro invece ha il limite: qui le due cose a confronto.</p>
     <div class="confronto conf-sl" role="group" aria-label="Con il limite di lotti del broker">
       <p class="conf-tit">Con il limite di lotti del broker</p>
@@ -2906,7 +2907,7 @@ button.anno-b.in-corso .medaglia { z-index: 2; }
 
   <details class="come" id="calcolo">
     <summary>Come è calcolato</summary>
-    <p class="solo-pub">È un backtest: le stesse regole del bot applicate ai prezzi passati di Bitcoin, con gli spread e gli swap reali di XM (il broker, cioè la piattaforma dove il bot apre i trade) e i guadagni reinvestiti, su un conto in euro con i limiti veri di XM: al massimo 80 lotti per ordine su Bitcoin, quindi quando il conto cresce il rischio di ogni trade scende. Le percentuali di anni, mesi e trade invece sono senza questo limite: ogni trade conta con il rischio pieno della sua strategia, come per un conto che non arriva a 80 lotti (il confronto è in «E con il limite di lotti?»). Parte da 1.000 € il 1° gennaio 2020 (da gennaio a fine marzo 2020 i prezzi di Bitcoin sono quelli del contratto BTCUSD di Bybit, perché BTCUSDT è nato a fine marzo 2020). Si aggiorna ogni giorno fino a oggi con le stesse regole: dal 26 ottobre 2026 entrano anche i trade chiusi dal bot sul conto demo, calcolati allo stesso modo.</p>
+    <p class="solo-pub">È un backtest: le stesse regole del bot applicate ai prezzi passati di Bitcoin, con gli spread e gli swap reali di XM (il broker, cioè la piattaforma dove il bot apre i trade) e i guadagni reinvestiti, su un conto in euro con i limiti veri di XM: al massimo 80 lotti per ordine su Bitcoin, quindi quando il conto cresce il rischio di ogni trade scende. Le percentuali di anni, mesi e trade invece sono senza questo limite: ogni trade conta con il rischio pieno della sua strategia, come per un conto che non arriva a 80 lotti (il confronto è in «E con i limiti del broker?»). Parte da 1.000 € il 1° gennaio 2020 (da gennaio a fine marzo 2020 i prezzi di Bitcoin sono quelli del contratto BTCUSD di Bybit, perché BTCUSDT è nato a fine marzo 2020). Si aggiorna ogni giorno fino a oggi con le stesse regole: dal 26 ottobre 2026 entrano anche i trade chiusi dal bot sul conto demo, calcolati allo stesso modo.</p>
     <p class="solo-pub modo-j">Con il Giappone 225 si aggiungono i suoi trade sui prezzi XM, con spread di 7 punti e swap reale, sullo stesso saldo.</p>
     <p class="solo-priv" data-riservato="calcolo"></p>
     <p class="solo-priv" data-riservato="massimo"></p>
