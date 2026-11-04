@@ -2227,6 +2227,13 @@ body.priv-locale .griglia-4.tre { grid-template-columns: repeat(3, minmax(0, 1fr
   .hero-pub .confronto b { font-size: clamp(30px, 10.6vw, 40px); }
   .hero-pub .confronto .conf-lim { margin-top: 8px; }
 }
+/* v218 (Samuel): niente pulsante nel riquadro in alto; sotto, fuori dal riquadro e a destra, una riga piccola con il link */
+.hero-pub .confronto { padding-bottom: 20px; margin-bottom: 6px; }
+.hero-pub .conf-nota { margin: 0 4px 16px; text-align: right; font-size: 12.5px; line-height: 1.4; color: var(--grigio-2); }
+.hero-pub .conf-nota .link-sl { font-weight: 600; }
+body.pub .hero-pub .conf-nota { text-shadow: 0 0 2px var(--alone), 0 0 5px var(--alone); }
+body.pub.buio .hero-pub .conf-nota { color: #b4c0da; }
+@media (max-width: 560px) { .hero-pub .confronto { padding-bottom: 16px; } .hero-pub .conf-nota { font-size: 12px; margin-bottom: 14px; } }
 .confronto .conf-lim { grid-column: 1 / -1; justify-self: start; align-self: start; position: relative; z-index: 1; margin-top: 4px; padding: 7px 13px;
   border: 1px solid rgba(244, 210, 122, .5); border-radius: 999px; background: rgba(255, 255, 255, .07); color: #f4d27a; font: 600 13px/1.2 var(--sans); cursor: pointer; }
 .confronto .conf-lim:hover, .confronto .conf-lim:focus-visible { background: rgba(244, 210, 122, .16); }
@@ -2400,8 +2407,8 @@ button.anno-b.in-corso > span, button.anno-b.in-corso > b { position: relative; 
         <div class="confronto" data-robot-umore="fiero" data-robot="Io non mi vanto: <b>lascio parlare i numeri</b>.">
           <div><span>Media annua</span><b id="h-titolo-num">—</b></div>
           <div><span>Anni in positivo</span><b id="h-anni">—</b></div>
-          <button type="button" class="conf-lim" data-vai-sez="senzalimiti">E con il limite di lotti? →</button>
         </div>
+        <p class="conf-nota">Media annua calcolata senza i <button type="button" class="link-sl" data-vai-sez="senzalimiti">limiti del broker</button></p>
         <p class="sotto"><mark>5 strategie su Bitcoin</mark> + <mark>1 sul Giappone 225</mark>, <mark>ottimizzate e ricontrollate</mark> anno per anno.</p>
         <div class="azioni">
           <button class="scorri" type="button" data-vai="risultati">
