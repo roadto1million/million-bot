@@ -2344,6 +2344,8 @@ body.buio .rf-alone { animation-name: rf-alone-notte; }
 @media (prefers-reduced-motion: reduce) { .r-lato .r-led, .r-lato .r-led-alone { animation: none; } }
 /* v230: riga verticale del grafico in alto (come nei grafici nuovi) */
 .bt-guida { stroke: rgba(16, 36, 26, .38); stroke-width: 1.5; stroke-dasharray: 4 4; pointer-events: none; }
+/* v234: calo dell'anno con i limiti del broker, sotto la scritta del riquadro */
+.bt-tile-con { display: block; margin-top: 3px; font-size: .92em; opacity: .85; }
 </style>
 </head>
 <body class="pub">
@@ -3128,6 +3130,8 @@ dash.calc('anni', {
       const iu = suPrima(a + '-01-01'), fu = suPrima((a + 1) + '-01-01');
       let picco = iu, calo = 0;
       for (const r of uscite) if (r.chiusura.startsWith(String(a))) { picco = Math.max(picco, r.su); calo = Math.max(calo, 1 - r.su / picco); }
+      let piccoC = inizio, caloC = 0;   // v234: lo stesso calo col saldo vero (con i limiti del broker)
+      for (const r of uscite) if (r.chiusura.startsWith(String(a))) { piccoC = Math.max(piccoC, r.saldo); caloC = Math.max(caloC, 1 - r.saldo / piccoC); }
       let serie = 0, max = 0;
       for (const r of k) { serie = r.R < 0 ? serie + 1 : 0; max = Math.max(max, serie); }
       const tp = k.filter((r) => r.R > 0).length;
@@ -3141,6 +3145,7 @@ dash.calc('anni', {
         rendimento: Math.round((fu / iu - 1) * 1000) / 1000,
         rendimento_con: Math.round((fine / inizio - 1) * 1000) / 1000,   // con il limite di lotti (il saldo in euro)
         calo_max: Math.round(calo * 1000) / 1000,
+        calo_max_con: Math.round(caloC * 1000) / 1000,
         max_sl_fila: max,
       };
     });
@@ -3599,7 +3604,13 @@ dash.calc('strategie', {
       if (n) n.hidden = tutti;
       if (d) d.textContent = tutti ? '' : ' a inizio anno, con il limite di lotti';
     });
-    root.querySelectorAll('.bt-tile-calo').forEach((e) => { e.textContent = tutti ? 'dal punto più alto del saldo' : 'dal punto più alto, senza il limite di lotti'; });   // v212
+    // v234 (Samuel): sempre "dal punto più alto del saldo"; se con i limiti del broker il calo dell'anno è diverso, sotto anche quello
+    root.querySelectorAll('.bt-tile-calo').forEach((e) => {
+      e.textContent = 'dal punto più alto del saldo';
+      if (!tutti && ra && ra.calo_max_con != null && Math.abs(ra.calo_max_con - ra.calo_max) >= 0.005) {
+        const c = document.createElement('span'); c.className = 'bt-tile-con'; c.textContent = 'con i limiti del broker: −' + pct(ra.calo_max_con); e.append(c);
+      }
+    });
     root.querySelectorAll('.bt-tile-mesi').forEach((e) => { e.textContent = tutti ? 'mesi chiusi in guadagno dal 2020' : 'mesi chiusi in guadagno'; });
     root.querySelectorAll('.bt-tiles [data-k]').forEach((el) => {
       const f = el.dataset.k; if (tutti) mark(el, 'totale', f); else mark(el, 'anni', f, 'anno=' + anno);
