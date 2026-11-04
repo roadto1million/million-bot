@@ -2764,14 +2764,14 @@ body.buio .rf-alone { animation-name: rf-alone-notte; }
       <h2>Segui la scalata verso il primo <span class="milione">milione</span></h2>
       <div class="social-fin">
         <a class="sf" href="https://www.tiktok.com/@roadto1million_btc" target="_blank" rel="noopener" aria-label="Seguimi su TikTok"><i><svg><use href="#i-tt"/></svg></i><span>TikTok</span></a>
-        <a class="sf" href="https://t.me/Samu7740" target="_blank" rel="noopener" aria-label="Scrivimi su Telegram"><i><svg><use href="#i-tg"/></svg></i><span>Telegram</span></a>
+        <a class="sf" href="https://t.me/roadto1million_official" target="_blank" rel="noopener" aria-label="Scrivimi su Telegram"><i><svg><use href="#i-tg"/></svg></i><span>Telegram</span></a>
       </div>
     </section>
 
     <footer class="piede">
       <div class="rischio">I CFD sono strumenti complessi con un alto rischio di perdere denaro a causa della leva: tra il 74% e l'89% dei conti al dettaglio perde denaro con i CFD. Risultati in gran parte da backtest; i risultati passati non garantiscono quelli futuri. Non è una consulenza finanziaria.</div>
       <details class="priv"><summary>Privacy: niente cookie, niente tracciamento</summary><p>Qui non ci sono cookie, pubblicità o statistiche sulle visite: non raccolgo dati su chi visita il sito. Sul tuo dispositivo resta solo quello che serve al sito per funzionare: i messaggi del robottino che hai già letto (si cancellano quando chiudi la pagina) e, se entri nell'area riservata, l'accesso. Come per ogni sito, GitHub, che lo ospita, e Cloudflare, da cui arriva la libreria dei grafici, ricevono dati tecnici come l'indirizzo IP. Se apri i link a Myfxbook, Telegram o TikTok valgono le regole di quei siti.</p></details>
-      <div class="righe"><span>© <span class="anno-oggi">2026</span> Samuel · Million Bot · Road to 1 Million</span><span><a href="https://t.me/Samu7740" target="_blank" rel="noopener">Telegram</a> · <a href="https://www.tiktok.com/@roadto1million_btc" target="_blank" rel="noopener">TikTok</a> · <button class="piede-ris" id="b-entra" type="button"><svg aria-hidden="true"><use href="#i-lucchetto"/></svg>Area riservata</button></span></div>
+      <div class="righe"><span>© <span class="anno-oggi">2026</span> Samuel · Million Bot · Road to 1 Million</span><span><a href="https://t.me/roadto1million_official" target="_blank" rel="noopener">Telegram</a> · <a href="https://www.tiktok.com/@roadto1million_btc" target="_blank" rel="noopener">TikTok</a> · <button class="piede-ris" id="b-entra" type="button"><svg aria-hidden="true"><use href="#i-lucchetto"/></svg>Area riservata</button></span></div>
     </footer>
   </main>
 </div>
@@ -4822,20 +4822,21 @@ dash.calc('strategie', {
       b.classList.add('buio', 'lupi-' + (1 + n % 3)); if (n % 2) b.classList.add('scena-b');
       if (c === 2 || c === 3) b.classList.add('nuvoloso');
     }
+    const IN = 'In Italia';   // v232: il meteo è quello dell'Italia (prima di una sola città)
     const testi = {
-      temporale: `Qui da me c'è il temporale (${T}): ombrello aperto, ma io lavoro lo stesso.`,
-      pioggia: `Qui da me piove (${T}): ho preso l'ombrello.`,
-      neve: `Qui da me nevica (${T})! Giubbotto, guanti, cappello e sciarpa.`,
-      nebbia: `Qui da me c'è la nebbia (${T}): per fortuna i grafici li vedo benissimo.`,
-      notte: `Qui da me è notte (${T}): tutti dormono, io no.`,
-      sole: `Qui da me c'è il sole (${T}): occhiali da sole e si lavora.`,
-      nuvole: `Qui da me è nuvoloso (${T}).`,
+      temporale: `${IN} c'è il temporale (${T}): ombrello aperto, ma io lavoro lo stesso.`,
+      pioggia: `${IN} piove (${T}): ho preso l'ombrello.`,
+      neve: `${IN} nevica (${T})! Giubbotto, guanti, cappello e sciarpa.`,
+      nebbia: `${IN} c'è la nebbia (${T}): per fortuna i grafici li vedo benissimo.`,
+      notte: `${IN} è notte (${T}): tutti dormono, io no.`,
+      sole: `${IN} c'è il sole (${T}): occhiali da sole e si lavora.`,
+      nuvole: `${IN} è nuvoloso (${T}).`,
     };
     let f = testi[cieloK];
     if (cieloK === 'neve') f = testi.neve;
-    else if (tK === 'gelo' || tK === 'freddo') f = cieloK === 'pioggia' || cieloK === 'temporale' ? `Qui da me piove e fa freddo (${T}): giubbotto e ombrello!` : tK === 'gelo' ? `Qui da me si gela (${T}): mi sono coperto fino alle orecchie!` : `Qui da me fa freddo (${T}): giubbotto, sciarpa, cappello e guanti.`;
-    else if (tK === 'caldo') f = `Qui da me fa caldissimo (${T}): ventaglio alla mano!`;
-    else if (tK === 'fresco' && (cieloK === 'nuvole' || cieloK === 'sole' || cieloK === 'notte')) f = `Qui da me fa fresco (${T}): sciarpa al collo.`;
+    else if (tK === 'gelo' || tK === 'freddo') f = cieloK === 'pioggia' || cieloK === 'temporale' ? `${IN} piove e fa freddo (${T}): giubbotto e ombrello!` : tK === 'gelo' ? `${IN} si gela (${T}): mi sono coperto fino alle orecchie!` : `${IN} fa freddo (${T}): giubbotto, sciarpa, cappello e guanti.`;
+    else if (tK === 'caldo') f = `${IN} fa caldissimo (${T}): ventaglio alla mano!`;
+    else if (tK === 'fresco' && (cieloK === 'nuvole' || cieloK === 'sole' || cieloK === 'notte')) f = `${IN} fa fresco (${T}): sciarpa al collo.`;
     if (frase) frase.textContent = f;
   }
   applicaMeteo();
