@@ -1864,7 +1864,7 @@ body.pub.buio .stima-tit { color: var(--inchiostro, #10241a); }
 .g-senza { border-color: #e3b23c !important; } .g-con { border-color: #0f7a47 !important; border-top-width: 3px !important; }
 .g-zona { height: 10px !important; border: 0 !important; background: rgba(227,178,60,.22); border-radius: 3px; }
 /* 03/11/2026 (Samuel: "troppi riquadri inutili, le percentuali che cambiano non risaltano"): anni rifatti da capo.
-   Una scheda per ogni anno in cui il limite ha tolto qualcosa; gli anni uguali in una riga sola sotto. */
+   Una scheda per ogni anno in cui il limite ha tolto guadagno; gli altri anni in una riga sola sotto. */
 .sl-anni { margin: 2px 0 14px; }
 .sa-tit { margin: 0 0 8px; font: 700 12px/1.3 var(--sans, Inter, sans-serif); letter-spacing: .07em; text-transform: uppercase; color: #a7801d; }
 .sa-schede { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
@@ -5463,15 +5463,16 @@ dash.onData(() => {
     var prima = [1, 1], righe = [], anniLim = [];
     S.anni.forEach(function (y) {
       var f = S.fine[y], c = (f[0] / prima[0] - 1) * 100, u = (f[1] / prima[1] - 1) * 100;
-      righe.push({ y: y, c: c, u: u, diverso: Math.abs(u - c) > 0.5 });
+      righe.push({ y: y, c: c, u: u, diverso: Math.abs(u - c) > 0.5, perso: u - c > 0.5 });
       prima = f;
     });
-    var lim = righe.filter(function (r) { return r.diverso; }), ug = righe.filter(function (r) { return !r.diverso; });
-    // 04/11/2026: nella frase del robottino solo gli anni in cui il limite ha TOLTO guadagno (nel 2023 del backtest nuovo ha fatto
-    // guadagnare un po' di più: la scheda lo dice, la frase "il calo del 2023 non è colpa mia" no)
-    lim.forEach(function (r) { if (r.u - r.c > 0.5) anniLim.push(r.y); });
+    // 04/11/2026 (Samuel: "togli il 2023, lì si parla solo di guadagno perso"): schede solo per gli anni in cui il limite ha TOLTO
+    // guadagno (anche nella frase del robottino); gli altri, compreso un anno in cui il limite ha fatto guadagnare un po' di più
+    // (il 2023 del backtest col TP 1:5), nella riga sotto
+    var lim = righe.filter(function (r) { return r.perso; }), ug = righe.filter(function (r) { return !r.perso; });
+    lim.forEach(function (r) { anniLim.push(r.y); });
     var oggiA = String(new Date().getFullYear());
-    var chiave = S.m + '|' + oggiA + '|' + righe.map(function (r) { return r.y + (r.diverso ? '*' : ''); }).join(',');
+    var chiave = S.m + '|' + oggiA + '|' + righe.map(function (r) { return r.y + (r.perso ? '*' : ''); }).join(',');
     if (chiave !== struttura) {
       struttura = chiave;
       var html = '';
@@ -5505,10 +5506,12 @@ dash.onData(() => {
     if (ug.length) {
       var Y = ug.map(function (r) { return r.y; }), fila = Y.every(function (y, i) { return !i || +y === +Y[i - 1] + 1; });
       var chi = Y.length === 1 ? 'Nel ' + Y[0] : fila ? 'Dal ' + Y[0] + ' al ' + Y[Y.length - 1] : 'Nel ' + Y.slice(0, -1).join(', ') + ' e ' + Y[Y.length - 1];
-      var primaDelLimite = lim.length && Y.every(function (y) { return +y < +lim[0].y; });
-      box.querySelector('.sa-ug-t span').textContent = chi + ' nessuna differenza' +
-        (primaDelLimite ? ': il conto non arrivava ancora al limite.' : ' con e senza limite.');
-      box.querySelector('.sa-ug-v').innerHTML = ug.map(function (r) { return '<span>' + r.y + '<b>' + pct(r.u) + '</b></span>'; }).join('');
+      var primaDelLimite = lim.length && Y.every(function (y) { return +y < +lim[0].y; }),
+        uguali = ug.every(function (r) { return !r.diverso; });
+      box.querySelector('.sa-ug-t span').textContent = chi + (uguali ? ' nessuna differenza' +
+        (primaDelLimite ? ': il conto non arrivava ancora al limite.' : ' con e senza limite.') : ' il limite non ha tolto guadagno.');
+      // il risultato vero del conto (con il limite): negli anni senza differenza è uguale, nel 2023 è quello del grafico degli anni
+      box.querySelector('.sa-ug-v').innerHTML = ug.map(function (r) { return '<span>' + r.y + '<b>' + pct(r.c) + '</b></span>'; }).join('');
     }
     // 02/11/2026: la frase del robottino nomina da sola gli anni in cui il limite ha tolto qualcosa (prima "del 2025 e del 2026" scritti a mano)
     if (anniLim.length) sez.dataset.robot = 'Il calo ' + anniLim.map(function (y) { return 'del ' + y; }).join(', ').replace(/, (del \d+)$/, ' e $1') +
