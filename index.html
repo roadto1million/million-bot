@@ -3596,7 +3596,14 @@ dash.calc('strategie', {
     const mm = M.status === 'ok' ? M.data.filter((r) => (tutti || Number(r.anno) === anno) && r.chiave !== meseOra) : [];
     const mesiPos = mm.length ? mm.filter((r) => Number(r.rendimento) > 0).length + ' su ' + mm.length : null;
     root.querySelectorAll('.bt-tile-saldo').forEach((e) => { e.textContent = (tutti || anno === Number((anni[anni.length - 1] || {}).anno)) ? 'Saldo oggi' : 'Saldo a fine anno'; });   // 02/11/2026: l'anno in corso non è finito
-    root.querySelectorAll('.bt-tile-rend').forEach((e) => { e.textContent = tutti ? 'sui 1.000 € di partenza, con il limite di lotti' : 'nell’anno, senza il limite di lotti'; });
+    // v235 (Samuel): come il calo, sempre "nell'anno"; se con i limiti del broker il rendimento dell'anno è diverso, sotto anche quello
+    root.querySelectorAll('.bt-tile-rend').forEach((e) => {
+      e.textContent = tutti ? 'sui 1.000 € di partenza, con il limite di lotti' : 'nell’anno';
+      if (!tutti && ra && ra.rendimento_con != null && Math.abs(ra.rendimento_con - ra.rendimento) >= 0.005) {
+        const v = ra.rendimento_con, c = document.createElement('span'); c.className = 'bt-tile-con';
+        c.textContent = 'con i limiti del broker: ' + (Math.abs(v) >= 10 ? (v > 0 ? '+' : '') + num(v * 100, 0) + '%' : pctS(v)); e.append(c);
+      }
+    });
     // v229 (Samuel): sotto il saldo, come nel riquadro del rendimento accanto
     root.querySelectorAll('.bt-da-pre').forEach((e) => {
       e.textContent = tutti ? 'dai 1.000 € di partenza, con il limite di lotti' : 'da ';
