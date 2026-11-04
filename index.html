@@ -1967,7 +1967,7 @@ window.mbAltezzaHero = function (box) {
     for (var n = 0; n < 8; n++) {          // la colonna è centrata: si prova finché il fondo del riquadro non sta nella finestra
       box.style.height = h + 'px'; box.style.minHeight = h + 'px';
       var fondo = v.getBoundingClientRect().bottom + (window.scrollY || 0);
-      var nuova = Math.max(170, Math.min(230, Math.floor(h - (fondo + 16 - innerHeight))));
+      var nuova = Math.max(innerHeight < 700 ? 140 : 170, Math.min(230, Math.floor(h - (fondo + 16 - innerHeight))));   // v236: fino a 140 px con la finestra bassa
       if (Math.abs(nuova - h) < 1) break;
       h = nuova;
     }
@@ -2346,6 +2346,23 @@ body.buio .rf-alone { animation-name: rf-alone-notte; }
 .bt-guida { stroke: rgba(16, 36, 26, .38); stroke-width: 1.5; stroke-dasharray: 4 4; pointer-events: none; }
 /* v234: calo dell'anno con i limiti del broker, sotto la scritta del riquadro */
 .bt-tile-con { display: block; margin-top: 3px; font-size: .92em; opacity: .85; }
+/* v236 (Samuel, 04/11/2026): sul computer con la finestra bassa (portatile, ~1280×600) l'inizio della pagina sta tutto nella prima
+   schermata: il riquadro del grafico a destra e "Scorri in basso" a sinistra si vedono interi */
+@media (min-width: 901px) and (max-height: 780px) {
+  body.pub .hero-pub { padding: 12px 0 8px; gap: 34px; }
+  body.pub .hero-pub h1 { font-size: clamp(34px, 4vw, 52px); margin-bottom: 10px; }
+  body.pub .hero-pub .tris { font-size: clamp(19px, 2vw, 24px); margin: -2px 0 12px; }
+  body.pub .hero-pub .confronto { padding: 13px 22px 11px; }
+  body.pub .hero-pub .confronto span { font-size: 13.5px; }
+  body.pub .hero-pub .confronto b { font-size: 42px; }
+  body.pub .hero-pub .conf-nota { margin-bottom: 8px; }
+  body.pub .hero-pub .sotto { font-size: 16.5px; line-height: 1.5; margin: 0 0 10px; }
+  body.pub .hero-pub .azioni { margin-bottom: 0; }
+  body.pub .hero-pub .guida.grande .robot-posto { width: 100px; }
+  body.pub .vetrina { padding: 15px 20px 11px; }
+  body.pub .vetrina .grande { font-size: 40px; margin-top: 6px; }
+  body.pub .vetrina .vetrina-lim { margin-top: 5px; }
+}
 </style>
 </head>
 <body class="pub">
