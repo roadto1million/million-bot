@@ -2210,6 +2210,9 @@ body.priv-locale .griglia-4.tre { grid-template-columns: repeat(3, minmax(0, 1fr
 /* v213: pulsante in basso a sinistra nel riquadro in alto, e lo stesso riquadro con il limite nella sua sezione */
 /* v214: nel riquadro in alto due voci (media annua, anni in positivo) una accanto all'altra, riquadro largo quanto il contenuto */
 .hero-pub .confronto { grid-template-columns: repeat(2, minmax(0, 1fr)); }   /* v215: largo come la pagina, due colonne uguali */
+/* v216 (Samuel): pulsante più piccolo, in basso a destra */
+.hero-pub .confronto .conf-lim { justify-self: end; margin-top: 0; padding: 5px 11px; font-size: 12px; }
+@media (max-width: 560px) { .hero-pub .confronto .conf-lim { padding: 4px 10px; font-size: 11.5px; } }
 .confronto .conf-lim { grid-column: 1 / -1; justify-self: start; align-self: start; position: relative; z-index: 1; margin-top: 4px; padding: 7px 13px;
   border: 1px solid rgba(244, 210, 122, .5); border-radius: 999px; background: rgba(255, 255, 255, .07); color: #f4d27a; font: 600 13px/1.2 var(--sans); cursor: pointer; }
 .confronto .conf-lim:hover, .confronto .conf-lim:focus-visible { background: rgba(244, 210, 122, .16); }
