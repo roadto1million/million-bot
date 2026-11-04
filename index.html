@@ -2208,6 +2208,8 @@ body.priv-locale .griglia-4.tre { grid-template-columns: repeat(3, minmax(0, 1fr
 @media (max-width: 1100px) { body.priv-locale .griglia-4.tre { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 /* 04/11/2026 (v212): percentuali senza il limite di lotti, euro con il limite */
 /* v213: pulsante in basso a sinistra nel riquadro in alto, e lo stesso riquadro con il limite nella sua sezione */
+/* v214: nel riquadro in alto due voci (media annua, anni in positivo) una accanto all'altra, riquadro largo quanto il contenuto */
+.hero-pub .confronto { grid-template-columns: repeat(2, max-content); width: fit-content; max-width: 100%; }
 .confronto .conf-lim { grid-column: 1 / -1; justify-self: start; align-self: start; position: relative; z-index: 1; margin-top: 4px; padding: 7px 13px;
   border: 1px solid rgba(244, 210, 122, .5); border-radius: 999px; background: rgba(255, 255, 255, .07); color: #f4d27a; font: 600 13px/1.2 var(--sans); cursor: pointer; }
 .confronto .conf-lim:hover, .confronto .conf-lim:focus-visible { background: rgba(244, 210, 122, .16); }
@@ -2380,7 +2382,6 @@ button.anno-b.in-corso > span, button.anno-b.in-corso > b { position: relative; 
         <p class="tris oro"><a class="tris-media" href="#medie" data-vai-a="medie">Sopra ogni media.</a> <a class="tris-crollo" href="#crolli" data-vai-a="crolli">Sopra ogni crollo.</a></p>
         <div class="confronto" data-robot-umore="fiero" data-robot="Io non mi vanto: <b>lascio parlare i numeri</b>.">
           <div><span>Media annua</span><b id="h-titolo-num">—</b></div>
-          <div><span>Capitale moltiplicato</span><b id="h-c-bot">—</b></div>
           <div><span>Anni in positivo</span><b id="h-anni">—</b></div>
           <button type="button" class="conf-lim" data-vai-sez="senzalimiti">E con il limite di lotti? →</button>
         </div>
@@ -2405,7 +2406,7 @@ button.anno-b.in-corso > span, button.anno-b.in-corso > b { position: relative; 
     </section>
     <div class="anni-striscia" id="h-anni-lista" data-robot-umore="felice" data-robot="Tutti gli anni in positivo! <b>Tocca un anno</b> per vederlo da vicino." aria-label="Rendimento di ogni anno senza il limite di lotti: tocca un anno per vederlo"></div>
     <p class="nota-cifre" id="h-nota-num">Backtest da gennaio 2020: le regole del bot sui prezzi passati, con i costi reali del broker. Calo massimo: <span id="h-calo">—</span>. Non garantiti per il futuro.</p>
-    <p class="nota-cifre nota-limite">Le percentuali sono senza il limite di lotti del broker, come per un conto che non arriva al massimo di 80 lotti per ordine. Il saldo, il grafico e il capitale moltiplicato invece hanno il limite: ecco <button type="button" class="link-sl" data-vai-sez="senzalimiti">le percentuali con il limite</button>.</p>
+    <p class="nota-cifre nota-limite">Le percentuali sono senza il limite di lotti del broker, come per un conto che non arriva al massimo di 80 lotti per ordine. Il saldo e il grafico invece hanno il limite: ecco <button type="button" class="link-sl" data-vai-sez="senzalimiti">le percentuali con il limite</button>.</p>
 
     <nav class="schede" id="schede" aria-label="Sezioni">
       <button type="button" class="scheda" data-pannello="risultati">Risultati</button>
@@ -4039,7 +4040,7 @@ dash.calc('strategie', {
     // "Sopra ogni media": la barra del bot è la più lunga, le altre in proporzione
     { const mb = $('#media-bot'); if (mb) { mb.textContent = '+' + num(media, 0) + '%'; mediaMercati(); candeleBot();
         $$('#medie-barre i[data-v]').forEach((i) => i.style.setProperty('--w', Math.max(0.012, Number(i.dataset.v) / media).toFixed(4))); } }
-    conta($('#h-c-bot'), molt, (v) => '×' + num(v, 0), 3500, 1, riq);
+    // v214 (Samuel): nel riquadro in alto niente più capitale moltiplicato (era con il limite, non coerente con la media annua accanto)
     // v213: lo stesso riquadro con il limite di lotti, nella sezione "E con il limite di lotti?" (il pulsante del riquadro porta lì)
     { const q = $('.conf-sl'); if (q) {
         conta($('#sl-c-media'), (Math.pow(molt, 365.25 / giorni) - 1) * 100, (v) => '+' + num(v, 0) + '%', 3000, 0, q);
