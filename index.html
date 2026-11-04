@@ -2213,6 +2213,20 @@ body.priv-locale .griglia-4.tre { grid-template-columns: repeat(3, minmax(0, 1fr
 /* v216 (Samuel): pulsante più piccolo, in basso a destra */
 .hero-pub .confronto .conf-lim { justify-self: end; margin-top: 0; padding: 5px 11px; font-size: 12px; }
 @media (max-width: 560px) { .hero-pub .confronto .conf-lim { padding: 4px 10px; font-size: 11.5px; } }
+/* v217 (Samuel): due voci invece di tre -> scritte e numeri più grandi, filo d'oro tra le voci, un po' più di spazio */
+.hero-pub .confronto { padding: 20px 24px 14px; gap: 4px 0; }
+.hero-pub .confronto > div { gap: 2px; }
+.hero-pub .confronto > div + div { padding-left: 24px; border-left: 1px solid rgba(244, 210, 122, .25); }
+.hero-pub .confronto span { font-size: 14.5px; letter-spacing: .01em; }
+.hero-pub .confronto b { font-size: 52px; line-height: 1.05; }
+.hero-pub .confronto .conf-lim { margin-top: 10px; }
+@media (max-width: 560px) {
+  .hero-pub .confronto { padding: 16px 16px 12px; }
+  .hero-pub .confronto > div + div { padding-left: 16px; }
+  .hero-pub .confronto span { font-size: 13.5px; }
+  .hero-pub .confronto b { font-size: clamp(30px, 10.6vw, 40px); }
+  .hero-pub .confronto .conf-lim { margin-top: 8px; }
+}
 .confronto .conf-lim { grid-column: 1 / -1; justify-self: start; align-self: start; position: relative; z-index: 1; margin-top: 4px; padding: 7px 13px;
   border: 1px solid rgba(244, 210, 122, .5); border-radius: 999px; background: rgba(255, 255, 255, .07); color: #f4d27a; font: 600 13px/1.2 var(--sans); cursor: pointer; }
 .confronto .conf-lim:hover, .confronto .conf-lim:focus-visible { background: rgba(244, 210, 122, .16); }
