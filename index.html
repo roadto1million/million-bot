@@ -802,9 +802,19 @@ html body[class*="cielo-"] { background: transparent; }   /* lo sfondo del meteo
 .cielo { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
 .cielo i { position: absolute; inset: 0; display: none; }
 .cielo .c3 { z-index: 0; } .cielo :is(.c1, .c2, .c4) { z-index: 1; }   /* la luna e le stelle davanti alla sfumatura del cielo */
-body.cielo-sole .cielo .c1 { display: block; background: radial-gradient(38% 34% at 90% 2%, rgba(255, 210, 90, .5), rgba(255, 210, 90, .14) 50%, transparent 72%); animation: sole 7s ease-in-out infinite; }
-body.cielo-sole .cielo .c2 { display: block; inset: -60%; transform-origin: 70% 31%; background: repeating-conic-gradient(from 0deg at 70% 31%, rgba(255, 214, 110, .13) 0 5deg, transparent 5deg 16deg);
-  -webkit-mask-image: radial-gradient(30% 30% at 70% 31%, #000, transparent 70%); mask-image: radial-gradient(30% 30% at 70% 31%, #000, transparent 70%); animation: gira 120s linear infinite; }
+/* v226 (Samuel: "raggi solari ma senza il sole"): il sole c'è, nell'angolo in alto a destra (un po' fuori dallo schermo),
+   e chiarore e raggi partono da lui */
+body.cielo-sole .cielo .c1 { display: block; background: radial-gradient(42% 38% at 100% 0, rgba(255, 210, 90, .5), rgba(255, 210, 90, .14) 50%, transparent 72%); animation: sole 7s ease-in-out infinite; }
+body.cielo-sole .cielo .c2 { display: block; inset: auto; width: 240vmax; height: 240vmax; right: calc(-120vmax - 8px); top: calc(-120vmax - 8px);
+  transform-origin: 50% 50%; background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255, 214, 110, .14) 0 5deg, transparent 5deg 16deg);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 0, #000 4vmax, transparent 58vmax); mask-image: radial-gradient(circle at 50% 50%, #000 0, #000 4vmax, transparent 58vmax);
+  animation: gira 120s linear infinite; }
+body.cielo-sole .cielo .c4 { display: block; z-index: 1;
+  background: radial-gradient(circle clamp(58px, 15vw, 80px) at calc(100% + 8px) -8px, #fff6d2 0, #ffe68a 42%, #ffd25a 74%, #ffc444 88%, rgba(255, 196, 68, 0) 100%),
+    radial-gradient(circle clamp(130px, 34vw, 190px) at calc(100% + 8px) -8px, rgba(255, 212, 105, .5), rgba(255, 212, 105, .16) 55%, rgba(255, 212, 105, 0) 100%);
+  animation: sole-vivo 6s ease-in-out infinite; }
+@keyframes sole-vivo { 0%, 100% { opacity: .92; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { body.cielo-sole .cielo .c4 { animation: none; } }
 @keyframes sole { 0%, 100% { opacity: .85; } 50% { opacity: 1; } }
 body.t-caldo .cielo .c3 { display: block; background: linear-gradient(180deg, rgba(255, 140, 50, .2), rgba(255, 170, 60, .06) 55%, transparent 80%); animation: sole 5s ease-in-out infinite; }
 body.t-freddo .cielo .c3, body.t-gelo .cielo .c3 { display: block; background: radial-gradient(45% 35% at 0 0, rgba(200, 228, 255, .55), transparent 70%), radial-gradient(45% 35% at 100% 0, rgba(200, 228, 255, .45), transparent 70%), linear-gradient(180deg, rgba(110, 170, 240, .16), transparent 60%); }
@@ -2307,6 +2317,17 @@ body.buio .rf-alone { animation-name: rf-alone-notte; }
 @keyframes rf-cuore { from { transform: scale(.9, .82); opacity: .9; } to { transform: scale(1.04, 1.08); opacity: 1; } }
 @keyframes rf-scintilla { 0% { opacity: 0; transform: translate(0, 0) scale(1); } 12% { opacity: 1; } 70% { opacity: .7; } 100% { opacity: 0; transform: translate(var(--dx, 0), 10px) scale(.3); } }
 @media (prefers-reduced-motion: reduce) { .r-fiamma { transition: none; } .r-fiamma :is(.rf-spinta, .rf-tremola, .rf-alone, .rf-fuori, .rf-mezzo, .rf-cuore, .rf-blu, .rf-scintille, .rf-sc) { animation: none; } }
+/* v226: grafici a linee che si toccano e si ingrandiscono ("E con i limiti del broker?", "Come potrebbe finire l'anno") */
+.mbi-barra { display: flex; justify-content: flex-end; margin: 6px 0 -2px; }
+.mbi-barra .btn-ingrandisci { position: static; }
+.mbi-g .mbi-riga { stroke: rgba(16, 36, 26, .38); stroke-width: 1.5; stroke-dasharray: 4 4; vector-effect: non-scaling-stroke; }
+.mbi-g .mbi-p { stroke: #fff; stroke-width: 2; vector-effect: non-scaling-stroke; }
+.mbi-tip i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.mbi-tip div + div { margin-top: 2px; }
+.mbi-fin .mbi-tit { font-size: clamp(22px, 3.6vw, 36px); }
+.mbi-area { position: relative; flex: 1; min-height: 0; margin-top: 10px; }
+.mbi-area svg.mbi-grande { width: 100%; height: 100%; margin: 0; }
+.mbi-leg > div { margin: 6px 0 0; }
 </style>
 </head>
 <body class="pub">
@@ -2335,7 +2356,7 @@ body.buio .rf-alone { animation-name: rf-alone-notte; }
     <button type="button" class="sg-chiudi" id="sg-chiudi" aria-label="Chiudi il grafico">✕</button>
   </div>
   <div class="curva" id="sg-curva"></div>
-  <p class="sg-nota">Tocca o trascina il dito sulla linea (o passa il mouse) per vedere il saldo di ogni giorno. Saldo del backtest da gennaio 2020, con il limite di lotti del broker, non garantito per il futuro.</p>
+  <p class="sg-nota">Ogni riga a sinistra vale 10 volte quella sotto. Tocca o trascina il dito sulla linea (o passa il mouse) per vedere il saldo di ogni giorno. Saldo del backtest da gennaio 2020, con il limite di lotti del broker, non garantito per il futuro.</p>
  </div>
 </div>
 
@@ -2909,8 +2930,8 @@ body.buio .rf-alone { animation-name: rf-alone-notte; }
       <div><span>Anni in positivo</span><b id="sl-c-anni">—</b></div>
     </div>
     <div class="sl-num">
-      <div><span>Dal 2020 senza limite (come le percentuali in alto)</span><b class="n-senza">+5.169.953%</b></div>
-      <div><span>Dal 2020 con il limite (come nel grafico in alto)</span><b class="n-con">+719.513%</b></div>
+      <div><span>Guadagno totale dal 2020 senza i limiti del broker</span><b class="n-senza">+5.169.953%</b></div>
+      <div><span>Guadagno totale dal 2020 con i limiti del broker</span><b class="n-con">+719.513%</b></div>
     </div>
     <svg class="sl-graf" viewBox="0 0 640 380" role="img" aria-label="Dal 2020: +5.169.953% senza limite di lotti, +719.513% con il limite"></svg>
     <div class="sl-leg"><span><i class="g-senza"></i>senza limite di lotti</span><span><i class="g-con"></i>con il limite di XM</span><span><i class="g-zona"></i>periodo con il limite</span></div>
@@ -3808,14 +3829,16 @@ dash.calc('strategie', {
     const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('height', H).attr('role', 'img')
       .attr('aria-label', o.etichetta || 'Andamento del saldo');
     const [vmin, vmax] = d3.extent(pts, (p) => p.v);
-    const logS = !o.lineare && vmin > 0 && vmax / vmin > 20;
+    // v226 (Samuel: "sembrano numeri messi a caso"): nel grafico in alto (o.lineare) scala a decine, 1.000 € · 10 mila € · 100 mila € · 1 mln € · 10 mln €
+    const logS = (o.lineare && vmin > 0) || (!o.lineare && vmin > 0 && vmax / vmin > 20);
+    const dLog = o.lineare ? [Math.min(1000, vmin) * 0.86, 10 ** Math.ceil(Math.log10(vmax * 1.02))] : [vmin * 0.8, vmax * 1.25];
     const basso = H - 26, alto = 12;
     // o.lineare: scala "bilanciata" (potenza 0,27): la curva sale in modo regolare fino al punto finale, senza appiattire i primi anni
-    let y = logS ? d3.scaleLog([vmin * 0.8, vmax * 1.25], [basso, alto]) : o.lineare ? d3.scalePow().exponent(0.27).domain([0, vmax * 1.04]).range([basso, alto]) : d3.scaleLinear([vmin, vmax], [basso, alto]).nice(4);
-    const tk = logS ? d3.range(Math.ceil(Math.log10(vmin * 0.8)), Math.floor(Math.log10(vmax * 1.25)) + 1).map((e) => 10 ** e)
+    let y = logS ? d3.scaleLog(dLog, [basso, alto]) : o.lineare ? d3.scalePow().exponent(0.27).domain([0, vmax * 1.04]).range([basso, alto]) : d3.scaleLinear([vmin, vmax], [basso, alto]).nice(4);
+    const tk = logS ? d3.range(Math.ceil(Math.log10(dLog[0]) - 1e-9), Math.floor(Math.log10(dLog[1]) + 1e-9) + 1).map((e) => 10 ** e)
       : o.lineare ? tacche(y, vmax, basso, alto)
       : y.ticks(4);
-    if (o.lineare && tk.length > 1) {
+    if (o.lineare && !logS && tk.length > 1) {
       // numeri a sinistra tutti alla stessa distanza: la scala va dritta da un numero al successivo (a tratti),
       // sotto il primo resta una fascia piccola, sopra l'ultimo lo spazio per arrivare al saldo di oggi
       const n = tk.length - 1, fondo = 14, cimaV = vmax * 1.04, ult = tk[n] - tk[n - 1];
@@ -3824,7 +3847,7 @@ dash.calc('strategie', {
       if (cimaV > tk[n]) { dom.push(cimaV); rng.push(alto); }
       y = d3.scaleLinear(dom, rng);
     }
-    const eurT = (v) => (v === 0 ? '0 €' : v >= 1e6 ? num(v / 1e6, v >= 1e7 || Number.isInteger(v / 1e6) ? 0 : 1) + ' mln €' : v >= 1e5 ? num(v / 1e3, 0) + ' mila €' : num(v, 0) + ' €');
+    const eurT = (v) => (logS && v >= 1e4 && v < 1e6 ? num(v / 1e3, 0) + ' mila €' : v === 0 ? '0 €' : v >= 1e6 ? num(v / 1e6, v >= 1e7 || Number.isInteger(v / 1e6) ? 0 : 1) + ' mln €' : v >= 1e5 ? num(v / 1e3, 0) + ' mila €' : num(v, 0) + ' €');
     const fs = o.piccolo ? 12 : 13;
     let left = 0;
     tk.forEach((v) => { const pr = svg.append('text').attr('font-size', fs).text(eurT(v)); left = Math.max(left, pr.node().getComputedTextLength()); pr.remove(); });
@@ -5187,6 +5210,117 @@ dash.onData(() => {
 </script>
 <script>
 (function () {
+  // v226 (Samuel, 04/11/2026): "devi far diventare interagibile gli altri grafici con le linee ... come il grafico a linee a inizio
+  // pagina": col mouse il riquadro segue il puntatore, col dito c'è finché il dito tocca (e la pagina scorre ancora in verticale);
+  // pulsante "Ingrandisci" che apre il grafico in una finestra grande. Il grafico mette su svg._leggi(x) -> { x, punti: [{ y, col }],
+  // righe: [[testo, colore]] } in coordinate del viewBox, e svg._disegnaIn(dest, W, H) per ridisegnarsi nella finestra.
+  var NS = 'http://www.w3.org/2000/svg';
+  function misura(svg) {
+    var r = svg.getBoundingClientRect(), v = svg.viewBox && svg.viewBox.baseVal;
+    if (!v || !v.width || !r.width) return null;
+    var s = Math.min(r.width / v.width, r.height / v.height);
+    return { r: r, v: v, s: s, ox: (r.width - v.width * s) / 2, oy: (r.height - v.height * s) / 2 };
+  }
+  function attiva(svg, blocca) {
+    if (!svg || svg._mbi) return;
+    svg._mbi = true;
+    var box = svg.parentElement;
+    if (getComputedStyle(box).position === 'static') box.style.position = 'relative';
+    var tip = document.createElement('div'); tip.className = 'bt-tip mbi-tip'; tip.hidden = true; box.appendChild(tip);
+    svg.style.touchAction = blocca ? 'none' : 'pan-y';
+    svg.style.cursor = 'crosshair';
+    var strato = null;
+    function g() {
+      if (!strato || strato.parentNode !== svg) { strato = document.createElementNS(NS, 'g'); strato.setAttribute('class', 'mbi-g'); svg.appendChild(strato); }
+      else if (svg.lastChild !== strato) svg.appendChild(strato);
+      return strato;
+    }
+    function nascondi() { tip.hidden = true; if (strato) strato.innerHTML = ''; }
+    function mostra(e) {
+      var k = misura(svg); if (!k || typeof svg._leggi !== 'function') return;
+      var L = svg._leggi(k.v.x + (e.clientX - k.r.left - k.ox) / k.s); if (!L) { nascondi(); return; }
+      var rp = 5.5 / k.s, h = '<line x1="' + L.x + '" x2="' + L.x + '" y1="' + (L.y1 != null ? L.y1 : k.v.y) + '" y2="' + (L.y2 != null ? L.y2 : k.v.y + k.v.height) + '" class="mbi-riga"/>';
+      L.punti.forEach(function (q) { h += '<circle cx="' + L.x + '" cy="' + q.y + '" r="' + rp.toFixed(2) + '" fill="' + q.col + '" class="mbi-p"/>'; });
+      g().innerHTML = h;
+      tip.innerHTML = L.righe.map(function (x, i) {
+        return i === 0 ? '<div class="d">' + x[0] + '</div>' : '<div><i style="background:' + (x[1] || '#888') + '"></i>' + x[0] + '</div>';
+      }).join('');
+      tip.hidden = false;
+      var b = box.getBoundingClientRect(), px = k.r.left - b.left + k.ox + (L.x - k.v.x) * k.s;
+      var ys = L.punti.map(function (q) { return q.y; }), py = k.r.top - b.top + k.oy + (Math.min.apply(null, ys) - k.v.y) * k.s;
+      var w = tip.offsetWidth, hh = tip.offsetHeight, x = px + 14;
+      if (x + w > b.width - 4) x = px - 14 - w;
+      tip.style.left = Math.max(4, x) + 'px';
+      tip.style.top = Math.max(k.r.top - b.top, py - hh - 12) + 'px';
+    }
+    svg.addEventListener('pointerdown', function (e) { mostra(e); });
+    svg.addEventListener('pointermove', function (e) { if (e.pointerType === 'mouse' || e.buttons || e.pressure > 0) mostra(e); });
+    svg.addEventListener('pointerup', function (e) { if (e.pointerType !== 'mouse') nascondi(); });
+    svg.addEventListener('pointercancel', nascondi);
+    svg.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse') nascondi(); });
+  }
+  window.mbGrafoAttiva = function (svg) { attiva(svg, false); };
+
+  // finestra grande (una sola per tutti i grafici, come quella del grafico in alto)
+  var fin = null, ora = null, giro = null;
+  function finestra() {
+    if (fin) return fin;
+    fin = document.createElement('div'); fin.className = 'schermo-grafico'; fin.id = 'schermo-grafico-2'; fin.hidden = true;
+    fin.innerHTML = '<div class="sg-finestra mbi-fin" role="dialog" aria-modal="true" aria-label="Grafico ingrandito">' +
+      '<div class="sg-testa"><div><span class="etichetta"></span><b class="mbi-tit"></b></div>' +
+      '<button type="button" class="sg-chiudi" aria-label="Chiudi il grafico">✕</button></div>' +
+      '<div class="mbi-area"></div><div class="mbi-leg"></div>' +
+      '<p class="sg-nota">Tocca o trascina il dito sul grafico (o passa il mouse) per vedere i valori di ogni giorno.</p></div>';
+    document.body.appendChild(fin);
+    fin.querySelector('.sg-chiudi').addEventListener('click', chiudi);
+    fin.addEventListener('click', function (e) { if (!fin.querySelector('.sg-finestra').contains(e.target)) chiudi(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') chiudi(); });
+    window.addEventListener('resize', function () { clearTimeout(giro); giro = setTimeout(disegnaGrande, 150); });
+    return fin;
+  }
+  function disegnaGrande() {
+    if (!fin || fin.hidden || !ora) return;
+    var area = fin.querySelector('.mbi-area'); area.innerHTML = '';
+    var aw = area.clientWidth, ah = area.clientHeight; if (!aw || !ah) return;
+    var s = document.createElementNS(NS, 'svg'); s.setAttribute('class', ora.svg.getAttribute('class') + ' mbi-grande'); s.setAttribute('role', 'img');
+    s.setAttribute('aria-label', ora.svg.getAttribute('aria-label') || 'Grafico ingrandito');
+    area.appendChild(s);
+    var W = Math.max(ora.minW || 440, Math.round(aw)), H = Math.round(ah * W / aw);
+    ora.svg._disegnaIn(s, W, H);
+    attiva(s, true);
+  }
+  function apri(svg, o) {
+    if (typeof svg._disegnaIn !== 'function') return;
+    var f = finestra(); ora = { svg: svg, minW: o.minW, bottone: o.bottone };
+    f.querySelector('.etichetta').textContent = o.etichetta || '';
+    f.querySelector('.mbi-tit').textContent = o.titolo ? o.titolo() : '';
+    var lg = f.querySelector('.mbi-leg'); lg.innerHTML = '';
+    if (o.legenda) lg.appendChild(o.legenda.cloneNode(true));
+    f.hidden = false; document.body.classList.add('blocca');
+    requestAnimationFrame(disegnaGrande);
+    f.querySelector('.sg-chiudi').focus();
+  }
+  function chiudi() {
+    if (!fin || fin.hidden) return;
+    fin.hidden = true; document.body.classList.remove('blocca');
+    fin.querySelector('.mbi-area').innerHTML = '';
+    if (ora && ora.bottone) ora.bottone.focus();
+    ora = null;
+  }
+  window.mbGrafoIngrandisci = function (svg, o) {
+    if (!svg || svg._mbiB) return;
+    svg._mbiB = true;
+    var riga = document.createElement('div'); riga.className = 'mbi-barra';
+    riga.innerHTML = '<button type="button" class="btn-ingrandisci mbi-b" aria-label="Ingrandisci il grafico"><svg viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Ingrandisci</span></button>';
+    svg.parentNode.insertBefore(riga, svg);
+    o.bottone = riga.querySelector('button');
+    o.bottone.addEventListener('click', function () { apri(svg, o); });
+  };
+})();
+</script>
+<script>
+(function () {
   // 02/11/2026: "Come potrebbe finire l'anno" — stima a fine anno dalla forma media degli anni passati.
   // Per ogni anno passato: quanta parte del risultato finale (in logaritmo) aveva fatto a ogni data; media delle forme
   // (media mobile di 21 giorni); l'anno in corso continua dal punto di oggi seguendo la forma media.
@@ -5361,7 +5495,7 @@ dash.onData(() => {
   }
 
   // ---------------------------------------------------------------- grafico e frase della serie scelta
-  function grafico(r, senza) {
+  function grafico(r, senza, dest, Wd, Hd) {   // v226: dest/Wd/Hd per la finestra ingrandita
     var Y = r.Y, y0 = r.y0, rif = r.rif, fresco = r.fresco, forme = r.forme, anniOk = r.anniOk, valori = r.valori, nY = r.nY, t0 = r.t0,
       att = r.att, R0 = r.R0, fbar = r.fbar, f0 = r.f0, P = r.P, fascia = r.fascia;
     var quando = fresco ? 'oggi' : rif.getUTCDate() + ' ' + BREVI[rif.getUTCMonth()];
@@ -5384,8 +5518,8 @@ dash.onData(() => {
     if ((vmax - vmin) / passo > 9) passo = Math.ceil((vmax - vmin) / 8 / 100) * 100;   // senza limite: righe non troppo fitte
     var top = Math.ceil((vmax + 10) / passo) * passo, bot = vmin < -8 ? Math.floor(vmin / passo) * passo : 0;
     // larghezza vera del grafico: sul computer si allarga a tutto il riquadro senza ingrandire le scritte
-    var g2 = sez.querySelector('.stima-graf');
-    var W = Math.max(640, Math.round(g2.clientWidth || 640)), H = 370, X0 = 8, X1 = W - 80, Ya = 24, Yb = 318;
+    var g2 = dest || sez.querySelector('.stima-graf');
+    var W = Wd || Math.max(640, Math.round(g2.clientWidth || 640)), H = Hd || 370, X0 = 8, X1 = W - 80, Ya = 24, Yb = H - 52;
     g2.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
     function X(t) { return X0 + (X1 - X0) * t; }
     function Yv(v) { return Yb - (Yb - Ya) * (v - bot) / (top - bot); }
@@ -5456,6 +5590,22 @@ dash.onData(() => {
     };
     vicino();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(vicino);   // con il carattere vero la scritta cambia larghezza
+    // v226: valori del giorno sotto il dito o il mouse (fino a oggi: l'anno e l'anno medio; dopo: la stima e la fascia)
+    g2._leggi = function (xv) {
+      var gt = nY - 1, gi = Math.round(Math.min(1, Math.max(0, (xv - X0) / (X1 - X0))) * gt), tq = gi / gt;
+      var dd = new Date(Date.UTC(Y, 0, 1) + gi * DAY), dt = dd.getUTCDate() + ' ' + BREVI[dd.getUTCMonth()] + ' ' + Y;
+      var vm = (Math.pow(1 + P, interp(tq, G, fbar)) - 1) * 100;
+      if (tq <= t0 + 1e-9 && reale.length) {
+        var vr = reale[Math.min(reale.length - 1, gi)][1];
+        return { x: X(tq), y1: Ya - 6, y2: Yb, punti: [{ y: Yv(vr), col: '#0f7a47' }, { y: Yv(vm), col: '#b7a273' }],
+          righe: [[dt], [Y + ': ' + pct(vr), '#0f7a47'], ['anno medio: ' + pct(vm), '#b7a273']] };
+      }
+      var fv = fascia.map(function (o) { return ((1 + R0) * Math.pow(1 + o.P, interp(tq, G, forme[o.y]) - o.fy) - 1) * 100; });
+      return { x: X(tq), y1: Ya - 6, y2: Yb, punti: [{ y: Yv(vm), col: '#e3b23c' }],
+        righe: [[dt], ['stima: ≈ ' + pct(vm), '#e3b23c'], ['fascia: ' + pct(Math.min.apply(null, fv)) + ' / ' + pct(Math.max.apply(null, fv)), 'rgba(227,178,60,.45)']] };
+    };
+    if (dest) return;
+    g2._disegnaIn = function (d, w, h) { grafico(r, senza, d, w, h); };
     var finoA = fresco ? 'fino a oggi' : 'fino ' + al(rif);
     g2.setAttribute('aria-label', Y + (senza ? ' senza limite di lotti' : ' con il limite di lotti') + ': ' + pct(R0 * 100) + ' ' + finoA +
       ', stima a fine anno circa ' + pct(P * 100));
@@ -5515,6 +5665,9 @@ dash.onData(() => {
     }).observe(gr);
   }
   try { disegna(); } catch (e) { console.error(e); }
+  { var gs = sez.querySelector('.stima-graf');   // v226: si tocca e si ingrandisce come il grafico in alto
+    if (window.mbGrafoAttiva && gs) { window.mbGrafoAttiva(gs); window.mbGrafoIngrandisci(gs, { etichetta: 'Stima sul backtest, non una previsione',
+      titolo: function () { var t = sez.querySelector('.stima-tit'); return t ? t.textContent : 'Come potrebbe finire l’anno'; }, legenda: sez.querySelector('.stima-leg'), minW: 440 }); } }
 })();
 </script>
 <script>
@@ -5574,8 +5727,10 @@ dash.onData(() => {
     return ['', ' due'].map(function (c) { return '<circle class="punto-onda' + c + '" cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="' + col + '" opacity=".18"/>'; }).join('');
   }
 
-  function disegna() {
-    var W = Math.max(640, Math.round(g.clientWidth || 640)), H = 380, X0 = 8, X1 = W - 104, Y0 = 20, Y1 = 320;
+  // v226: lo stesso disegno serve anche alla finestra ingrandita (dest, W, H); _leggi dà i valori del giorno sotto il dito o il mouse
+  function disegna() { disegnaIn(g, Math.max(640, Math.round(g.clientWidth || 640)), 380); }
+  function disegnaIn(dest, W, H) {
+    var X0 = 8, X1 = W - 104, Y0 = 20, Y1 = H - 60;
     var a0 = +S.anni[0], a1 = +S.anni[S.anni.length - 1], t0 = Date.UTC(a0, 0, 1), t1 = Date.UTC(a1, 11, 31);
     var umax = Math.max.apply(null, S.u), LMAX = Math.max(Math.log10(4e4), Math.log10(Math.max(umax, 1)) + 0.45);
     function X(s) { return X0 + (X1 - X0) * (tempo(s) - t0) / (t1 - t0); }
@@ -5594,9 +5749,21 @@ dash.onData(() => {
       onde(xe, Y(S.c[n]).toFixed(1), 10, '#0f7a47') + onde(xe, Y(S.u[n]).toFixed(1), 11, '#e3b23c') +
       '<circle cx="' + xe + '" cy="' + Y(S.u[n]).toFixed(1) + '" r="7" class="p-senza"/>' +
       '<circle cx="' + xe + '" cy="' + Y(S.c[n]).toFixed(1) + '" r="6" class="p-con"/>';
-    g.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-    g.innerHTML = svg;
+    dest.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    dest.innerHTML = svg;
+    var tt = S.d.map(tempo), Sd = S.d, Su = S.u, Sc = S.c;
+    dest._leggi = function (xv) {
+      var t = t0 + (Math.min(Math.max(xv, X0), X1) - X0) / (X1 - X0) * (t1 - t0), lo = 0, hi = tt.length - 1;
+      while (hi - lo > 1) { var m = (lo + hi) >> 1; if (tt[m] <= t) lo = m; else hi = m; }
+      var i = t >= tt[tt.length - 1] ? tt.length - 1 : Math.abs(tt[hi] - t) < Math.abs(t - tt[lo]) ? hi : lo;
+      var dd = new Date(tt[i]).toLocaleDateString('it-IT', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+      return { x: X(Sd[i]), y1: Y0 - 8, y2: Y1, punti: [{ y: Y(Su[i]), col: '#e3b23c' }, { y: Y(Sc[i]), col: '#0f7a47' }],
+        righe: [[dd], ['senza i limiti ' + pct((Su[i] - 1) * 100), '#e3b23c'], ['con i limiti ' + pct((Sc[i] - 1) * 100), '#0f7a47']] };
+    };
   }
+  g._disegnaIn = function (dest, W, H) { if (S) disegnaIn(dest, W, H); };
+  if (window.mbGrafoAttiva) { window.mbGrafoAttiva(g); window.mbGrafoIngrandisci(g, { etichetta: 'Dal 2020, senza e con i limiti del broker',
+    titolo: function () { return 'E con i limiti del broker?'; }, legenda: sez.querySelector('.sl-leg'), minW: 470 }); }
 
   function testi() {
     var n = S.d.length - 1, fu = (S.u[n] - 1) * 100, fc = (S.c[n] - 1) * 100;
