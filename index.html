@@ -2730,7 +2730,7 @@ html.tr-attesa body { visibility: hidden !important; }
               <g class="riga r3"><path class="tr" d="M19 42h18"/><path class="si" d="M41 42l2.5 2.5 4.5-5"/></g>
               <g class="riga r4"><path class="tr" d="M19 50h12"/><path class="no" d="M41.5 47.5l4 4M45.5 47.5l-4 4"/></g>
             </svg>
-            <b id="lav-trade">1.072</b><p>trade dal 2020, tutti sul sito, anche quelli in perdita</p>
+            <b id="lav-trade">1.080</b><p>trade dal 2020, tutti sul sito, anche quelli in perdita</p>
           </div>
           <div class="lav">
             <svg class="dis d-spunta" viewBox="0 0 64 64" aria-hidden="true">
@@ -4537,7 +4537,7 @@ dash.calc('strategie', {
   // il lavoro dietro il bot (Chi sono): i numeri salgono insieme quando la griglia arriva sullo schermo
   { const g = $('.lavoro'), it = (v) => new Intl.NumberFormat('it-IT', { maximumFractionDigits: 0, useGrouping: 'always' }).format(Math.round(v));
     if (g) { conta($('#lav-idee'), 100, it, 1600, 0, g); conta($('#lav-sei'), 6, it, 2300, 0, g); conta($('#lav-candele'), 398841, it, 2600, 0, g); conta($('#lav-comb'), 20000, (v) => it(v) + '+', 2200, 0, g);
-      conta($('#lav-trade'), 1072, it, 1800, 0, g); } }
+      conta($('#lav-trade'), 1080, it, 1800, 0, g); } }
   // conto con le tasse italiane (26% sui guadagni dell'anno, messe da parte il 1° gennaio; perdite recuperabili per 4 anni).
   // Trade del backtest: guadagno già calcolato in quel conto (campo "et"); trade nuovi del bot: stessa percentuale sul saldo netto.
   function riempiTasse() {
