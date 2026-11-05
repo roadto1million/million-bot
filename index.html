@@ -5414,7 +5414,15 @@ dash.calc('strategie', {
     ['#anno .bt-tabs', 'Parti dal <b>complessivo</b>, poi scegli un anno e guarda <b>com’è andato mese per mese</b>.', 'spiega'],
     // il grafico cambia: nel complessivo mostra gli anni, con un anno scelto i suoi mesi
     ['#mesi-grafico', () => dash.params().anno === 'tutti' || !dash.params().anno
-      ? ['Questi numeri non arrivano senza perdite: nel 2021 ho preso anche <b>20 stop loss di fila</b>. Non ho cambiato le regole e sono ripartito.', 'determinato']
+      ? (() => {   // v247 (Samuel): anno e SL di fila presi dai dati (prima "nel 2021 … 20" scritto a mano e rimasto vecchio)
+          let a = 2024, n = 18;
+          const A = dash.data('anni');
+          if (A && A.status === 'ok' && A.data.length) {
+            n = 0;
+            for (const r of A.data) if (Number(r.max_sl_fila) > n) { n = Number(r.max_sl_fila); a = Number(r.anno); }
+          }
+          return ['Questi numeri non arrivano senza perdite: nel ' + a + ' ho preso anche <b>' + n + ' stop loss di fila</b>. Non ho cambiato le regole e sono ripartito.', 'determinato'];
+        })()
       : ['I mesi rossi ci sono e <b>non li nascondo</b>: fanno parte del gioco.', 'sincero']],
   ];
   // messaggi già letti (anche ricaricando la pagina nella stessa visita): lì il robottino non saluta più, ma se lo clicchi parla lo stesso
