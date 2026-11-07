@@ -1799,6 +1799,7 @@ body.buio:not(.pub) .sez-mesi .btn-vuoto { color: #f2f5ff; border-color: rgba(23
 body.buio:not(.pub) .come mark { color: #f2f5ff; background: linear-gradient(transparent 56%, rgba(110, 231, 168, .35) 56%); }
 </style>
 <style>
+/* 07/11/2026 (v252): area riservata tolta, il pulsante resta nascosto (style="display:none" sul pulsante) */
 /* 02/11/2026: il pulsante dell'area riservata sta in fondo alla pagina, come un link del piè di pagina */
 .piede-ris { display: inline-flex; align-items: center; gap: 4px; background: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit; cursor: pointer; }
 .piede-ris svg { width: 12px; height: 12px; }
@@ -2998,7 +2999,7 @@ html:not([lang="it"]) .ca-fine small, html:not([lang="it"]) .st-numeri > span { 
     <footer class="piede">
       <div class="rischio">I CFD sono strumenti complessi con un alto rischio di perdere denaro a causa della leva: tra il 74% e l'89% dei conti al dettaglio perde denaro con i CFD. Risultati in gran parte da backtest; i risultati passati non garantiscono quelli futuri. Non è una consulenza finanziaria.</div>
       <details class="priv"><summary>Privacy: niente cookie, niente tracciamento</summary><p>Qui non ci sono cookie, pubblicità o statistiche sulle visite: non raccolgo dati su chi visita il sito. Sul tuo dispositivo resta solo quello che serve al sito per funzionare: i messaggi del robottino che hai già letto (si cancellano quando chiudi la pagina), il paese che scegli per la lingua e il meteo e, se entri nell'area riservata, l'accesso. Come per ogni sito, GitHub, che lo ospita, e Cloudflare, da cui arriva la libreria dei grafici, ricevono dati tecnici come l'indirizzo IP. Se apri i link a Myfxbook, Telegram o TikTok valgono le regole di quei siti.</p></details>
-      <div class="righe"><span>© <span class="anno-oggi">2026</span> Samuel · Million Bot · Road to 1 Million</span><span><a href="https://t.me/roadto1million_official" target="_blank" rel="noopener">Telegram</a> · <a href="https://www.tiktok.com/@roadto1million_btc" target="_blank" rel="noopener">TikTok</a> · <button class="piede-ris" id="b-entra" type="button"><svg aria-hidden="true"><use href="#i-lucchetto"/></svg>Area riservata</button></span></div>
+      <div class="righe"><span>© <span class="anno-oggi">2026</span> Samuel · Million Bot · Road to 1 Million</span><span data-no-tr><a href="https://t.me/roadto1million_official" target="_blank" rel="noopener">Telegram</a> · <a href="https://www.tiktok.com/@roadto1million_btc" target="_blank" rel="noopener">TikTok</a><button class="piede-ris" id="b-entra" type="button" hidden style="display:none" tabindex="-1" aria-hidden="true" data-no-tr><svg aria-hidden="true"><use href="#i-lucchetto"/></svg>Area riservata</button></span></div>
     </footer>
   </main>
 </div>
