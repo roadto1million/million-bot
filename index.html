@@ -2624,6 +2624,14 @@ body.pub .testata .marchio .logo-box::after { display: block !important; inset: 
 @keyframes moneta-luce { 0% { background-position: 0 0, 130% 0; } 30%, 100% { background-position: 0 0, -30% 0; } }
 @media (prefers-reduced-motion: reduce) { body.pub .testata .marchio .logo-box::after { animation: none !important; } }
 </style>
+<style>
+/* v269: robottino un po' più scuro; titoli delle sezioni in metallo leggero (senza riflesso) */
+svg.robot.rb-metallo { filter: brightness(.88) saturate(1.08) drop-shadow(0 1.5px 0 rgba(0, 0, 0, .35)) drop-shadow(0 10px 12px rgba(16, 36, 26, .22)); }
+body.pub main h2.met-scuro { color: transparent !important; text-shadow: none !important; -webkit-background-clip: text; background-clip: text;
+  background-image: linear-gradient(180deg, #4a5a52 0%, #1d2b24 45%, #0b1a12 58%, #2c3d34 80%, #16241c 100%); filter: drop-shadow(0 1px 0 rgba(255, 255, 255, .7)); }
+body.pub main h2.met-chiaro { color: transparent !important; text-shadow: none !important; -webkit-background-clip: text; background-clip: text;
+  background-image: linear-gradient(180deg, #ffffff 0%, #eef1fb 40%, #b9c1d4 56%, #e4e8f3 76%, #ffffff 100%); filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .45)) drop-shadow(0 2px 3px rgba(0, 0, 0, .3)); }
+</style>
 </head>
 <body class="pub">
 <script>
@@ -7137,7 +7145,7 @@ dash.onData(() => {
     const defs = svg.querySelector('defs') || svg.insertBefore(document.createElementNS(NS, 'defs'), svg.firstChild);
     const g = document.createElementNS(NS, 'g'); g.id = k + '-tutto';
     [...svg.childNodes].filter((x) => x !== defs).forEach((x) => g.appendChild(x)); svg.appendChild(g);
-    defs.insertAdjacentHTML('beforeend', `<linearGradient id="${k}-m" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset=".34" stop-color="#fff" stop-opacity=".18"/><stop offset=".52" stop-color="#000" stop-opacity=".6"/><stop offset=".72" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity=".75"/></linearGradient>
+    defs.insertAdjacentHTML('beforeend', `<linearGradient id="${k}-m" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".3" stop-color="#fff" stop-opacity=".05"/><stop offset=".52" stop-color="#000" stop-opacity=".7"/><stop offset=".74" stop-color="#000" stop-opacity=".15"/><stop offset="1" stop-color="#fff" stop-opacity=".35"/></linearGradient>
       <filter id="${k}-b"><feFlood flood-color="#fff"/><feComposite in2="SourceAlpha" operator="in"/></filter>
       <mask id="${k}-s" maskUnits="userSpaceOnUse" x="0" y="0" width="160" height="184"><use href="#${k}-tutto" filter="url(#${k}-b)"/></mask>
       <linearGradient id="${k}-r" gradientUnits="userSpaceOnUse" x1="-90" y1="0" x2="-10" y2="80"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".4" stop-color="#fff6d6" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".85"/><stop offset=".6" stop-color="#fff6d6" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
@@ -7149,10 +7157,21 @@ dash.onData(() => {
       const c = e.cloneNode(true); c.removeAttribute('id'); c.querySelectorAll('[id]').forEach((x) => x.removeAttribute('id'));
       c.setAttribute('aria-hidden', 'true'); c.style.setProperty('fill', `url(#${k}-m)`, 'important'); c.style.setProperty('stroke', 'none', 'important');
       c.style.setProperty('mix-blend-mode', 'overlay'); c.style.setProperty('pointer-events', 'none'); e.after(c); });
-    svg.insertAdjacentHTML('beforeend', `<rect x="0" y="0" width="160" height="184" fill="url(#${k}-r)" mask="url(#${k}-s)" pointer-events="none"/>`);
     svg.classList.add('rb-metallo'); };
   const tutti = () => document.querySelectorAll('svg.robot').forEach(metallo);
   tutti(); new MutationObserver(tutti).observe(document.body, { childList: true, subtree: true }); })();
+</script>
+<script>
+/* v269: titoli delle sezioni in metallo: argento se il titolo è chiaro, metallo scuro se è scuro (dipende dal riquadro, non solo dal tema).
+   Saltati i titoli con parole colorate dentro (es. "milione" d'oro). */
+(() => { const lum = (c) => { const m = c.match(/[\d.]+/g); return m ? (.3 * m[0] + .59 * m[1] + .11 * m[2]) / 255 : 0; };
+  const fai = () => document.querySelectorAll('body.pub main h2').forEach((h) => {
+    h.classList.remove('met-chiaro', 'met-scuro'); const c = getComputedStyle(h).color;
+    if ([...h.querySelectorAll('*')].some((x) => getComputedStyle(x).color !== c)) return;
+    h.classList.add(lum(c) > .6 ? 'met-chiaro' : 'met-scuro'); });
+  let t; const dopo = () => { clearTimeout(t); t = setTimeout(fai, 60); };
+  fai(); new MutationObserver(dopo).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  window.addEventListener('load', dopo); })();
 </script>
 </body>
 </html>
