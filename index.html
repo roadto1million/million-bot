@@ -2551,6 +2551,21 @@ body.pub #mb-alto .testata .soc-paese.su-chiaro { box-shadow: 0 0 0 2px #12241a,
 .cd-barra { cursor: pointer; }
 .cd-barra:hover b { text-decoration: underline; text-underline-offset: 3px; }
 </style>
+<style>
+/* v262 (10/11/2026): barra in alto più piccola quando si scorre */
+.cd-barra, .cd-barra b, body.pub #mb-alto .testata, body.pub #mb-alto .testata-in, body.pub #mb-alto .testata .marchio,
+body.pub #mb-alto .testata :is(.soc, .menu-apri), body.pub .schede, body.pub .schede .scheda {
+  transition: min-height .3s ease, padding .3s ease, font-size .3s ease, width .3s ease, height .3s ease, transform .3s ease, margin .3s ease,
+    background-color .35s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease; }
+#mb-alto.giu .cd-barra { min-height: 26px; padding: 3px 10px; font-size: 12.5px; gap: 8px; }
+#mb-alto.giu .cd-barra b { font-size: 14px; }
+body.pub #mb-alto.giu .testata { padding-top: 2px !important; }
+body.pub #mb-alto.giu .testata-in { padding-top: 2px !important; padding-bottom: 2px !important; }
+body.pub #mb-alto.giu .testata .marchio { transform: scale(.66); transform-origin: left center; margin: -9px 0; }
+body.pub #mb-alto.giu .testata :is(.soc, .menu-apri) { transform: scale(.8); margin: -4px -3px; }
+html.mb-giu body.pub .schede { padding: 4px !important; }
+html.mb-giu body.pub .schede .scheda { padding: 6px 12px !important; font-size: 13.5px !important; }
+</style>
 </head>
 <body class="pub">
 <script>
@@ -6949,7 +6964,7 @@ dash.onData(() => {
   if (giro()) var tm = setInterval(function () { if (!giro()) clearInterval(tm); }, 1000);
   // barra fissa: la sua altezza per le schede e i salti, e lo sfondo pieno quando si scorre
   function misura() { if (alto) document.documentElement.style.setProperty('--alto-h', MB_ALTO() + 'px'); }
-  function scorri() { if (alto) alto.classList.toggle('giu', scrollY > 6); }
+  function scorri() { if (alto) { alto.classList.toggle('giu', scrollY > 6); document.documentElement.classList.toggle('mb-giu', scrollY > 6); } }
   misura(); scorri();
   addEventListener('resize', misura); addEventListener('scroll', scorri, { passive: true });
   if (window.ResizeObserver && alto) new ResizeObserver(misura).observe(alto);
