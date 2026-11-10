@@ -2663,6 +2663,16 @@ body.pub.buio .hero-pub h1 .anno .l { background-image: linear-gradient(105deg, 
 body.pub .hero-pub h1.luce-on .l { animation: onda-titolo 8s ease-in-out infinite, titolo-passa 1.54s ease-in-out 1; animation-delay: calc(1.4s + var(--i) * 85ms), calc(var(--i) * 28ms); }
 @keyframes titolo-passa { from { background-position: 120% 0, 0 0; } to { background-position: -20% 0, 0 0; } }
 </style>
+<style>
+/* v274: barra in alto su un suo strato, così resta ferma mentre si scorre; striscia di altezza fissa */
+body.pub .mb-alto { will-change: transform; transform: translateZ(0); backface-visibility: hidden; }
+.cd-barra { height: 36px; min-height: 0; box-sizing: border-box; }
+.cd-barra b, .cd-barra span { line-height: 1.2; }
+.cd-barra b .cd-n { vertical-align: top; }
+/* la striscia sta sopra a logo e pulsanti: quando si nascondono salgono dietro la striscia, non sopra */
+body.pub #mb-alto .cd-barra { position: relative; z-index: 2; }
+body.pub #mb-alto .testata { position: relative; z-index: 1; }
+</style>
 </head>
 <body class="pub">
 <script>
