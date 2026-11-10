@@ -2566,6 +2566,34 @@ body.pub .schede { transition: top .35s ease; }
 .cd-barra { white-space: nowrap; overflow: hidden; }
 @media (max-width: 359px) { .cd-barra { gap: 6px; padding: 7px 8px; font-size: 12.5px; } .cd-barra b { font-size: 15px; } }
 </style>
+<style>
+/* v266: riquadro del CopyTrading in risalto */
+.cd-demo.arriva { animation: cd-arriva 2.2s ease-out 1; }
+@keyframes cd-arriva {
+  0% { transform: scale(1); box-shadow: var(--ombra); }
+  14% { transform: scale(1.03); box-shadow: 0 0 0 3px #e3b23c, 0 0 34px 8px rgba(246, 201, 90, .6); background-color: #fffbea; }
+  35% { transform: scale(1); box-shadow: 0 0 0 3px #e3b23c, 0 0 14px 2px rgba(246, 201, 90, .3); }
+  55% { transform: scale(1.015); box-shadow: 0 0 0 3px #e3b23c, 0 0 30px 6px rgba(246, 201, 90, .5); background-color: #fffbea; }
+  100% { transform: scale(1); box-shadow: var(--ombra); }
+}
+@property --cd-ang { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.cd-demo.speciale { border: 2px solid transparent;
+  background: linear-gradient(var(--pannello), var(--pannello)) padding-box,
+    conic-gradient(from var(--cd-ang), #e3b23c, #fff1b8 10%, #e3b23c 22%, #1f9d5c 50%, #e3b23c 78%, #fff1b8 90%, #e3b23c) border-box;
+  animation: cd-giro 6s linear infinite, cd-respira 3.2s ease-in-out infinite; }
+.cd-demo.speciale.arriva { animation: cd-arriva 2.2s ease-out 1, cd-giro 6s linear infinite; }
+@keyframes cd-giro { to { --cd-ang: 360deg; } }
+@keyframes cd-respira { 0%, 100% { box-shadow: var(--ombra), 0 0 0 0 rgba(227, 178, 60, 0); } 50% { box-shadow: var(--ombra), 0 0 24px 3px rgba(227, 178, 60, .38); } }
+.cd-demo.speciale h3 { display: flex; align-items: center; gap: 10px; }
+.cd-demo.speciale h3::before { content: ""; flex: none; width: 10px; height: 10px; border-radius: 50%; background: #e3b23c; box-shadow: 0 0 0 0 rgba(227, 178, 60, .6); animation: cd-punto 1.8s ease-out infinite; }
+@keyframes cd-punto { 0% { box-shadow: 0 0 0 0 rgba(227, 178, 60, .7); } 100% { box-shadow: 0 0 0 10px rgba(227, 178, 60, 0); } }
+.cd-demo.speciale .cd-linea i { overflow: hidden; }
+.cd-demo.speciale .cd-linea i::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .85), transparent) no-repeat; background-size: 45% 100%; animation: cd-luccica 2.6s ease-in-out infinite; }
+@keyframes cd-luccica { from { background-position: -70% 0; } to { background-position: 170% 0; } }
+.cd-demo.speciale .cd-cifre b { animation: cd-oro 3.2s ease-in-out infinite; }
+@keyframes cd-oro { 0%, 100% { color: var(--oro-scuro); } 50% { color: #b8860b; } }
+@media (prefers-reduced-motion: reduce) { .cd-demo.speciale, .cd-demo.speciale *, .cd-demo.speciale *::before, .cd-demo.speciale *::after { animation: none !important; } }
+</style>
 </head>
 <body class="pub">
 <script>
@@ -2794,7 +2822,7 @@ body.pub .schede { transition: top .35s ease; }
       <section class="conto-demo solo-pub" id="conto-demo" aria-label="Conto demo attivo" data-robot-umore="vigile" data-robot="Questo è il primo conto demo dove <b>mi sto mettendo alla prova</b>: controllalo anche tu.">
         <h2 class="bt-sez demo-titolo"><span>Conto demo attivo</span><svg class="mini-candele" viewBox="0 0 29 22" aria-hidden="true"><g class="mc mc1"><path d="M4 10 V21" stroke="#1f9d5c" stroke-width="1.4" stroke-linecap="round"/><rect x="1.7999999999999998" y="12.5" width="4.4" height="6.0" rx="1" fill="#1f9d5c"/></g><g class="mc mc2"><path d="M11 8 V17.5" stroke="#e0453a" stroke-width="1.4" stroke-linecap="round"/><rect x="8.8" y="10" width="4.4" height="5" rx="1" fill="#e0453a"/></g><g class="mc mc3"><path d="M18 5 V16" stroke="#1f9d5c" stroke-width="1.4" stroke-linecap="round"/><rect x="15.8" y="7" width="4.4" height="7" rx="1" fill="#1f9d5c"/></g><g class="mc mc4"><path d="M25 1 V11.5" stroke="#1f9d5c" stroke-width="1.4" stroke-linecap="round"/><rect x="22.8" y="2.5" width="4.4" height="7.0" rx="1" fill="#1f9d5c"/></g></svg></h2>
         <div class="demo-striscia" id="demo-striscia" hidden></div>
-        <div class="cd-demo" id="cd-demo" data-no-tr hidden></div>
+        <div class="cd-demo speciale" id="cd-demo" data-no-tr hidden></div>
         <p class="demo-link"><a class="btn btn-vuoto" id="b-myfxbook" href="https://www.myfxbook.com/members/roadto1milion/million-bot-conto-demo/12285876" target="_blank" rel="noopener">Verifica il conto su Myfxbook ↗</a><span id="myfxbook-presto" hidden>Il collegamento al conto su <strong>Myfxbook</strong>, per verificarlo in modo indipendente, arriverà a breve.</span></p>
         <div class="demo-perche">
           <div><h3>Perché parte il 26 ottobre 2026</h3><p>Fino a ottobre 2026 ho costruito e ricontrollato le strategie sui prezzi del passato. Quel giorno il bot, dopo centinaia e centinaia di test e modifiche, era pronto ed è diventato attivo: per questo il conto inizia da lì.</p></div>
@@ -7055,6 +7083,16 @@ dash.onData(() => {
       if (Math.abs(y - prima) > 6 || y < 120) prima = y;
     });
   }, { passive: true });
+})();
+</script>
+<script>
+/* v266: arrivando dalla striscia del countdown il riquadro si illumina */
+(function () {
+  var barra = document.getElementById('cd-barra'), box = document.getElementById('cd-demo'); if (!barra || !box) return;
+  box.addEventListener('animationend', function (e) { if (e.animationName === 'cd-arriva') box.classList.remove('arriva'); });
+  barra.addEventListener('click', function () {
+    setTimeout(function () { box.classList.remove('arriva'); void box.offsetWidth; box.classList.add('arriva'); }, 750);
+  });
 })();
 </script>
 </body>
