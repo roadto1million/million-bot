@@ -7140,7 +7140,7 @@ dash.onData(() => {
 })();
 </script>
 <script>
-/* v264: logo e pulsanti spariscono scorrendo giù, tornano scorrendo su */
+/* v264: logo e pulsanti spariscono scorrendo giù (v275: tornano solo in cima alla pagina) */
 (function () {
   var alto = document.getElementById('mb-alto'); if (!alto) return;
   var prima = scrollY, fermo = false, blocco = 0, barra = document.getElementById('cd-barra');
@@ -7157,8 +7157,7 @@ dash.onData(() => {
       fermo = false;
       var y = scrollY, menu = alto.querySelector('.menu-apri.attivo, [aria-expanded="true"]');
       if (y < 120 || menu) metti(false);
-      else if (y > prima + 6) metti(true);
-      else if (y < prima - 6) metti(false);
+      else metti(true);   // v275: scorrendo spariscono e non tornano finché non si è di nuovo in cima
       if (Math.abs(y - prima) > 6 || y < 120) prima = y;
     });
   }, { passive: true });
