@@ -2537,6 +2537,20 @@ html:has(body.pub) { scroll-padding-top: calc(var(--alto-h, 0px) + 76px); }
 body.pub:not(.buio) .nd-cielo > summary { color: var(--grigio); }
 .sl-nota, .rs-nota, .medie-nota { margin-top: 6px; }
 </style>
+<style>
+/* v261 (10/11/2026): scritta del marchio in oro lucido (proposta A) */
+body.pub .testata .mbz-r1 { fill: url(#px-oro) !important; stroke: #4a3006; stroke-width: 3.4; paint-order: stroke; }
+body.pub .testata .mbz-r2 { fill: url(#px-oro2) !important; stroke: #4a3006; stroke-width: 2.6; paint-order: stroke; }
+body.pub .testata .mbz { filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .45)) drop-shadow(0 0 10px rgba(246, 201, 90, .25)); }
+/* pulsanti della barra: scuri sopra i riquadri chiari, con passaggio morbido */
+body.pub #mb-alto .testata :is(.soc, .menu-apri) { transition: background-color .35s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease; }
+body.pub #mb-alto .testata :is(.soc, .menu-apri).su-chiaro { background: #12241a !important; color: #ffffff !important; border-color: rgba(227, 178, 60, .55) !important;
+  box-shadow: 0 4px 12px rgba(10, 30, 20, .25) !important; }
+body.pub #mb-alto .testata .soc-paese.su-chiaro { box-shadow: 0 0 0 2px #12241a, 0 4px 12px rgba(10, 30, 20, .25) !important; }
+/* la striscia del countdown porta al riquadro del CopyTrading */
+.cd-barra { cursor: pointer; }
+.cd-barra:hover b { text-decoration: underline; text-underline-offset: 3px; }
+</style>
 </head>
 <body class="pub">
 <script>
@@ -6939,6 +6953,55 @@ dash.onData(() => {
   misura(); scorri();
   addEventListener('resize', misura); addEventListener('scroll', scorri, { passive: true });
   if (window.ResizeObserver && alto) new ResizeObserver(misura).observe(alto);
+})();
+</script>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<linearGradient id="px-oro" x1="0" y1="6" x2="0" y2="86" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff4c7"/><stop offset=".28" stop-color="#f6d06a"/><stop offset=".52" stop-color="#c8922c"/><stop offset=".62" stop-color="#a87418"/><stop offset=".8" stop-color="#e3b84f"/><stop offset="1" stop-color="#fbe39a"/></linearGradient>
+<linearGradient id="px-oro2" x1="0" y1="94" x2="0" y2="154" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fbeab0"/><stop offset=".5" stop-color="#e2b54e"/><stop offset="1" stop-color="#b98a2c"/></linearGradient>
+</defs></svg>
+<script>
+/* v261 (10/11/2026): pulsanti della barra fissa scuri sopra i riquadri chiari; la striscia del countdown porta al riquadro del CopyTrading */
+(function () {
+  var alto = document.getElementById('mb-alto'); if (!alto) return;
+  var bot = alto.querySelectorAll('.testata .soc, .testata .menu-apri');
+  function chiaro(x, y) {
+    var L = document.elementsFromPoint(x, y);
+    for (var k = 0; k < L.length; k++) {
+      var e = L[k];
+      if (alto.contains(e)) continue;
+      if (e === document.body || e === document.documentElement) return false;   // il cielo dietro: i pulsanti restano come sono
+      var c = getComputedStyle(e).backgroundColor.match(/[\d.]+/g);
+      if (!c || (c.length > 3 && +c[3] < .5)) continue;
+      return (0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]) / 255 > .72;
+    }
+    return false;
+  }
+  var in_coda = false;
+  function controlla() {
+    in_coda = false;
+    for (var i = 0; i < bot.length; i++) {
+      var r = bot[i].getBoundingClientRect(); if (!r.width) continue;
+      bot[i].classList.toggle('su-chiaro', chiaro(r.left + r.width / 2, r.top + r.height / 2));
+    }
+  }
+  function prenota() { if (!in_coda) { in_coda = true; requestAnimationFrame(controlla); } }
+  addEventListener('scroll', prenota, { passive: true }); addEventListener('resize', prenota);
+  document.addEventListener('click', function () { setTimeout(prenota, 400); });
+  setInterval(prenota, 1500); prenota();
+  var barra = document.getElementById('cd-barra'), demo = document.querySelector('[data-demo]');
+  if (barra) {
+    barra.setAttribute('role', 'button'); barra.tabIndex = 0;
+    var vai = function () {
+      if (demo) demo.click();
+      setTimeout(function () {
+        var t = document.getElementById('cd-demo'); if (!t || t.hidden) t = document.getElementById('conto-demo'); if (!t) return;
+        var sc = document.getElementById('schede');
+        scrollTo({ top: Math.max(0, scrollY + t.getBoundingClientRect().top - ((sc ? sc.offsetHeight + 8 : 0) + (window.MB_ALTO ? MB_ALTO() : 0) + 14)), behavior: 'smooth' });
+      }, 120);
+    };
+    barra.addEventListener('click', vai);
+    barra.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); vai(); } });
+  }
 })();
 </script>
 </body>
