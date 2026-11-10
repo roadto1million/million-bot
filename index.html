@@ -2710,6 +2710,27 @@ body.pub.buio .hero-pub h1.oro-on .l::after { background-image: linear-gradient(
 .cd-demo.speciale.arriva { animation: cd-arriva-fine 1.6s ease-out 1 !important; }
 @keyframes cd-arriva-fine { 0% { box-shadow: var(--ombra); } 18% { box-shadow: 0 0 0 3px rgba(212, 165, 58, .45), var(--ombra); } 100% { box-shadow: var(--ombra); } }
 </style>
+<style>
+/* v278: prima schermata del telefono più compatta */
+@media (max-width: 600px) {
+  body.pub .hero-pub { gap: 6px !important; padding-top: 6px !important; }
+  body.pub .hero-pub .guida.grande { gap: 10px !important; margin: 0 !important; align-items: center !important; }
+  body.pub .hero-pub .guida.grande .robot-posto { width: 66px !important; }
+  body.pub .hero-pub .guida.grande .fumetto { font-size: 14px !important; line-height: 1.35 !important; padding: 9px 13px !important; }
+  body.pub .hero-pub h1 { margin-bottom: 6px !important; }
+  body.pub .hero-pub .tris { font-size: 19px !important; margin: 0 0 10px !important; }
+  body.pub .hero-pub .tris a { display: inline !important; }
+  body.pub .hero-pub .confronto { padding: 12px 18px 10px !important; }
+  body.pub .hero-pub .confronto b { font-size: min(40px, 10.5vw) !important; }
+  body.pub .hero-pub .conf-nota { margin-bottom: 6px !important; }
+  body.pub .hero-pub .sotto { font-size: 15.5px !important; line-height: 1.45 !important; margin: 0 0 8px !important; }
+  body.pub .hero-pub .scorri { padding: 2px 0 !important; gap: 12px !important; }
+  body.pub .hero-pub .scorri-icona { transform: scale(.78); transform-origin: left center; margin-right: -10px; }
+  body.pub .hero-pub .scorri-testo { font-size: 18px !important; }
+}
+/* "ogni anno" di notte: la banda scura del metallo sembrava una riga blu a metà parola: ora la sfumatura è più morbida */
+body.pub.buio .hero-pub h1 .chiave .l { background-image: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .95) 50%, transparent 58%), linear-gradient(180deg, #e2fff2 0%, #a8f4cf 38%, #6fd6a4 56%, #93e9bf 76%, #d4ffe9 100%); }
+</style>
 </head>
 <body class="pub">
 <script>
