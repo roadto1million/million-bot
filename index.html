@@ -2731,6 +2731,10 @@ body.pub.buio .hero-pub h1.oro-on .l::after { background-image: linear-gradient(
 /* "ogni anno" di notte: la banda scura del metallo sembrava una riga blu a metà parola: ora la sfumatura è più morbida */
 body.pub.buio .hero-pub h1 .chiave .l { background-image: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .95) 50%, transparent 58%), linear-gradient(180deg, #e2fff2 0%, #a8f4cf 38%, #6fd6a4 56%, #93e9bf 76%, #d4ffe9 100%); }
 </style>
+<style>
+/* v279: fumetto di benvenuto più piccolo e proporzionato al robottino */
+body.pub .hero-pub .guida.grande .fumetto { font-size: 12px !important; line-height: 1.32 !important; padding: 6px 10px !important; flex: 0 1 auto !important; max-width: 240px !important; }
+</style>
 </head>
 <body class="pub">
 <script>
@@ -5993,6 +5997,7 @@ dash.calc('strategie', {
     fum.classList.add('vede'); c.classList.add('dice'); apertoA = scrollY;
     segnaLetto(attuale.dataset.robot); c.classList.remove('chiama');
   }
+  let tFum = 0;
   function aggiorna() {
     giro = 0;
     const L = bersagli();
@@ -6018,7 +6023,10 @@ dash.calc('strategie', {
       corpo.tabIndex = msg ? 0 : -1;
       c.classList.toggle('parla', msg);
       c.classList.toggle('a-inizio', !!p.posto && !!s.closest('.hero-pub'));   // al suo posto iniziale, in cima alla pagina
-      document.body.classList.toggle('robot-via', !c.classList.contains('a-inizio'));   // il fumetto "Ciao, sono Million Bot" c'è solo quando lui è lì
+      // il fumetto "Ciao, sono Million Bot" c'è solo quando lui è lì: se vola via sparisce subito; se torna, compare 1 s dopo l'arrivo (il volo dura 1 s)
+      clearTimeout(tFum);
+      if (!c.classList.contains('a-inizio')) document.body.classList.add('robot-via');
+      else if (document.body.classList.contains('robot-via')) tFum = setTimeout(() => { if (c.classList.contains('a-inizio')) document.body.classList.remove('robot-via'); }, 2000);
       c.classList.toggle('a-fine', !!p.posto && !!s.closest('.finale'));      // nel riquadro finale: gioca con la scenetta
       // arrivato: saluta con la mano per dire "ho qualcosa da dirti"
       if (msg && !letti.has(s.dataset.robot)) tChiama = setTimeout(() => c.classList.add('chiama'), lento.matches ? 600 : 1000);
