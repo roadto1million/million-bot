@@ -2646,6 +2646,23 @@ body.pub .testata .marchio .logo-box > .logo-mb { box-shadow: 0 0 0 1.5px #3a260
 /* barra delle schede piena: il testo che ci scorre sotto non si intravede più */
 .schede { background: #fff !important; }
 </style>
+<style>
+/* v273: cifre della striscia a larghezza fissa; robottino e titolo più leggeri da disegnare */
+.cd-barra b .cd-n { display: inline-block; width: .6em; text-align: center; font-style: normal; }
+svg.robot.rb-metallo { filter: drop-shadow(0 10px 12px rgba(16, 36, 26, .22)) !important; }
+body.pub .hero-pub h1 { filter: drop-shadow(0 2px 0 rgba(255, 255, 255, .75)) !important; }
+body.pub.buio .hero-pub h1 { filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .4)) !important; }
+body.pub .hero-pub h1 .l { animation: onda-titolo 8s ease-in-out infinite; animation-delay: calc(1.4s + var(--i) * 85ms); }
+/* metallo scritto per esteso (senza var()), così a ogni fotogramma dell'onda il browser ha meno da ricalcolare */
+body.pub .hero-pub h1 .l { background-image: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .95) 50%, transparent 58%), linear-gradient(180deg, #5b6b63 0%, #23332b 40%, #0b1a12 55%, #34463c 78%, #1a2a21 100%); }
+body.pub .hero-pub h1 .chiave .l { background-image: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .95) 50%, transparent 58%), linear-gradient(180deg, #4ccf8f 0%, #17945a 40%, #0a5c36 56%, #1d9f62 78%, #0f7a47 100%); }
+body.pub .hero-pub h1 .anno .l { background-image: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .95) 50%, transparent 58%), linear-gradient(180deg, #f6d06a 0%, #d9a63a 30%, #9a6b14 55%, #7a520e 65%, #c8922c 82%, #e3b84f 100%); }
+body.pub.buio .hero-pub h1 .l { background-image: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .95) 50%, transparent 58%), linear-gradient(180deg, #ffffff 0%, #f4f6ff 36%, #b4bdd2 52%, #e6eaf5 70%, #ffffff 100%); }
+body.pub.buio .hero-pub h1 .chiave .l { background-image: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .95) 50%, transparent 58%), linear-gradient(180deg, #e2fff2 0%, #9ef5c9 36%, #2c9e6c 54%, #7fe3b0 74%, #d4ffe9 100%); }
+body.pub.buio .hero-pub h1 .anno .l { background-image: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .95) 50%, transparent 58%), linear-gradient(180deg, #fff4c7 0%, #f6d06a 30%, #c8922c 52%, #a87418 62%, #e3b84f 80%, #fbe39a 100%); }
+body.pub .hero-pub h1.luce-on .l { animation: onda-titolo 8s ease-in-out infinite, titolo-passa 1.54s ease-in-out 1; animation-delay: calc(1.4s + var(--i) * 85ms), calc(var(--i) * 28ms); }
+@keyframes titolo-passa { from { background-position: 120% 0, 0 0; } to { background-position: -20% 0, 0 0; } }
+</style>
 </head>
 <body class="pub">
 <script>
@@ -7031,7 +7048,7 @@ dash.onData(() => {
       return false;
     }
     var s = Math.floor(r / 1000), g = Math.floor(s / 86400), o = Math.floor(s / 3600) % 24, m = Math.floor(s / 60) % 60, se = s % 60;
-    if (barra) barra.innerHTML = '<span class="punto-r"></span><span>' + T.tra + (L === 'fr' ? ' :' : ':') + '</span><b>' + g + T.u[0] + ' ' + due(o) + T.u[1] + ' ' + due(m) + T.u[2] + ' ' + due(se) + T.u[3] + '</b>';
+    if (barra) barra.innerHTML = '<span class="punto-r"></span><span>' + T.tra + (L === 'fr' ? ' :' : ':') + '</span><b>' + (g + T.u[0] + ' ' + due(o) + T.u[1] + ' ' + due(m) + T.u[2] + ' ' + due(se) + T.u[3]).replace(/\d/g, '<i class="cd-n">$&</i>') + '</b>';
     if (celle) {
       var v = [g, due(o), due(m), due(se)]; for (var k = 0; k < 4; k++) celle[k].textContent = v[k];
       var fatto = Math.min(1, Math.max(0, (Date.now() - INIZIO) / (FINE - INIZIO)));
@@ -7154,23 +7171,19 @@ dash.onData(() => {
   marca(); new MutationObserver(marca).observe(h, { childList: true, subtree: true }); })();
 /* v267: robottino di metallo (proposta 3 "metallo forte") */
 (() => { const NS = 'http://www.w3.org/2000/svg'; let n = 0;
-  const salta = '.r-aura,.r-fiamma,.r-led-alone,.r-guance,.r-vapore,.r-stelle,.r-scintille,[class*="rf-"],defs,mask,clipPath,filter,pattern';
+  const salta = '.r-aura,.r-fiamma,.r-led-alone,.r-guance,.r-vapore,.r-stelle,.r-scintille,.r-viso,.r-occhi,.r-domanda,.r-scruta,[class*="rf-"],defs,mask,clipPath,filter,pattern';
   const metallo = (svg) => { if (svg.dataset.metallo) return; svg.dataset.metallo = '1'; const k = 'rbm' + (n++);
     const defs = svg.querySelector('defs') || svg.insertBefore(document.createElementNS(NS, 'defs'), svg.firstChild);
     const g = document.createElementNS(NS, 'g'); g.id = k + '-tutto';
     [...svg.childNodes].filter((x) => x !== defs).forEach((x) => g.appendChild(x)); svg.appendChild(g);
-    defs.insertAdjacentHTML('beforeend', `<linearGradient id="${k}-m" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".3" stop-color="#fff" stop-opacity=".05"/><stop offset=".52" stop-color="#000" stop-opacity=".7"/><stop offset=".74" stop-color="#000" stop-opacity=".15"/><stop offset="1" stop-color="#fff" stop-opacity=".35"/></linearGradient>
-      <filter id="${k}-b"><feFlood flood-color="#fff"/><feComposite in2="SourceAlpha" operator="in"/></filter>
-      <mask id="${k}-s" maskUnits="userSpaceOnUse" x="0" y="0" width="160" height="184"><use href="#${k}-tutto" filter="url(#${k}-b)"/></mask>
-      <linearGradient id="${k}-r" gradientUnits="userSpaceOnUse" x1="-90" y1="0" x2="-10" y2="80"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".4" stop-color="#fff6d6" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".85"/><stop offset=".6" stop-color="#fff6d6" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
-        <animateTransform attributeName="gradientTransform" type="translate" values="-40 -40; 260 120; 260 120" keyTimes="0; .3; 1" dur="7s" begin="3.5s" repeatCount="indefinite"/></linearGradient>`);
+    defs.insertAdjacentHTML('beforeend', `<linearGradient id="${k}-m" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".3"/><stop offset=".28" stop-color="#fff" stop-opacity=".02"/><stop offset=".5" stop-color="#03140c" stop-opacity=".42"/><stop offset=".74" stop-color="#03140c" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity=".16"/></linearGradient>`);
     g.querySelectorAll('path,rect,circle,ellipse,polygon').forEach((e) => {
-      if (e.closest(salta)) return; const f = e.getAttribute('fill') || ''; if (f === 'none') return;
+      if (e.closest(salta) || e.querySelector('animate,animateTransform,set')) return; const f = e.getAttribute('fill') || ''; if (f === 'none') return;
       const u = f.match(/url\(#([^)]+)\)/); if (u) { const r = document.getElementById(u[1]); if (!r || r.tagName === 'radialGradient') return; }
       for (let p = e; p && p !== svg; p = p.parentElement) { const o = +(p.getAttribute('opacity') || 1) * +(p.getAttribute('fill-opacity') || 1); if (o < .9) return; }
       const c = e.cloneNode(true); c.removeAttribute('id'); c.querySelectorAll('[id]').forEach((x) => x.removeAttribute('id'));
       c.setAttribute('aria-hidden', 'true'); c.style.setProperty('fill', `url(#${k}-m)`, 'important'); c.style.setProperty('stroke', 'none', 'important');
-      c.style.setProperty('mix-blend-mode', 'overlay'); c.style.setProperty('pointer-events', 'none'); e.after(c); });
+      c.style.setProperty('pointer-events', 'none'); e.after(c); });
     svg.classList.add('rb-metallo'); };
   const tutti = () => document.querySelectorAll('svg.robot').forEach(metallo);
   tutti(); new MutationObserver(tutti).observe(document.body, { childList: true, subtree: true }); })();
@@ -7186,6 +7199,13 @@ dash.onData(() => {
   let t; const dopo = () => { clearTimeout(t); t = setTimeout(fai, 60); };
   fai(); new MutationObserver(dopo).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   window.addEventListener('load', dopo); })();
+</script>
+<script>
+/* v273: riflesso del titolo acceso solo mentre passa (ogni 7 s, insieme a quello del logo), e solo se il titolo è sullo schermo */
+(() => { const h = document.querySelector('.hero-pub h1'); if (!h || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const passa = () => { if (document.hidden || h.classList.contains('fermo-anim')) return; h.classList.remove('luce-on'); void h.offsetWidth; h.classList.add('luce-on');
+    setTimeout(() => h.classList.remove('luce-on'), 2600); };
+  setTimeout(() => { passa(); setInterval(passa, 7000); }, 3500); })();
 </script>
 </body>
 </html>
