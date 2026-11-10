@@ -2541,7 +2541,8 @@ body.pub:not(.buio) .nd-cielo > summary { color: var(--grigio); }
 /* v261 (10/11/2026): scritta del marchio in oro lucido (proposta A) */
 body.pub .testata .mbz-r1 { fill: url(#px-oro) !important; stroke: #4a3006; stroke-width: 3.4; paint-order: stroke; }
 body.pub .testata .mbz-r2 { fill: url(#px-oro2) !important; stroke: #4a3006; stroke-width: 2.6; paint-order: stroke; }
-body.pub .testata .mbz { filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .45)) drop-shadow(0 0 10px rgba(246, 201, 90, .25)); }
+body.pub .testata .mbz { filter: drop-shadow(0 1.5px 1.5px rgba(0, 0, 0, .5)); }   /* v263: senza alone giallo */
+
 /* pulsanti della barra: scuri sopra i riquadri chiari, con passaggio morbido */
 body.pub #mb-alto .testata :is(.soc, .menu-apri) { transition: background-color .35s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease; }
 body.pub #mb-alto .testata :is(.soc, .menu-apri).su-chiaro { background: #12241a !important; color: #ffffff !important; border-color: rgba(227, 178, 60, .55) !important;
@@ -2549,22 +2550,14 @@ body.pub #mb-alto .testata :is(.soc, .menu-apri).su-chiaro { background: #12241a
 body.pub #mb-alto .testata .soc-paese.su-chiaro { box-shadow: 0 0 0 2px #12241a, 0 4px 12px rgba(10, 30, 20, .25) !important; }
 /* la striscia del countdown porta al riquadro del CopyTrading */
 .cd-barra { cursor: pointer; }
-.cd-barra:hover b { text-decoration: underline; text-underline-offset: 3px; }
 </style>
 <style>
-/* v262 (10/11/2026): barra in alto più piccola quando si scorre */
-.cd-barra, .cd-barra b, body.pub #mb-alto .testata, body.pub #mb-alto .testata-in, body.pub #mb-alto .testata .marchio,
-body.pub #mb-alto .testata :is(.soc, .menu-apri), body.pub .schede, body.pub .schede .scheda {
-  transition: min-height .3s ease, padding .3s ease, font-size .3s ease, width .3s ease, height .3s ease, transform .3s ease, margin .3s ease,
-    background-color .35s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease; }
-#mb-alto.giu .cd-barra { min-height: 26px; padding: 3px 10px; font-size: 12.5px; gap: 8px; }
-#mb-alto.giu .cd-barra b { font-size: 14px; }
-body.pub #mb-alto.giu .testata { padding-top: 2px !important; }
-body.pub #mb-alto.giu .testata-in { padding-top: 2px !important; padding-bottom: 2px !important; }
-body.pub #mb-alto.giu .testata .marchio { transform: scale(.66); transform-origin: left center; margin: -9px 0; }
-body.pub #mb-alto.giu .testata :is(.soc, .menu-apri) { transform: scale(.8); margin: -4px -3px; }
-html.mb-giu body.pub .schede { padding: 4px !important; }
-html.mb-giu body.pub .schede .scheda { padding: 6px 12px !important; font-size: 13.5px !important; }
+/* v264 (10/11/2026): scorrendo verso il basso logo e pulsanti si nascondono, scorrendo verso l'alto tornano */
+body.pub #mb-alto .testata { transition: transform .35s ease, opacity .3s ease; }
+body.pub #mb-alto.nascosto { pointer-events: none; }
+body.pub #mb-alto.nascosto .cd-barra { pointer-events: auto; }
+body.pub #mb-alto.nascosto .testata { transform: translateY(-45px); opacity: 0; pointer-events: none; }
+body.pub .schede { transition: top .35s ease; }
 </style>
 </head>
 <body class="pub">
@@ -6963,9 +6956,9 @@ dash.onData(() => {
   }
   if (giro()) var tm = setInterval(function () { if (!giro()) clearInterval(tm); }, 1000);
   // barra fissa: la sua altezza per le schede e i salti, e lo sfondo pieno quando si scorre
-  function misura() { if (alto) document.documentElement.style.setProperty('--alto-h', MB_ALTO() + 'px'); }
+  function misura() { if (alto) document.documentElement.style.setProperty('--alto-h', (alto.offsetParent === null ? 0 : alto.classList.contains('nascosto') && document.getElementById('cd-barra') ? document.getElementById('cd-barra').offsetHeight : alto.offsetHeight) + 'px'); }
   function scorri() { if (alto) { alto.classList.toggle('giu', scrollY > 6); document.documentElement.classList.toggle('mb-giu', scrollY > 6); } }
-  misura(); scorri();
+  window.MB_MISURA = misura; misura(); scorri();
   addEventListener('resize', misura); addEventListener('scroll', scorri, { passive: true });
   if (window.ResizeObserver && alto) new ResizeObserver(misura).observe(alto);
 })();
@@ -7017,6 +7010,31 @@ dash.onData(() => {
     barra.addEventListener('click', vai);
     barra.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); vai(); } });
   }
+})();
+</script>
+<script>
+/* v264: logo e pulsanti spariscono scorrendo giù, tornano scorrendo su */
+(function () {
+  var alto = document.getElementById('mb-alto'); if (!alto) return;
+  var prima = scrollY, fermo = false, blocco = 0, barra = document.getElementById('cd-barra');
+  function metti(si) { if (alto.classList.contains('nascosto') === si) return; alto.classList.toggle('nascosto', si); if (window.MB_MISURA) MB_MISURA(); }
+  // i salti alle sezioni (schede, menu, striscia) nascondono il logo: la sezione arriva subito sotto la striscia e le schede
+  window.MB_ALTO = function () {
+    if (alto.offsetParent === null) return 0;
+    metti(true); blocco = Date.now() + 1500;
+    return barra ? barra.offsetHeight : 0;
+  };
+  addEventListener('scroll', function () {
+    if (fermo || Date.now() < blocco) { prima = scrollY; return; } fermo = true;
+    requestAnimationFrame(function () {
+      fermo = false;
+      var y = scrollY, menu = alto.querySelector('.menu-apri.attivo, [aria-expanded="true"]');
+      if (y < 120 || menu) metti(false);
+      else if (y > prima + 6) metti(true);
+      else if (y < prima - 6) metti(false);
+      if (Math.abs(y - prima) > 6 || y < 120) prima = y;
+    });
+  }, { passive: true });
 })();
 </script>
 </body>
