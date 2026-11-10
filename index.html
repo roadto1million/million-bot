@@ -2495,8 +2495,7 @@ html:not([lang="it"]) .ca-fine small, html:not([lang="it"]) .st-numeri > span { 
 /* v259 (10/11/2026): barra in alto fissa (Million Bot e pulsanti) con sopra il countdown al CopyTrading */
 body.pub .mb-alto { position: sticky; top: 0; z-index: 40; }
 body.pub .mb-alto .testata { transition: background-color .25s, box-shadow .25s; }
-body.pub .mb-alto.giu .testata { background: #f4f7f2 !important; box-shadow: 0 8px 22px rgba(10, 30, 20, .14); padding-bottom: 8px; }
-body.pub.buio .mb-alto.giu .testata { background: #46547f !important; box-shadow: 0 8px 22px rgba(0, 0, 0, .35); }
+/* Samuel (10/11, 18:53): dietro Million Bot e i pulsanti nessuno sfondo, anche quando si scorre */
 body.pub .schede { top: calc(var(--alto-h, 0px) + 8px); }
 html:has(body.pub) { scroll-padding-top: calc(var(--alto-h, 0px) + 76px); }
 .cd-barra { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 7px 12px; min-height: 36px;
