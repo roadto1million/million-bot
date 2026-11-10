@@ -2613,6 +2613,17 @@ body.pub.buio .hero-pub h1 .anno .l { --metallo: linear-gradient(180deg, #fff4c7
 svg.robot.rb-metallo { filter: drop-shadow(0 1.5px 0 rgba(0, 0, 0, .35)) drop-shadow(0 10px 12px rgba(16, 36, 26, .22)); }
 @media (prefers-reduced-motion: reduce) { body.pub .hero-pub h1 .l { animation: none !important; } }
 </style>
+<style>
+/* v268: moneta del logo premium */
+body.pub .testata .marchio .logo-box { padding: 3px; background: conic-gradient(from 200deg, #fff4c7, #e3b84f 12%, #8a5d10 25%, #f6d06a 38%, #fff4c7 50%, #c8922c 62%, #7a520e 75%, #e3b84f 88%, #fff4c7) !important;
+  box-shadow: 0 0 0 1.5px #4a3006, 0 2px 3px rgba(0,0,0,.5), 0 0 0 0 transparent !important; }
+body.pub .testata .marchio .logo-box > .logo-mb { border-radius: 50% !important; box-shadow: inset 0 0 0 1px rgba(0,0,0,.6); }
+body.pub .testata .marchio .logo-box::after { display: block !important; inset: 3px; transform: none !important; animation: moneta-luce 7s ease-in-out 3.5s infinite !important;
+  background: radial-gradient(circle at 30% 24%, rgba(255,255,255,.38), transparent 42%), linear-gradient(115deg, transparent 42%, rgba(255,248,220,.9) 50%, transparent 58%) !important;
+  background-size: 100% 100%, 320% 100% !important; background-repeat: no-repeat !important; background-position: 0 0, 130% 0; }
+@keyframes moneta-luce { 0% { background-position: 0 0, 130% 0; } 30%, 100% { background-position: 0 0, -30% 0; } }
+@media (prefers-reduced-motion: reduce) { body.pub .testata .marchio .logo-box::after { animation: none !important; } }
+</style>
 </head>
 <body class="pub">
 <script>
