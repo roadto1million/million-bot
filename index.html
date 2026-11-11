@@ -2433,6 +2433,16 @@ html.tr-attesa body { visibility: hidden !important; }
 #h-saldo.oro::after { animation: saldo-oro 2.4s ease-in-out both; }
 @keyframes saldo-oro { 0% { opacity: 0; } 14% { opacity: 1; } 32% { opacity: 1; } 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { #h-saldo, #h-saldo.salta { animation: none; background-position: 100% 0; } #h-saldo.oro::after { animation: none; } }
+/* v285 (Samuel): luce solo dentro le cifre (via l'alone), piu' forte come una stella, e fuoco d'artificio quando si accende */
+#h-saldo::after { filter: none; background: linear-gradient(100deg, #a8790f 0%, #e3b23c 22%, #f7d77a 38%, #fff6d6 46%, #ffffff 50%, #fff6d6 54%, #f7d77a 62%, #e3b23c 78%, #a8790f 100%);
+  background-size: 260% 100%; background-position: 100% 0; -webkit-background-clip: text; background-clip: text; }
+#h-saldo.oro::after { animation: saldo-oro 2.4s ease-in-out both, saldo-stella 1.5s cubic-bezier(.3,.1,.3,1) .15s both; }
+@keyframes saldo-stella { from { background-position: 100% 0; } to { background-position: 0% 0; } }
+.fda { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; z-index: 60; }
+.fda i { position: absolute; left: 0; top: 0; width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px; border-radius: 50%; background: #fff3c4; box-shadow: 0 0 6px 1px rgba(255, 214, 102, .9); will-change: transform, opacity; }
+.fda i.s { width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 0; background: #ffe7a0; box-shadow: none;
+  clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%); filter: drop-shadow(0 0 3px rgba(255, 214, 102, .9)); }
+@media (prefers-reduced-motion: reduce) { .fda { display: none; } }
 /* v249 (Samuel): "In continuo aggiornamento" (Perché è diverso): in testa al riquadro un disegno largo e al centro (linea d'oro che sale
    disegnandosi, i miglioramenti che si accendono uno dopo l'altro, l'ultimo punto che pulsa e manda scintille), sullo sfondo verde con la
    luce d'oro che si muove del riquadro "Media annua". Animazioni SVG (SMIL): partono quando il disegno arriva sullo schermo (script in fondo) */
@@ -4889,6 +4899,29 @@ dash.calc('strategie', {
       clearTimeout(c.tAzzera); c.tAzzera = setTimeout(() => { if (c.fuori) azzera(e); }, manca);
     });
   }), { threshold: 0 }) : null;
+  function fuocoArtificio(el) {   // v285: stella che esplode dal numero d'oro
+    try {
+      if (!el.animate || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const r = el.getBoundingClientRect(); if (!r.width) return;
+      const box = document.createElement('div'); box.className = 'fda';
+      box.style.left = (r.left + window.scrollX + r.width / 2) + 'px'; box.style.top = (r.top + window.scrollY + r.height / 2) + 'px';
+      document.body.appendChild(box);
+      const N = 30, colori = ['#fff3c4', '#ffe08a', '#f3cf6a', '#ffffff', '#ffd45c'];
+      for (let k = 0; k < N; k++) {
+        const p = document.createElement('i'); if (k % 5 === 0) p.className = 's';
+        if (k % 5) { const c = colori[k % colori.length]; p.style.background = c; }
+        box.appendChild(p);
+        const a = (k / N) * Math.PI * 2 + Math.random() * .3, d = r.width * (.32 + Math.random() * .38) + 20;
+        const x0 = (Math.random() - .5) * r.width * .7, x = x0 + Math.cos(a) * d, y = Math.sin(a) * d * .7;
+        p.animate([
+          { transform: `translate(${x0}px,0) scale(.3)`, opacity: 0 },
+          { transform: `translate(${x0 + (x - x0) * .55}px,${y * .55}px) scale(1.15)`, opacity: 1, offset: .25 },
+          { transform: `translate(${x}px,${y + 26}px) scale(.2) rotate(${k % 5 ? 0 : 140}deg)`, opacity: 0 }
+        ], { duration: 1000 + Math.random() * 500, easing: 'cubic-bezier(.15,.7,.35,1)', fill: 'forwards' });
+      }
+      setTimeout(() => box.remove(), 1700);
+    } catch (_) {}
+  }
   // numeri che, appena finiscono di salire, si ingrandiscono per un attimo
   const SALTA = '#h-saldo, #h-anni-lista b, #tx-netto, #rt-netto, #lav-sei, #lav-idee, #lav-candele, #lav-comb, #lav-trade, .n-senza, .v-reale, .v-proj';
   function avviaConta(e) {
@@ -4901,7 +4934,7 @@ dash.calc('strategie', {
       const k = Math.min(1, (t - t0) / durata), f = 1 - Math.pow(1 - k, 2);
       e.textContent = c.fmt(c.da + (c.v - c.da) * f);
       if (k < 1) requestAnimationFrame(passo); else { c.stato = 'fatto'; c.fineT = performance.now(); e.textContent = c.fmt(c.v); const cl = e.closest('.confronto') ? 'pop' : e.matches(SALTA) ? 'salta' : ''; if (cl) { e.classList.remove(cl); void e.offsetWidth; e.classList.add(cl); }
-        if (e.id === 'h-saldo') { e.dataset.t = e.textContent; e.classList.remove('oro'); void e.offsetWidth; e.classList.add('oro'); } }   // v249 (Samuel): quando salta si accende d'oro, poi torna piano al verde
+        if (e.id === 'h-saldo') { e.dataset.t = e.textContent; e.classList.remove('oro'); void e.offsetWidth; e.classList.add('oro');  setTimeout(() => fuocoArtificio(e), 260); } }   // v249 (Samuel): quando salta si accende d'oro, poi torna piano al verde
     };
     requestAnimationFrame(passo);
   }
