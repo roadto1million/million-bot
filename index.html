@@ -3743,7 +3743,10 @@ body.pub .compagno.f-destra .c-fumetto::after { right: auto !important; left: -1
       return { k: raw.replace(/\s+/g, ' ').trim(), a: /^\s*/.exec(raw)[0] ? ' ' : '', z: /\s*$/.exec(raw)[0] ? ' ' : '', E: E, N: N, M: M, dentro: D2 };
     }
     function riempi(t, x) {
-      return t.replace(/\{(M?)(\d+)\}/g, function (all, m, i) { var v = m ? x.M[+i] : x.N[+i]; return v == null ? all : m ? mese(v) : numero(v); });
+      var r = t.replace(/\{(M?)(\d+)\}/g, function (all, m, i) { var v = m ? x.M[+i] : x.N[+i]; return v == null ? all : m ? mese(v) : numero(v); });
+      if (L === 'en') r = r.replace(/\b(\d+)th\b/g, function (all, n) {   // ordinali inglesi: 1st, 2nd, 3rd, 11th, 21st, 101st...
+        var c = n % 100, d = n % 10; return n + (c > 10 && c < 14 ? 'th' : d === 1 ? 'st' : d === 2 ? 'nd' : d === 3 ? 'rd' : 'th'); });
+      return r;
     }
     function testoN(s) { var n = document.createTextNode(s); scritto.set(n, s); return n; }
     function rifai(B, x, tr) {
